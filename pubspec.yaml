@@ -81,6 +81,7 @@ flutter:
     - family: MyTabIcons
       fonts:
         - asset: lib/assets/fonts/MyTabIcons.ttf
+        #- asset: lib/assets/fonts/DancingScript-SemiBold.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

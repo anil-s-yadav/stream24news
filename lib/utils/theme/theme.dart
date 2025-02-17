@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 
 class MaterialTheme {
   final TextTheme textTheme;
@@ -6,6 +7,7 @@ class MaterialTheme {
   const MaterialTheme(this.textTheme);
 
   static ColorScheme lightScheme() {
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return const ColorScheme(
       brightness: Brightness.light,
       primary: Color(0xff8f4c38),
@@ -171,6 +173,8 @@ class MaterialTheme {
   // }
 
   static ColorScheme darkScheme() {
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
     return const ColorScheme(
       brightness: Brightness.dark,
       primary: Color(0xffffb5a0),
