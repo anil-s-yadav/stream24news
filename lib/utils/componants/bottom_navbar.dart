@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../dashboard/homepage/homepage.dart';
+import 'package:stream24news/utils/my_tab_icons_icons.dart';
+import '../../dashboard/homepage/presentation/homepage.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({super.key});
@@ -36,28 +37,19 @@ class _BottomNavbarState extends State<BottomNavbar> {
         showUnselectedLabels: false,
         items: [
           BottomNavigationBarItem(
-              icon: Image.asset(
-                selectedIndex == 0
-                    ? "lib/assets/images/home-button-fill.png"
-                    : "lib/assets/images/home-button.png",
-                scale: 5,
-              ),
+              icon: Icon(selectedIndex == 0
+                  ? MyTabIcons.home_button_fill
+                  : MyTabIcons.home_button),
               label: ""),
           BottomNavigationBarItem(
-              icon: Image.asset(
-                selectedIndex == 1
-                    ? "lib/assets/images/video-fill.png"
-                    : "lib/assets/images/video.png",
-                scale: 5,
-              ),
+              icon: Icon(selectedIndex == 1
+                  ? MyTabIcons.video_fill
+                  : MyTabIcons.video),
               label: ""),
           BottomNavigationBarItem(
-              icon: Image.asset(
-                selectedIndex == 2
-                    ? "lib/assets/images/newspaper-fill.png"
-                    : "lib/assets/images/newspaper.png",
-                scale: 5.2,
-              ),
+              icon: Icon(selectedIndex == 2
+                  ? MyTabIcons.newspaper_fill
+                  : MyTabIcons.newspaper),
               label: ""),
           BottomNavigationBarItem(
               icon: Image.asset(

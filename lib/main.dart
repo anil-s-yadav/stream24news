@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
-import 'assets/componants/colors.dart';
-import 'utils/bottom_navbar.dart';
+import 'utils/componants/bottom_navbar.dart';
+import 'utils/theme/theme.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final savedThemeMode = await AdaptiveTheme.getThemeMode();
-  runApp(MyApp(savedThemeMode: savedThemeMode));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final AdaptiveThemeMode? savedThemeMode;
-  const MyApp({super.key, this.savedThemeMode});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveTheme(
-        light: ThemeData.light(),
-        dark: ThemeData.dark(),
-        // debugShowFloatingThemeButton: true,
-        initial: AdaptiveThemeMode.light,
-        builder: (theme, darkTheme) => MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Flutter Demo',
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
-                useMaterial3: true,
-              ),
-              home: const BottomNavbar(),
-            ));
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Stream24 News',
+      theme: ThemeData(
+        colorScheme: MaterialTheme.lightScheme(), // ✅ Use custom light theme
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        colorScheme: MaterialTheme.darkScheme(), // ✅ Use custom dark theme
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.system, // Auto-switch between light/dark mode
+      home: const BottomNavbar(),
+    );
   }
 }
