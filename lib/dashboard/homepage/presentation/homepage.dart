@@ -192,7 +192,6 @@ class HomePage extends StatelessWidget {
                     ),
                     title: Text("List item")),
               ),
-              sizedBoxH5,
               Container(
                 padding: EdgeInsets.symmetric(vertical: 5),
                 margin: EdgeInsets.all(5),
@@ -211,7 +210,6 @@ class HomePage extends StatelessWidget {
                     ),
                     title: Text("List item")),
               ),
-              sizedBoxH5,
               Container(
                 padding: EdgeInsets.symmetric(vertical: 5),
                 margin: EdgeInsets.all(5),
@@ -230,7 +228,6 @@ class HomePage extends StatelessWidget {
                     ),
                     title: Text("List item")),
               ),
-              sizedBoxH5,
               Container(
                 padding: EdgeInsets.symmetric(vertical: 5),
                 margin: EdgeInsets.all(5),
@@ -249,7 +246,22 @@ class HomePage extends StatelessWidget {
                     ),
                     title: Text("List item")),
               ),
-              sizedBoxH15
+              sizedBoxH10,
+              Container(
+                margin: EdgeInsets.all(5),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.1,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                ),
+                child: Center(
+                    child: Text("Banner ad",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ))),
+              ),
+              sizedBoxH20,
             ],
           ),
         ),
