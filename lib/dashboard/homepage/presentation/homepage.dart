@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stream24news/utils/componants/colors.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/my_tab_icons_icons.dart';
 
@@ -42,9 +41,12 @@ class HomePage extends StatelessWidget {
             height: 200,
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(8)),
+                borderRadius: BorderRadius.circular(10)),
             child: Center(
-              child: Text("This is a conytainer."),
+              child: Text(
+                "This is a conytainer.",
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
             ),
           )
         ]),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stream24news/utils/componants/colors.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({super.key, required this.text, required this.onPressed});
