@@ -13,18 +13,30 @@ class BottomNavbar extends StatefulWidget {
 class _BottomNavbarState extends State<BottomNavbar> {
   int selectedIndex = 0;
 
-  final List<Widget> screens = [
-    const HomePage(),
-    const LiveTvPage(),
-    Container(color: Colors.green, child: const Center(child: Text("Cart"))),
-    Container(
-        color: Colors.red, child: const Center(child: Text("User Profile"))),
-  ];
+  void changeTab(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
+  final List<Widget> screens = [];
+
+  @override
+  void initState() {
+    super.initState();
+    screens.addAll([
+      HomePage(changeTab: changeTab), // Pass function to HomePage
+      const LiveTvPage(),
+      Container(color: Colors.green, child: const Center(child: Text("Cart"))),
+      Container(
+          color: Colors.red, child: const Center(child: Text("User Profile"))),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[selectedIndex], // This should update correctly
+      body: screens[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: (value) {

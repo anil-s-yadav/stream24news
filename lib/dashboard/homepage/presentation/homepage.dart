@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:stream24news/dashboard/livetvpage/livetvpage.dart'
+    show LiveTvPage;
 import 'package:stream24news/samplepage.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/my_tab_icons_icons.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Function(int) changeTab; // Receive function from BottomNavbar
+  const HomePage({super.key, required this.changeTab});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -42,7 +45,7 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: const [
           Padding(
-            padding: EdgeInsets.only(right: 15),
+            padding: EdgeInsets.only(right: 20, top: 12),
             child: Icon(MyTabIcons.notification),
           ),
         ],
@@ -53,48 +56,23 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              titleheading(context, "", "See All >   "),
+              GestureDetector(
+                  onTap: () {
+                    widget.changeTab(1); // Switch to Live TV tab
+                  },
+                  child: titleheading(context, "", "See All >   ")),
               sizedBoxH5,
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Image.asset(
-                      "lib/assets/images/profile.png",
-                      scale: 1.5,
-                    ),
-                    sizedBoxW10,
-                    Image.asset(
-                      "lib/assets/images/profile.png",
-                      scale: 1.5,
-                    ),
-                    sizedBoxW10,
-                    Image.asset(
-                      "lib/assets/images/profile.png",
-                      scale: 1.5,
-                    ),
-                    sizedBoxW10,
-                    Image.asset(
-                      "lib/assets/images/profile.png",
-                      scale: 1.5,
-                    ),
-                    sizedBoxW10,
-                    Image.asset(
-                      "lib/assets/images/profile.png",
-                      scale: 1.5,
-                    ),
-                    sizedBoxW10,
-                    Image.asset(
-                      "lib/assets/images/profile.png",
-                      scale: 1.5,
-                    ),
-                    sizedBoxW10,
-                    Image.asset(
-                      "lib/assets/images/profile.png",
-                      scale: 1.5,
-                    ),
-                  ],
-                ),
+              SizedBox(
+                height: 100,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 8,
+                    itemBuilder: (BuildContext cotext, int index) {
+                      return Image.asset(
+                        "lib/assets/images/profile.png",
+                        scale: 1.5,
+                      );
+                    }),
               ),
               sizedBoxH10,
               Container(
@@ -221,6 +199,7 @@ class _HomePageState extends State<HomePage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
+              sizedBoxH20,
             ],
           ),
         ),
@@ -360,13 +339,14 @@ class _HomePageState extends State<HomePage> {
   Widget savedPosts(BuildContext context) {
     return SizedBox(
       height: 140,
-      width: MediaQuery.of(context).size.width / 2.220,
+      width: MediaQuery.of(context).size.width / 2.1,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           MyLightContainer(
             height: 110,
-            width: MediaQuery.of(context).size.width / 2.220,
-            child: Text("Datkka"),
+            width: MediaQuery.of(context).size.width / 2.1,
+            child: const Text("Datkka"),
           ),
           Row(
             children: [
