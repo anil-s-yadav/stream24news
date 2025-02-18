@@ -5,8 +5,15 @@ import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/my_tab_icons_icons.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int selectedIndex = -1; // -1 means no selection
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +21,8 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: GestureDetector(
           onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Samplepage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Samplepage()));
           },
           child: Row(
             children: [
@@ -42,24 +49,12 @@ class HomePage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8, bottom: 10),
-                    child: Text(
-                      "See All",
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                    ),
-                  ),
-                ],
-              ),
+              titleheading(context, "", "See All >   "),
+              sizedBoxH5,
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -103,12 +98,12 @@ class HomePage extends StatelessWidget {
               ),
               sizedBoxH10,
               Container(
-                margin: EdgeInsets.all(5),
+                margin: const EdgeInsets.all(5),
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.2,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 ),
                 child: Center(
                     child: Text("Banner ad",
@@ -117,138 +112,77 @@ class HomePage extends StatelessWidget {
                         ))),
               ),
               sizedBoxH20,
-              Row(
-                children: [
-                  Text(
-                    "Catogeries",
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 8,
-                    ),
-                    child: Text(
-                      "See All",
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                    ),
-                  ),
-                ],
-              ),
+              titleheading(context, "Trending", "See All"),
               sizedBoxH10,
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    con(context),
+                    trendingPosts(context),
                     sizedBoxW10,
-                    con(context),
+                    trendingPosts(context),
                     sizedBoxW10,
-                    con(context),
+                    trendingPosts(context),
                     sizedBoxW10,
-                    con(context),
+                    trendingPosts(context),
                     sizedBoxW10,
                   ],
                 ),
               ),
               sizedBoxH20,
-              Row(
-                children: [
-                  Text(
-                    "Catogeries",
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 8,
+              Text(
+                " See all catogeries    >",
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    child: Text(
-                      "See All",
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Theme.of(context).colorScheme.primaryContainer),
-                child: ListTile(
-                    leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.asset("lib/assets/images/military.jpg")),
-                    trailing: Text(
-                      "Read more..",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 12),
-                    ),
-                    title: Text("List item")),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Theme.of(context).colorScheme.primaryContainer),
-                child: ListTile(
-                    leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.asset("lib/assets/images/military.jpg")),
-                    trailing: Text(
-                      "Read more..",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 12),
-                    ),
-                    title: Text("List item")),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Theme.of(context).colorScheme.primaryContainer),
-                child: ListTile(
-                    leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.asset("lib/assets/images/military.jpg")),
-                    trailing: Text(
-                      "Read more..",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 12),
-                    ),
-                    title: Text("List item")),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Theme.of(context).colorScheme.primaryContainer),
-                child: ListTile(
-                    leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.asset("lib/assets/images/military.jpg")),
-                    trailing: Text(
-                      "Read more..",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 12),
-                    ),
-                    title: Text("List item")),
               ),
               sizedBoxH10,
+              SizedBox(
+                width: double.infinity,
+                height: 32,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 5,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                        },
+                        child: Container(
+                          height: 2,
+                          width: 100,
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                              color: selectedIndex != index
+                                  ? Theme.of(context).colorScheme.surface
+                                  : Theme.of(context).colorScheme.surfaceTint,
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(
+                                  width: 1,
+                                  color:
+                                      Theme.of(context).colorScheme.primary)),
+                          child: Center(
+                            child: Text(
+                              "Politics",
+                              style: TextStyle(
+                                color: selectedIndex != index
+                                    ? Theme.of(context).colorScheme.secondary
+                                    : Theme.of(context).colorScheme.surface,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              ),
+              sizedBoxH20,
+              titleheading(context, "Recomanded", "See All"),
+              recomendedPosts(context),
+              recomendedPosts(context),
               Container(
-                margin: EdgeInsets.all(5),
+                margin: const EdgeInsets.all(5),
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.1,
                 decoration: BoxDecoration(
@@ -261,7 +195,32 @@ class HomePage extends StatelessWidget {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
+              recomendedPosts(context),
+              recomendedPosts(context),
               sizedBoxH20,
+              titleheading(context, "Saved", "See All "),
+              sizedBoxH5,
+              Row(
+                children: [
+                  savedPosts(context),
+                  savedPosts(context),
+                ],
+              ),
+              sizedBoxH20,
+              Container(
+                margin: const EdgeInsets.all(5),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.1,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                ),
+                child: Center(
+                    child: Text("Banner ad",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ))),
+              ),
             ],
           ),
         ),
@@ -269,34 +228,172 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget con(BuildContext context) {
+  Widget trendingPosts(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.5,
+          //height: MediaQuery.of(context).size.height * 0.6,
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  "lib/assets/images/test_sample1.jpg",
+                  fit: BoxFit.fill,
+                ),
+              ),
+              sizedBoxH5,
+              Padding(
+                padding: const EdgeInsets.only(left: 7),
+                child: Text(
+                    style: Theme.of(context).textTheme.labelMedium,
+                    "You should know how to make web requests in your chosen programming language"),
+              ),
+              sizedBoxH5,
+              Row(
+                //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  sizedBoxW5,
+                  Image.asset(
+                    "lib/assets/images/profile.png",
+                    scale: 7,
+                  ),
+                  sizedBoxW5,
+                  const Text(
+                    "Anil Yadav",
+                    style: TextStyle(fontSize: 10),
+                    softWrap: true,
+                  ),
+                  sizedBoxW5,
+                  const Text(
+                    "1 day ago",
+                    softWrap: true,
+                    style: TextStyle(fontSize: 10),
+                  ),
+                  const Spacer(),
+                  const Icon(
+                    Icons.more_vert_outlined,
+                    size: 18,
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget recomendedPosts(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.4,
-      height: MediaQuery.of(context).size.height * 0.3,
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+      margin: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Theme.of(context).colorScheme.surfaceContainer),
+      child: ListTile(
+        leading: ClipRRect(
+            borderRadius: BorderRadius.circular(5),
             child: Image.asset(
               "lib/assets/images/military.jpg",
-              width: MediaQuery.of(context).size.width * 0.4,
-              height: MediaQuery.of(context).size.height * 0.3,
-              fit: BoxFit.fill,
-            ),
-          ),
-          Image.asset(
-            "lib/assets/images/blend.png",
-            colorBlendMode: BlendMode.darken,
-            width: MediaQuery.of(context).size.width * 0.4,
-            height: MediaQuery.of(context).size.height * 0.3,
-            fit: BoxFit.fill,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            )),
+        title: Text(
+          "To get started you'll need an API key. They're free while you are in development.",
+          style: Theme.of(context).textTheme.titleSmall,
+          maxLines: 2,
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: Row(
             children: [
-              Text("data", style: Theme.of(context).textTheme.headlineSmall)
+              Image.asset(
+                "lib/assets/images/profile.png",
+                scale: 9,
+              ),
+              sizedBoxW5,
+              const Text(
+                "Anil Yadav",
+                style: TextStyle(fontSize: 10),
+                softWrap: true,
+              ),
+              sizedBoxW5,
+              const Text(
+                "1 day ago",
+                softWrap: true,
+                style: TextStyle(fontSize: 10),
+              ),
+              const Spacer(),
+              const Icon(
+                Icons.more_vert_outlined,
+                size: 18,
+              )
             ],
-          )
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget titleheading(BuildContext context, String text, String seeall) {
+    return Row(
+      children: [
+        Text(
+          text,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const Spacer(),
+        Padding(
+          padding: const EdgeInsets.only(
+            right: 8,
+          ),
+          child: Text(
+            seeall,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget savedPosts(BuildContext context) {
+    return SizedBox(
+      height: 140,
+      width: MediaQuery.of(context).size.width / 2.220,
+      child: Column(
+        children: [
+          MyLightContainer(
+            height: 110,
+            width: MediaQuery.of(context).size.width / 2.220,
+            child: Text("Datkka"),
+          ),
+          Row(
+            children: [
+              sizedBoxW15,
+              Image.asset(
+                "lib/assets/images/profile.png",
+                scale: 9,
+              ),
+              sizedBoxW5,
+              const Text(
+                "Anil Yadav",
+                style: TextStyle(fontSize: 10),
+                softWrap: true,
+              ),
+              sizedBoxW5,
+              const Text(
+                "1 day ago",
+                softWrap: true,
+                style: TextStyle(fontSize: 10),
+              ),
+              const Spacer(),
+              const Icon(
+                Icons.more_vert_outlined,
+                size: 18,
+              )
+            ],
+          ),
         ],
       ),
     );

@@ -22,7 +22,7 @@ class Samplepage extends StatelessWidget {
             color: Theme.of(context).colorScheme.primary,
           ),
           Container(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             width: 500,
             height: 200,
             decoration: BoxDecoration(
