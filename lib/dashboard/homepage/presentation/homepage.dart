@@ -45,8 +45,15 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: const [
           Padding(
-            padding: EdgeInsets.only(right: 20, top: 12),
+            padding: EdgeInsets.only(right: 10, top: 12),
             child: Icon(MyTabIcons.notification),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 20, top: 6),
+            child: Icon(
+              MyTabIcons.bookmark,
+              size: 21,
+            ),
           ),
         ],
       ),
@@ -60,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     widget.changeTab(1); // Switch to Live TV tab
                   },
-                  child: titleheading(context, "", "See All >   ")),
+                  child: titleheading(context, "", "See All >")),
               sizedBoxH5,
               SizedBox(
                 height: 100,
@@ -74,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     }),
               ),
-              sizedBoxH10,
+              sizedBoxH5,
               Container(
                 margin: const EdgeInsets.all(5),
                 width: double.infinity,
@@ -89,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
-              sizedBoxH20,
+              sizedBoxH10,
               titleheading(context, "Trending", "See All"),
               sizedBoxH10,
               SingleChildScrollView(
@@ -200,6 +207,63 @@ class _HomePageState extends State<HomePage> {
                         ))),
               ),
               sizedBoxH20,
+              titleheading(context, "Live channels", "See All "),
+              sizedBoxH5,
+              GridView.count(
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 3,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+                shrinkWrap: true,
+                children: List.generate(
+                  6,
+                  (index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color:
+                            Theme.of(context).colorScheme.surfaceContainerLow,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "lib/assets/images/profile.png",
+                              scale: 1.5,
+                            ),
+                            sizedBoxH5,
+                            Text(
+                              maxLines: 1,
+                              "Channel Name",
+                              style: Theme.of(context).textTheme.labelSmall,
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              sizedBoxH5,
+              Container(
+                margin: const EdgeInsets.all(5),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.1,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                ),
+                child: Center(
+                    child: Text("Banner ad",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ))),
+              ),
+              sizedBoxH15,
             ],
           ),
         ),
