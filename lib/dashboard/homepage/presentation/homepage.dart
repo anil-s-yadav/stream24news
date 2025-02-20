@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stream24news/dashboard/livetvpage/livetvpage.dart'
-    show LiveTvPage;
 import 'package:stream24news/samplepage.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
-import 'package:stream24news/utils/my_tab_icons_icons.dart';
+import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
+
+import '../../../features/bookmarkPage/bookmark_page.dart';
+import '../../../features/notification/notification.dart';
 
 class HomePage extends StatefulWidget {
   final Function(int) changeTab; // Receive function from BottomNavbar
@@ -43,16 +44,33 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 10, top: 12),
-            child: Icon(MyTabIcons.notification),
+            padding: const EdgeInsets.only(right: 16, top: 5),
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NotificationPage()));
+                },
+                child: const Icon(MyTabIcons.notification)),
           ),
           Padding(
-            padding: EdgeInsets.only(right: 20, top: 6),
-            child: Icon(
-              MyTabIcons.bookmark,
-              size: 21,
+            padding: const EdgeInsets.only(
+              right: 20,
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const BookmarkPage()));
+              },
+              child: const Icon(
+                MyTabIcons.bookmark,
+                size: 21,
+              ),
             ),
           ),
         ],

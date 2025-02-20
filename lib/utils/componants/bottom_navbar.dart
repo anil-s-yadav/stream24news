@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:stream24news/utils/my_tab_icons_icons.dart';
+import 'package:stream24news/dashboard/profile/profilepage.dart';
+import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import '../../dashboard/homepage/presentation/homepage.dart';
 import '../../dashboard/livetvpage/livetvpage.dart';
+import '../../dashboard/newspage/newspage.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({super.key});
@@ -27,9 +29,8 @@ class _BottomNavbarState extends State<BottomNavbar> {
     screens.addAll([
       HomePage(changeTab: changeTab), // Pass function to HomePage
       const LiveTvPage(),
-      Container(color: Colors.green, child: const Center(child: Text("Cart"))),
-      Container(
-          color: Colors.red, child: const Center(child: Text("User Profile"))),
+      const Newspage(),
+      const Profilepage()
     ]);
   }
 

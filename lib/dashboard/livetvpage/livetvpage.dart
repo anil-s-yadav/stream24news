@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
-import 'package:stream24news/utils/my_tab_icons_icons.dart';
+import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
+
+import '../../utils/componants/my_widgets.dart';
 
 class LiveTvPage extends StatefulWidget {
   const LiveTvPage({super.key});
@@ -17,7 +19,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
       appBar: AppBar(
         title: isSeachVisible
             ? SearchBar(
-                elevation: WidgetStatePropertyAll(0),
+                elevation: const WidgetStatePropertyAll(0),
                 hintText: 'Search...',
                 trailing: [
                   Icon(
@@ -53,7 +55,9 @@ class _LiveTvPageState extends State<LiveTvPage> {
                 isSeachVisible ? Icons.cancel_outlined : MyTabIcons.searchh,
               )),
           sizedBoxW10,
-          Icon(MyTabIcons.tabview),
+          GestureDetector(
+              onTap: () => myBottomSheet(context),
+              child: const Icon(MyTabIcons.tabview)),
           sizedBoxW10
         ],
       ),
@@ -119,6 +123,112 @@ class _LiveTvPageState extends State<LiveTvPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  myBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true, // Enables the draggable handle
+      isScrollControlled: true, // Allows the bottom sheet to expand fully
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.6, // Starting size (50% of screen height)
+        minChildSize: 0.3, // Minimum collapsed size
+        maxChildSize: 0.9, // Maximum expanded size
+        builder: (context, scrollController) {
+          return SingleChildScrollView(
+            controller: scrollController,
+            child: SizedBox(
+              width: double.infinity,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Sort",
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        GestureDetector(
+                          onTap: () {
+                            // Add your apply logic here
+                          },
+                          child: const Text(
+                            "Apply",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 0, 118, 31),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    sizedBoxW10,
+                    Wrap(
+                      spacing: 15,
+                      runSpacing: 10,
+                      children: [
+                        SecondaryButton(text: "A - Z", onPressed: () {}),
+                        SecondaryButton(text: "Z - A", onPressed: () {}),
+                        SecondaryButton(text: "Newest First", onPressed: () {}),
+                        SecondaryButton(text: "Oldest First", onPressed: () {}),
+                      ],
+                    ),
+                    sizedBoxH20,
+                    const Divider(),
+                    sizedBoxW20,
+                    // Filter by Section
+                    Text(
+                      "Filter by",
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    sizedBoxH10,
+
+                    // List of Filters
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: scrollController, // Enables smooth scrolling
+                      shrinkWrap: true, // Prevents infinite height issues
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: Checkbox(
+                            value:
+                                false, // Replace with dynamic value if needed
+                            onChanged: (bool? newValue) {
+                              // Handle checkbox state change
+                            },
+                          ),
+                          title: Text("Language ${index + 1}"),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

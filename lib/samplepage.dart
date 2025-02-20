@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
-import 'package:stream24news/utils/my_tab_icons_icons.dart';
+import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 class Samplepage extends StatelessWidget {
   const Samplepage({super.key});

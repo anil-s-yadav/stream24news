@@ -44,8 +44,10 @@ class TersoryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(elevation: 0.1),
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        elevation: 0.1,
+      ),
       child: Text(text),
     );
   }
