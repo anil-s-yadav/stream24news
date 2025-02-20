@@ -7,6 +7,7 @@ class BookmarkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      initialIndex: 1,
       length: 2,
       child: Scaffold(
           appBar: AppBar(

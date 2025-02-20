@@ -14,38 +14,70 @@ class BottomNavbar extends StatefulWidget {
 
 class _BottomNavbarState extends State<BottomNavbar> {
   int selectedIndex = 0;
-
-  void changeTab(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
-
-  final List<Widget> screens = [];
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    screens.addAll([
-      HomePage(changeTab: changeTab), // Pass function to HomePage
-      const LiveTvPage(),
-      const Newspage(),
-      const Profilepage()
-    ]);
+    _pageController = PageController(initialPage: selectedIndex);
   }
+
+  void changeTab(int index) {
+    setState(() {
+      selectedIndex = index;
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  final List<Widget> screens = [];
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   screens.addAll([
+  //     HomePage(changeTab: changeTab), // Pass function to HomePage
+  //     const LiveTvPage(),
+  //     const Newspage(),
+  //     const Profilepage()
+  //   ]);
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: selectedIndex,
-        onTap: (value) {
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
           setState(() {
-            selectedIndex = value;
+            selectedIndex = index;
           });
         },
+        children: [
+          HomePage(changeTab: changeTab), // Pass function to HomePage
+          const LiveTvPage(),
+          const Newspage(),
+          const Profilepage()
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: selectedIndex,
+        onTap: changeTab, // Update PageView when tapping tabs
         type: BottomNavigationBarType.fixed,
+        // onTap: (value) {
+        //   setState(() {
+        //     selectedIndex = value;
+        //   });
+        // },
         showSelectedLabels: false,
         showUnselectedLabels: false,
         items: [
