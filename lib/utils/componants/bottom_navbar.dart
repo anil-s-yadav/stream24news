@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stream24news/dashboard/profile/profilepage.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import '../../dashboard/homepage/presentation/homepage.dart';
@@ -39,71 +42,86 @@ class _BottomNavbarState extends State<BottomNavbar> {
     super.dispose();
   }
 
-  final List<Widget> screens = [];
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   screens.addAll([
-  //     HomePage(changeTab: changeTab), // Pass function to HomePage
-  //     const LiveTvPage(),
-  //     const Newspage(),
-  //     const Profilepage()
-  //   ]);
-  // }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-        children: [
-          HomePage(changeTab: changeTab), // Pass function to HomePage
-          const LiveTvPage(),
-          const Newspage(),
-          const Profilepage()
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: selectedIndex,
-        onTap: changeTab, // Update PageView when tapping tabs
-        type: BottomNavigationBarType.fixed,
-        // onTap: (value) {
-        //   setState(() {
-        //     selectedIndex = value;
-        //   });
-        // },
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(selectedIndex == 0
-                  ? MyTabIcons.home_button_fill
-                  : MyTabIcons.home_button),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: Icon(selectedIndex == 1
-                  ? MyTabIcons.video_fill
-                  : MyTabIcons.video),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: Icon(selectedIndex == 2
-                  ? MyTabIcons.newspaper_fill
-                  : MyTabIcons.newspaper),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: Image.asset(
-                "lib/assets/images/profile.png",
-                scale: 5,
-              ),
-              label: ""),
-        ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        final shouldExit = await _onWillPop();
+
+        if (shouldExit) {
+          if (Platform.isAndroid) {
+            SystemNavigator.pop();
+          } else {
+            exit(0);
+          }
+        }
+      },
+      child: Scaffold(
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() => selectedIndex = index);
+          },
+          children: [
+            HomePage(changeTab: changeTab),
+            const LiveTvPage(),
+            const Newspage(),
+            const Profilepage()
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: selectedIndex,
+          onTap: changeTab, // Update PageView when tapping tabs
+          type: BottomNavigationBarType.fixed,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(selectedIndex == 0
+                    ? MyTabIcons.home_button_fill
+                    : MyTabIcons.home_button),
+                label: ""),
+            BottomNavigationBarItem(
+                icon: Icon(selectedIndex == 1
+                    ? MyTabIcons.video_fill
+                    : MyTabIcons.video),
+                label: ""),
+            BottomNavigationBarItem(
+                icon: Icon(selectedIndex == 2
+                    ? MyTabIcons.newspaper_fill
+                    : MyTabIcons.newspaper),
+                label: ""),
+            BottomNavigationBarItem(
+                icon: Image.asset(
+                  "lib/assets/images/profile.png",
+                  scale: 5,
+                ),
+                label: ""),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<bool> _onWillPop() async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Confirm Exit"),
+            content: const Text("Do you really want to exit the app?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false), // Cancel
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true), // Exit
+                child: const Text("Exit"),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 }

@@ -36,7 +36,7 @@ class Samplepage extends StatelessWidget {
             ),
           ),
           Text(
-            "This is a conytainer.",
+            "This is a container.",
             style: GoogleFonts.dancingScript(fontWeight: FontWeight.bold),
           ),
         ]),

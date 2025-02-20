@@ -54,11 +54,11 @@ class _LiveTvPageState extends State<LiveTvPage> {
               child: Icon(
                 isSeachVisible ? Icons.cancel_outlined : MyTabIcons.searchh,
               )),
-          sizedBoxW10,
+          sizedBoxW15,
           GestureDetector(
               onTap: () => myBottomSheet(context),
               child: const Icon(MyTabIcons.tabview)),
-          sizedBoxW10
+          sizedBoxW20
         ],
       ),
       body: Padding(

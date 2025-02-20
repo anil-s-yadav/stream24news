@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
+
+import '../notification_settings/notification_settings.dart';
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});
@@ -11,22 +14,25 @@ class NotificationPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          title: const Text('Notification'),
           bottom: const TabBar(
-            //padding: EdgeInsets.all(10),
             labelPadding: EdgeInsets.all(15),
             indicatorSize: TabBarIndicatorSize.tab,
             tabs: [
-              Text("Ganeral"),
+              Text("General"), // Fixed typo
               Text("System"),
             ],
           ),
-          title: const Text('Notification'),
-          actions: const [
-            Icon(
-              MyTabIcons.settings,
-              size: 20,
-            ),
-            sizedBoxW20
+          actions: [
+            GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NotificationSettings()));
+                },
+                child: const Icon(MyTabIcons.settings, size: 20)),
+            sizedBoxW20,
           ],
         ),
         body: TabBarView(
@@ -40,30 +46,33 @@ class NotificationPage extends StatelessWidget {
   }
 
   Widget generalNotification(BuildContext context) {
-    return ListView.builder(
-        itemCount: 5,
-        itemBuilder: (context, int index) {
-          return ListTile(
-            leading: ClipRRect(
-                borderRadius: BorderRadius.circular(3),
-                child: Image.asset(
-                  "lib/assets/images/military.jpg",
-                )),
-            title: Text(
-              maxLines: 2,
-              "This is a  Notification Notification This is a  Notification ",
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            subtitle: Row(
-              children: [
-                Text(
-                  "1 day ago | 12:12",
-                  style: Theme.of(context).textTheme.bodySmall,
-                )
-              ],
-            ),
-          );
-        });
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: ListView.builder(
+          itemCount: 5,
+          itemBuilder: (context, int index) {
+            return ListTile(
+              leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: Image.asset(
+                    "lib/assets/images/military.jpg",
+                  )),
+              title: Text(
+                maxLines: 2,
+                "This is a  Notification Notification This is a  Notification ",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              subtitle: Row(
+                children: [
+                  Text(
+                    "1 day ago | 12:12",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  )
+                ],
+              ),
+            );
+          }),
+    );
   }
 
   Widget systemNotification(BuildContext context) {

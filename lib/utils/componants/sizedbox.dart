@@ -12,6 +12,9 @@ const sizedBoxW15 = SizedBox(
 const sizedBoxW20 = SizedBox(
   width: 20,
 );
+const sizedBoxW30 = SizedBox(
+  width: 30,
+);
 const sizedBoxH5 = SizedBox(
   height: 5,
 );
@@ -23,4 +26,7 @@ const sizedBoxH15 = SizedBox(
 );
 const sizedBoxH20 = SizedBox(
   height: 20,
+);
+const sizedBoxH30 = SizedBox(
+  height: 30,
 );

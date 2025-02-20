@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stream24news/samplepage.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
@@ -17,7 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedIndex = -1; // -1 means no selection
+  int selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +204,14 @@ class _HomePageState extends State<HomePage> {
               recomendedPosts(context),
               recomendedPosts(context),
               sizedBoxH20,
-              titleheading(context, "Saved", "See All "),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const BookmarkPage()));
+                  },
+                  child: titleheading(context, "Saved", "See All ")),
               sizedBoxH5,
               Row(
                 children: [
@@ -225,7 +235,11 @@ class _HomePageState extends State<HomePage> {
                         ))),
               ),
               sizedBoxH20,
-              titleheading(context, "Live channels", "See All "),
+              GestureDetector(
+                  onTap: () {
+                    widget.changeTab(1);
+                  },
+                  child: titleheading(context, "Live channels", "See All ")),
               sizedBoxH5,
               GridView.count(
                 physics: const NeverScrollableScrollPhysics(),

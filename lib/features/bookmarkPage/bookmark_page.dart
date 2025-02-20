@@ -10,40 +10,51 @@ class BookmarkPage extends StatelessWidget {
       initialIndex: 1,
       length: 2,
       child: Scaffold(
-          appBar: AppBar(
-            title: const Text("Bookmark"),
-            bottom: const TabBar(
-              labelPadding: EdgeInsets.all(15),
-              indicatorSize: TabBarIndicatorSize.tab,
-              tabs: [
-                Text("Articals"),
-                Text("Channels"),
-              ],
-            ),
+        appBar: AppBar(
+          title: const Text("Bookmark"),
+          bottom: const TabBar(
+            labelPadding: EdgeInsets.all(15),
+            indicatorSize: TabBarIndicatorSize.tab,
+            tabs: [
+              Text("Articals"),
+              Text("Channels"),
+            ],
           ),
-          body: Center(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.16,
-                ),
-                Image.asset(
-                  "lib/assets/images/empty.png",
-                  scale: 14,
-                ),
-                sizedBoxH20,
-                Text(
-                  "Empty",
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                sizedBoxH10,
-                const Text(
-                  "You have not saved anything to the collection!",
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
-              ],
-            ),
-          )),
+        ),
+        body: TabBarView(
+          children: [
+            // generalNotification(context),
+            systemNotification(context),
+            systemNotification(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget systemNotification(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.16,
+          ),
+          Image.asset(
+            "lib/assets/images/empty.png",
+            scale: 14,
+          ),
+          sizedBoxH20,
+          Text(
+            "Empty",
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          sizedBoxH10,
+          const Text(
+            "You have not saved anything to the collection!",
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ],
+      ),
     );
   }
 }
