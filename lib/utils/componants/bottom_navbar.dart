@@ -63,12 +63,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
           onPageChanged: (index) {
             setState(() => selectedIndex = index);
           },
-          children: [
-            HomePage(changeTab: changeTab),
-            const LiveTvPage(),
-            const Newspage(),
-            const Profilepage()
-          ],
+          children: const [HomePage(), LiveTvPage(), Newspage(), Profilepage()],
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: selectedIndex,

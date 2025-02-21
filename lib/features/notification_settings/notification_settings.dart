@@ -35,6 +35,10 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                 onChanged: (var value) {
                   setState(() {
                     allNotificationSwitch = value;
+                    breakingNewsSwitch = value;
+                    trendingNewsSwitch = value;
+                    dailyNewsSwitch = value;
+                    weeklyNewsSwitch = value;
                   });
                 }),
             const Divider(

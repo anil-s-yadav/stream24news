@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
+import 'package:stream24news/dashboard/livetvpage/livetvpage.dart';
 import 'package:stream24news/samplepage.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
@@ -9,8 +11,7 @@ import '../../../features/bookmarkPage/bookmark_page.dart';
 import '../../../features/notification/notification.dart';
 
 class HomePage extends StatefulWidget {
-  final Function(int) changeTab; // Receive function from BottomNavbar
-  const HomePage({super.key, required this.changeTab});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -82,11 +83,31 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                  onTap: () {
-                    widget.changeTab(1); // Switch to Live TV tab
-                  },
-                  child: titleheading(context, "", "See All >")),
-              sizedBoxH5,
+                onTap: () {
+                  //  widget.changeTab(1); // Switch to Live TV tab
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LiveTvPage()));
+                },
+                child: Row(
+                  children: [
+                    sizedBoxW5,
+                    Lottie.asset('lib/assets/lottie_json/livetv.json',
+                        animate: false, height: 15),
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 8,
+                      ),
+                      child: Text(
+                        "See All  >",
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(
                 height: 100,
                 child: ListView.builder(
@@ -234,7 +255,8 @@ class _HomePageState extends State<HomePage> {
               sizedBoxH20,
               GestureDetector(
                   onTap: () {
-                    widget.changeTab(1);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LiveTvPage()));
                   },
                   child: titleheading(context, "Live channels", "See All ")),
               sizedBoxH5,

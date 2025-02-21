@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
@@ -62,62 +63,36 @@ class Profilepage extends StatelessWidget {
                 )
               ],
             ),
-            const Divider(
+
+            sizedBoxH20,
+            MyLightContainer(
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Text(
+                "Edit Profile",
+              ),
+            ),
+            MyLightContainer(
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Text(
+                "Rate Us",
+              ),
+            ),
+            sizedBoxH10,
+            Divider(
               indent: 10,
               endIndent: 10,
             ),
-            sizedBoxH30,
-            MyLightContainer(
-              height: MediaQuery.of(context).size.height * 0.07,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: const ListTile(
-                leading: Icon(
-                  Icons.edit,
-                  size: 26,
-                ),
-                title: Text("Edit Profile",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                ),
-              ),
+            sizedBoxH20,
+            Image.asset(
+              'lib/assets/images/buymeacopy.png',
+              scale: 8,
             ),
-            sizedBoxH10,
-            MyLightContainer(
-              height: MediaQuery.of(context).size.height * 0.07,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: const ListTile(
-                leading: Icon(
-                  Icons.star_rate_rounded,
-                  size: 26,
-                ),
-                title: Text("Rate us",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                ),
-              ),
-            ),
-            sizedBoxH10,
-            MyLightContainer(
-              height: MediaQuery.of(context).size.height * 0.07,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: const ListTile(
-                leading: Icon(
-                  Icons.call,
-                  size: 26,
-                ),
-                title: Text("Contact developer",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 40),
-              child: Text("Try our other Apps!"),
-            )
+            // const Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 40),
+            //   child: Text("Try our other Apps!"),
+            // )
           ]),
         ));
   }

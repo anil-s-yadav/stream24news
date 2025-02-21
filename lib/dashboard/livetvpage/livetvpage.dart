@@ -32,7 +32,9 @@ class _LiveTvPageState extends State<LiveTvPage> {
             : RichText(
                 text: TextSpan(
                   text: 'Watch ',
-                  style: DefaultTextStyle.of(context).style,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.shadow,
+                      fontSize: 12),
                   children: <TextSpan>[
                     TextSpan(
                       text: 'Live TV',
@@ -67,7 +69,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
           child: Column(
             children: [
               Container(
-                margin: const EdgeInsets.all(5),
+                margin: const EdgeInsets.symmetric(horizontal: 5),
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.1,
                 decoration: BoxDecoration(
