@@ -32,7 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 title: const Divider(),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(
                   Icons.person_outlined,
                   size: 35,
@@ -48,9 +48,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => NotificationSettings()));
+                          builder: (context) => const NotificationSettings()));
                 },
-                child: ListTile(
+                child: const ListTile(
                   leading: Icon(
                     MyTabIcons.notification,
                     //size: 30,
@@ -62,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(
                   Icons.shield_outlined,
                   size: 26,
@@ -73,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Icons.arrow_forward_ios_rounded,
                 ),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(
                   MyTabIcons.listview,
                   size: 26,
@@ -94,9 +94,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SwitchListTile(
-                  title: Text("Dark Mode",
+                  title: const Text("Dark Mode",
                       style: TextStyle(fontWeight: FontWeight.bold)),
-                  secondary: Icon(
+                  secondary: const Icon(
                     Icons.remove_red_eye_outlined,
                     size: 26,
                   ),
@@ -114,7 +114,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 title: const Divider(),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(
                   Icons.code,
                   size: 26,
@@ -125,7 +125,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Icons.arrow_forward_ios_rounded,
                 ),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(
                   Icons.help_outline,
                   size: 26,
@@ -136,7 +136,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Icons.arrow_forward_ios_rounded,
                 ),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(
                   Icons.lock_outlined,
                   size: 26,
@@ -147,7 +147,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Icons.arrow_forward_ios_rounded,
                 ),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(
                   Icons.info_outline_rounded,
                   size: 26,

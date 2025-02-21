@@ -29,7 +29,7 @@ class NotificationPage extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => NotificationSettings()));
+                          builder: (context) => const NotificationSettings()));
                 },
                 child: const Icon(MyTabIcons.settings, size: 20)),
             sizedBoxW20,

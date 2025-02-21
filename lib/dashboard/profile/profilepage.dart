@@ -22,17 +22,19 @@ class Profilepage extends StatelessWidget {
               //   Navigator.push(context,
               //       MaterialPageRoute(builder: (context) => SettingsPage()));
               // },
-              child: Icon(
+              child: const Icon(
                 Icons.share,
               ),
             ),
             sizedBoxW20,
             GestureDetector(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingsPage()));
               },
-              child: Icon(
+              child: const Icon(
                 MyTabIcons.settings,
               ),
             ),
@@ -44,7 +46,7 @@ class Profilepage extends StatelessWidget {
             Row(
               children: [
                 sizedBoxW15,
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 50,
                   foregroundImage: AssetImage("lib/assets/images/profile.png"),
                 ),
@@ -55,12 +57,12 @@ class Profilepage extends StatelessWidget {
                       "Anil S. Yadav",
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
-                    Text("anilyadav@gmail.com"),
+                    const Text("anilyadav@gmail.com"),
                   ],
                 )
               ],
             ),
-            Divider(
+            const Divider(
               indent: 10,
               endIndent: 10,
             ),
@@ -68,7 +70,7 @@ class Profilepage extends StatelessWidget {
             MyLightContainer(
               height: MediaQuery.of(context).size.height * 0.07,
               width: MediaQuery.of(context).size.width * 0.9,
-              child: ListTile(
+              child: const ListTile(
                 leading: Icon(
                   Icons.edit,
                   size: 26,
@@ -84,7 +86,7 @@ class Profilepage extends StatelessWidget {
             MyLightContainer(
               height: MediaQuery.of(context).size.height * 0.07,
               width: MediaQuery.of(context).size.width * 0.9,
-              child: ListTile(
+              child: const ListTile(
                 leading: Icon(
                   Icons.star_rate_rounded,
                   size: 26,
@@ -100,7 +102,7 @@ class Profilepage extends StatelessWidget {
             MyLightContainer(
               height: MediaQuery.of(context).size.height * 0.07,
               width: MediaQuery.of(context).size.width * 0.9,
-              child: ListTile(
+              child: const ListTile(
                 leading: Icon(
                   Icons.call,
                   size: 26,
@@ -112,8 +114,8 @@ class Profilepage extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 40),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 40),
               child: Text("Try our other Apps!"),
             )
           ]),
