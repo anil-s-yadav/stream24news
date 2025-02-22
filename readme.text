@@ -1,0 +1,22 @@
+ final List<String> _categoriesTitles = [
+    "business",
+    "crime",
+    "entertainment",
+    "food",
+    "health",
+    "sports",
+    "politics",
+    "science",
+    "technology",
+    "education",
+    "lifestyle",
+    "tourism",
+    "world",
+    "environment",
+    "top",
+    "demostic",
+  ];
+
+
+
+  

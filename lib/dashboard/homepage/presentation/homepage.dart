@@ -7,7 +7,8 @@ import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
-import '../../../features/bookmarkPage/bookmark_page.dart';
+import '../../../features/all_categories/all_categories.dart';
+import '../../../features/bookmark/bookmark_page.dart';
 import '../../../features/notification/notification.dart';
 
 class HomePage extends StatefulWidget {
@@ -154,11 +155,19 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               sizedBoxH20,
-              Text(
-                " See all catogeries    >",
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllCategoriesPage()));
+                },
+                child: Text(
+                  " See all catogeries    >",
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                ),
               ),
               sizedBoxH10,
               SizedBox(

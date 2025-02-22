@@ -6,94 +6,131 @@ import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 import '../../features/settings/settings_page.dart';
 
-class Profilepage extends StatelessWidget {
+class Profilepage extends StatefulWidget {
   const Profilepage({super.key});
 
   @override
+  State<Profilepage> createState() => _ProfilepageState();
+}
+
+class _ProfilepageState extends State<Profilepage> {
+  final List<String> _setHomepageList = [
+    "Home",
+    "Live TV",
+    "Articals",
+  ];
+  String _currentSelectedValue = "Home";
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          // title: Text(
-          //   "Best app for LIVE TV and NEWS!",
-          //   style: DefaultTextStyle.of(context).style,
-          // ),
-          actions: [
-            GestureDetector(
-              // onTap: () {
-              //   Navigator.push(context,
-              //       MaterialPageRoute(builder: (context) => SettingsPage()));
-              // },
-              child: const Icon(
-                Icons.share,
-              ),
+      appBar: AppBar(
+        actions: [
+          GestureDetector(
+            // onTap: () {
+            //   Navigator.push(context,
+            //       MaterialPageRoute(builder: (context) => SettingsPage()));
+            // },
+            child: const Icon(
+              Icons.share,
             ),
-            sizedBoxW20,
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingsPage()));
-              },
-              child: const Icon(
-                MyTabIcons.settings,
-              ),
+          ),
+          sizedBoxW20,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SettingsPage()));
+            },
+            child: const Icon(
+              MyTabIcons.settings,
             ),
-            sizedBoxW30,
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Column(children: [
-            Row(
+          ),
+          sizedBoxW30,
+        ],
+      ),
+      body: Column(
+        children: [
+          Row(
+            children: [
+              sizedBoxW15,
+              const CircleAvatar(
+                radius: 50,
+                foregroundImage: AssetImage("lib/assets/images/profile.png"),
+              ),
+              sizedBoxW20,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Anil S. Yadav",
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const Text("anilyadav@gmail.com"),
+                ],
+              )
+            ],
+          ),
+          sizedBoxH20,
+          MyLightContainer(
+            height: MediaQuery.of(context).size.height * 0.05,
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: const Text("Edit Profile"),
+          ),
+          MyLightContainer(
+            height: MediaQuery.of(context).size.height * 0.05,
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: const Text("Rate Us"),
+          ),
+          MyLightContainer(
+            height: MediaQuery.of(context).size.height * 0.05,
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                sizedBoxW15,
-                const CircleAvatar(
-                  radius: 50,
-                  foregroundImage: AssetImage("lib/assets/images/profile.png"),
+                const Text("Select home page"),
+                DropdownButton(
+                  value: _currentSelectedValue,
+                  isDense: true,
+                  onChanged: (newValue) {},
+                  items: _setHomepageList.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                      onTap: () {
+                        setState(() {
+                          _currentSelectedValue = value;
+                        });
+                      },
+                    );
+                  }).toList(),
                 ),
-                sizedBoxW20,
-                Column(
-                  children: [
-                    Text(
-                      "Anil S. Yadav",
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const Text("anilyadav@gmail.com"),
-                  ],
+                Icon(
+                  Icons.info_outlined,
+                  color: Theme.of(context).colorScheme.outline,
                 )
               ],
             ),
-
-            sizedBoxH20,
-            MyLightContainer(
-              height: MediaQuery.of(context).size.height * 0.05,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: Text(
-                "Edit Profile",
-              ),
-            ),
-            MyLightContainer(
-              height: MediaQuery.of(context).size.height * 0.05,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: Text(
-                "Rate Us",
-              ),
-            ),
-            sizedBoxH10,
-            Divider(
-              indent: 10,
-              endIndent: 10,
-            ),
-            sizedBoxH20,
-            Image.asset(
+          ),
+          sizedBoxH10,
+          const Divider(
+            indent: 10,
+            endIndent: 10,
+          ),
+          Spacer(),
+          const Text(
+            "This app is free to use. You can support the developer by",
+            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 10),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(11),
+            child: Image.asset(
               'lib/assets/images/buymeacopy.png',
-              scale: 8,
+              scale: 10,
             ),
-            // const Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 40),
-            //   child: Text("Try our other Apps!"),
-            // )
-          ]),
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }
