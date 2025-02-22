@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stream24news/features/notification_settings/notification_settings.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
+import 'package:stream24news/utils/theme/theme_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -11,9 +13,9 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool darkSwitchToggle = false;
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -94,18 +96,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SwitchListTile(
-                  title: const Text("Dark Mode",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  secondary: const Icon(
-                    Icons.remove_red_eye_outlined,
-                    size: 26,
-                  ),
-                  value: darkSwitchToggle,
-                  onChanged: (bool value) {
-                    setState(() {
-                      darkSwitchToggle = value;
-                    });
-                  }),
+                title: Text(
+                  'Dark Mode',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                secondary: const Icon(
+                  Icons.remove_red_eye_outlined,
+                  size: 26,
+                ),
+                value:
+                    themeProvider.isDarkMode(context), //  Fixed: Uses context
+                onChanged: (bool value) {
+                  themeProvider.toggleTheme(value);
+                },
+              ),
               sizedBoxH10,
               ListTile(
                 leading: Text(
