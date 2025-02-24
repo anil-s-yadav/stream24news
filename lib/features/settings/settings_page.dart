@@ -96,9 +96,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SwitchListTile(
-                title: Text(
+                title: const Text(
                   'Dark Mode',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 secondary: const Icon(
                   Icons.remove_red_eye_outlined,
