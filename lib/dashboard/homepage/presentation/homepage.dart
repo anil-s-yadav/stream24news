@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   children: [
                     sizedBoxW5,
-                    Lottie.asset('lib/assets/lottie_json/livetv.json',
+                    Lottie.asset('lib/assets/lottie_json/livetv_title.json',
                         animate: false, height: 15),
                     const Spacer(),
                     Padding(

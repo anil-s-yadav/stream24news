@@ -30,17 +30,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         title: "Live TV Access",
         discription:
             "Stream 100+ live news channels anytime, any language anywhere—stay ahead of the headlines.",
-        image: "lib/assets/images/livetv.json"),
+        image: "lib/assets/lottie_json/livetv.json"),
     OnboardingData(
         title: "Personalized News Feed",
         discription:
             "News that matters to you!. Follow your favorite topics and get a feed tailored to your interests.",
-        image: "lib/assets/images/personalized.json"),
+        image: "lib/assets/lottie_json/personalized.json"),
     OnboardingData(
         title: "Reading Comfort",
         discription:
             "Read your way!. Choose themes and colors that suit your eyes for a comfortable reading experience.",
-        image: "lib/assets/images/personalized.jpg"),
+        image: "lib/assets/lottie_json/comfort.json"),
   ];
 
   @override
@@ -159,7 +159,7 @@ class OnboardingData {
 class OnboardingPage extends StatelessWidget {
   final OnboardingData data;
   const OnboardingPage({super.key, required this.data});
-  final String lottieimage = "lib/assets/lottie_json/scrollphone.json";
+//  final String lottieimage = "lib/assets/lottie_json/scrollphone.json";
 
   @override
   Widget build(BuildContext context) {
@@ -169,14 +169,17 @@ class OnboardingPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          data.image == lottieimage
-              ? Lottie.asset(
-                  data.image,
-                )
-              : Image.asset(
-                  data.image,
-                  scale: 5,
-                ),
+          Lottie.asset(
+            data.image,
+          ),
+          // data.image == lottieimage
+          //     ? Lottie.asset(
+          //         data.image,
+          //       )
+          //     : Image.asset(
+          //         data.image,
+          //         scale: 5,
+          //       ),
           sizedBoxH30,
           Text(
             data.title,
