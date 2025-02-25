@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:stream24news/utils/componants/my_widgets.dart';
+import 'package:stream24news/auth/presentation/forgot_password.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
-import '../../utils/componants/bottom_navbar.dart';
+import '../../utils/componants/my_widgets.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,76 +12,132 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool? checkBoxValue = true;
+  bool passwordVisibility = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true, // Ensures keyboard doesn’t overflow UI
+      appBar: AppBar(),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.05,
-            vertical: MediaQuery.of(context).size.height * 0.02,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                GestureDetector(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Text(
+                  "Welcome back 👋",
+                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                        fontStyle: FontStyle.italic,
+                      ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                child: Text(
+                  "Please enter your email and password to sign in",
+                  style: TextStyle(color: Colors.black54, fontSize: 17),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              sizedBoxH30(context),
+              Text("Email", style: Theme.of(context).textTheme.titleSmall),
+              TextField(
+                keyboardType: TextInputType.emailAddress,
+              ),
+              sizedBoxH30(context),
+              Text("Password", style: Theme.of(context).textTheme.titleSmall),
+              TextFormField(
+                decoration: InputDecoration(
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        passwordVisibility = !passwordVisibility;
+                      });
+                    },
+                    child: Icon(
+                      passwordVisibility
+                          ? Icons.visibility_off
+                          : Icons.remove_red_eye,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+                obscureText: passwordVisibility,
+              ),
+              sizedBoxH10(context),
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Checkbox(
+                    value: checkBoxValue,
+                    onChanged: (newValue) {
+                      setState(() => checkBoxValue = newValue);
+                    },
+                  ),
+                  const Text("I agree to ", style: TextStyle(fontSize: 12)),
+                  const Text("Privacy Policy. ",
+                      style: TextStyle(fontSize: 12)),
+                  const Text("Click here to read!",
+                      style: TextStyle(fontSize: 12)),
+                ],
+              ),
+              sizedBoxH20(context),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.height * 0.02),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: const Text.rich(
+                    TextSpan(
+                      text: 'Don\'t have an account?  ',
+                      style: TextStyle(fontSize: 15),
+                      children: [
+                        TextSpan(
+                          text: 'Sign up',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              sizedBoxH20(context),
+              SizedBox(
+                width: double.infinity,
+                height: 70,
+                child: PrimaryButton(
+                  textWidget: const Text(
+                    "Sign in",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+              sizedBoxH15(context),
+              Center(
+                child: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => BottomNavbar()));
+                            builder: (context) => ForgotPassword()));
                   },
-                  child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      child: Image.asset("lib/assets/images/login.png")),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  child: Text(
-                    "Let's you in",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineLarge!
-                        .copyWith(color: Theme.of(context).colorScheme.primary),
+                  child: const Text(
+                    'Forgot password?',
+                    style: TextStyle(fontSize: 18, color: Colors.blue),
                   ),
                 ),
-                loginOption("lib/assets/images/google_login.png",
-                    "Continue with Google"),
-                loginOption("lib/assets/images/facebook_login.png",
-                    "Continue with Facebook"),
-                loginOption(
-                    "lib/assets/images/apple_login.png", "Continue with Apple"),
-                loginOption("lib/assets/images/x_login.png",
-                    "Continue with  X (Twitter)"),
-                sizedBoxH30(context),
-                SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.08,
-                    child: PrimaryButton(
-                        textWidget: Text("Sign in with password"),
-                        onPressed: () {})),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
-  }
-
-  Widget loginOption(String icon, String title) {
-    return Container(
-        margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: Colors.black12)),
-        child: Center(
-          child: ListTile(
-            leading: Image.asset(icon, scale: 2),
-            title: Text(title),
-          ),
-        ));
   }
 }
