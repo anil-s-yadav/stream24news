@@ -25,7 +25,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
         padding: const EdgeInsets.all(5),
         child: Column(
           children: [
-            sizedBoxH15,
+            sizedBoxH15(context),
             SwitchListTile(
                 title: Text(
                   "Allow all notifications",
@@ -45,7 +45,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
               endIndent: 10,
               indent: 10,
             ),
-            sizedBoxH20,
+            sizedBoxH20(context),
             switchUi(
               "Breaking news notifications",
               breakingNewsSwitch,
@@ -82,7 +82,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                 });
               },
             ),
-            sizedBoxH30,
+            sizedBoxH30(context),
             TersoryButton(
                 text: "reset all settings!",
                 onPressed: () {

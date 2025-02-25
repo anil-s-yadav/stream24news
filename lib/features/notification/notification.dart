@@ -32,7 +32,7 @@ class NotificationPage extends StatelessWidget {
                           builder: (context) => const NotificationSettings()));
                 },
                 child: const Icon(MyTabIcons.settings, size: 20)),
-            sizedBoxW20,
+            sizedBoxW20(context),
           ],
         ),
         body: TabBarView(
@@ -86,12 +86,12 @@ class NotificationPage extends StatelessWidget {
             "lib/assets/images/empty.png",
             scale: 14,
           ),
-          sizedBoxH20,
+          sizedBoxH20(context),
           Text(
             "Empty",
             style: Theme.of(context).textTheme.headlineMedium,
           ),
-          sizedBoxH10,
+          sizedBoxH10(context),
           const Text(
             "You have not saved anything to the collection!",
             style: TextStyle(fontStyle: FontStyle.italic),

@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: Row(
                   children: [
-                    sizedBoxW5,
+                    sizedBoxW5(context),
                     Lottie.asset('lib/assets/lottie_json/livetv_title.json',
                         animate: false, height: 15),
                     const Spacer(),
@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     }),
               ),
-              sizedBoxH5,
+              sizedBoxH5(context),
               Container(
                 margin: const EdgeInsets.all(5),
                 width: double.infinity,
@@ -136,25 +136,25 @@ class _HomePageState extends State<HomePage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
-              sizedBoxH10,
+              sizedBoxH10(context),
               titleheading(context, "Trending", "See All"),
-              sizedBoxH10,
+              sizedBoxH10(context),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
                     trendingPosts(context),
-                    sizedBoxW10,
+                    sizedBoxW10(context),
                     trendingPosts(context),
-                    sizedBoxW10,
+                    sizedBoxW10(context),
                     trendingPosts(context),
-                    sizedBoxW10,
+                    sizedBoxW10(context),
                     trendingPosts(context),
-                    sizedBoxW10,
+                    sizedBoxW10(context),
                   ],
                 ),
               ),
-              sizedBoxH20,
+              sizedBoxH20(context),
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -169,7 +169,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                 ),
               ),
-              sizedBoxH10,
+              sizedBoxH10(context),
               SizedBox(
                 width: double.infinity,
                 height: 32,
@@ -210,7 +210,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     }),
               ),
-              sizedBoxH20,
+              sizedBoxH20(context),
               titleheading(context, "Recomanded", "See All"),
               recomendedPosts(context),
               recomendedPosts(context),
@@ -230,7 +230,7 @@ class _HomePageState extends State<HomePage> {
               ),
               recomendedPosts(context),
               recomendedPosts(context),
-              sizedBoxH20,
+              sizedBoxH20(context),
               GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -239,14 +239,14 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => const BookmarkPage()));
                   },
                   child: titleheading(context, "Saved", "See All ")),
-              sizedBoxH5,
+              sizedBoxH5(context),
               Row(
                 children: [
                   savedPosts(context),
                   savedPosts(context),
                 ],
               ),
-              sizedBoxH20,
+              sizedBoxH20(context),
               Container(
                 margin: const EdgeInsets.all(5),
                 width: double.infinity,
@@ -261,14 +261,14 @@ class _HomePageState extends State<HomePage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
-              sizedBoxH20,
+              sizedBoxH20(context),
               GestureDetector(
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => LiveTvPage()));
                   },
                   child: titleheading(context, "Live channels", "See All ")),
-              sizedBoxH5,
+              sizedBoxH5(context),
               GridView.count(
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: 3,
@@ -295,7 +295,7 @@ class _HomePageState extends State<HomePage> {
                               "lib/assets/images/profile.png",
                               scale: 1.5,
                             ),
-                            sizedBoxH5,
+                            sizedBoxH5(context),
                             Text(
                               maxLines: 1,
                               "Channel Name",
@@ -308,7 +308,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
-              sizedBoxH5,
+              sizedBoxH5(context),
               Container(
                 margin: const EdgeInsets.all(5),
                 width: double.infinity,
@@ -323,7 +323,7 @@ class _HomePageState extends State<HomePage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
-              sizedBoxH15,
+              sizedBoxH15(context),
             ],
           ),
         ),
@@ -346,29 +346,29 @@ class _HomePageState extends State<HomePage> {
                   fit: BoxFit.fill,
                 ),
               ),
-              sizedBoxH5,
+              sizedBoxH5(context),
               Padding(
                 padding: const EdgeInsets.only(left: 7),
                 child: Text(
                     style: Theme.of(context).textTheme.labelMedium,
                     "You should know how to make web requests in your chosen programming language"),
               ),
-              sizedBoxH5,
+              sizedBoxH5(context),
               Row(
                 //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  sizedBoxW5,
+                  sizedBoxW5(context),
                   Image.asset(
                     "lib/assets/images/profile.png",
                     scale: 7,
                   ),
-                  sizedBoxW5,
+                  sizedBoxW5(context),
                   const Text(
                     "Anil Yadav",
                     style: TextStyle(fontSize: 10),
                     softWrap: true,
                   ),
-                  sizedBoxW5,
+                  sizedBoxW5(context),
                   const Text(
                     "1 day ago",
                     softWrap: true,
@@ -413,13 +413,13 @@ class _HomePageState extends State<HomePage> {
                 "lib/assets/images/profile.png",
                 scale: 9,
               ),
-              sizedBoxW5,
+              sizedBoxW5(context),
               const Text(
                 "Anil Yadav",
                 style: TextStyle(fontSize: 10),
                 softWrap: true,
               ),
-              sizedBoxW5,
+              sizedBoxW5(context),
               const Text(
                 "1 day ago",
                 softWrap: true,
@@ -474,18 +474,18 @@ class _HomePageState extends State<HomePage> {
           ),
           Row(
             children: [
-              sizedBoxW15,
+              sizedBoxW15(context),
               Image.asset(
                 "lib/assets/images/profile.png",
                 scale: 9,
               ),
-              sizedBoxW5,
+              sizedBoxW5(context),
               const Text(
                 "Anil Yadav",
                 style: TextStyle(fontSize: 10),
                 softWrap: true,
               ),
-              sizedBoxW5,
+              sizedBoxW5(context),
               const Text(
                 "1 day ago",
                 softWrap: true,

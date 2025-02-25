@@ -26,7 +26,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
                     MyTabIcons.searchh,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  sizedBoxW5
+                  sizedBoxW5(context)
                 ],
               )
             : RichText(
@@ -56,11 +56,11 @@ class _LiveTvPageState extends State<LiveTvPage> {
               child: Icon(
                 isSeachVisible ? Icons.cancel_outlined : MyTabIcons.searchh,
               )),
-          sizedBoxW15,
+          sizedBoxW15(context),
           GestureDetector(
               onTap: () => myBottomSheet(context),
               child: const Icon(MyTabIcons.tabview)),
-          sizedBoxW20
+          sizedBoxW20(context)
         ],
       ),
       body: Padding(
@@ -82,7 +82,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
-              sizedBoxH15,
+              sizedBoxH15(context),
               GridView.count(
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: 3,
@@ -109,7 +109,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
                               "lib/assets/images/profile.png",
                               scale: 1.5,
                             ),
-                            sizedBoxH5,
+                            sizedBoxH5(context),
                             Text(
                               maxLines: 1,
                               "Channel Name",
@@ -185,7 +185,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
                         ),
                       ],
                     ),
-                    sizedBoxW10,
+                    sizedBoxW10(context),
                     Wrap(
                       spacing: 15,
                       runSpacing: 10,
@@ -196,15 +196,15 @@ class _LiveTvPageState extends State<LiveTvPage> {
                         SecondaryButton(text: "Oldest First", onPressed: () {}),
                       ],
                     ),
-                    sizedBoxH20,
+                    sizedBoxH20(context),
                     const Divider(),
-                    sizedBoxW20,
+                    sizedBoxW20(context),
                     // Filter by Section
                     Text(
                       "Filter by",
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
-                    sizedBoxH10,
+                    sizedBoxH10(context),
 
                     // List of Filters
                     ListView.builder(

@@ -44,7 +44,7 @@ class Newspage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              sizedBoxH5,
+              sizedBoxH5(context),
               Row(
                 children: [
                   Text(
@@ -57,7 +57,7 @@ class Newspage extends StatelessWidget {
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.tertiary),
                   ),
-                  sizedBoxW15,
+                  sizedBoxW15(context),
                   const Text(
                     "Apply",
                     style: TextStyle(
@@ -66,21 +66,21 @@ class Newspage extends StatelessWidget {
                   ),
                 ],
               ),
-              sizedBoxH5,
+              sizedBoxH5(context),
               Wrap(spacing: 15, children: [
                 SecondaryButton(text: "A - Z", onPressed: () {}),
                 SecondaryButton(text: "Z - A", onPressed: () {}),
                 SecondaryButton(text: "Newest First", onPressed: () {}),
                 SecondaryButton(text: "Oldest First", onPressed: () {}),
               ]),
-              sizedBoxH10,
+              sizedBoxH10(context),
               const Divider(),
-              sizedBoxH20,
+              sizedBoxH20(context),
               Text(
                 "Filter by",
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              sizedBoxH5,
+              sizedBoxH5(context),
             ],
           ),
         ),

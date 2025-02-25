@@ -179,7 +179,7 @@ class OnboardingPage extends StatelessWidget {
               data.image,
             ),
           ),
-          sizedBoxH10,
+          sizedBoxH10(context),
           Text(
             data.title,
             style: Theme.of(context).textTheme.headlineMedium!.copyWith(
@@ -189,7 +189,7 @@ class OnboardingPage extends StatelessWidget {
             // TextStyle(
             //    ),
           ),
-          sizedBoxH20,
+          sizedBoxH20(context),
           Text(
             data.discription,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(

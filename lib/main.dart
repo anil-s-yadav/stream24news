@@ -2,8 +2,9 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stream24news/utils/theme/theme_provider.dart';
-import 'onboarding_screen/onboarding.dart';
-import 'utils/componants/bottom_navbar.dart';
+// import 'onboarding_screen/onboarding.dart';
+// import 'utils/componants/bottom_navbar.dart';
+import 'auth/presentation/login_page.dart';
 import 'utils/theme/theme.dart';
 
 Future<void> main() async {
@@ -33,7 +34,9 @@ class MyApp extends StatelessWidget {
       darkTheme: MaterialTheme(textTheme).dark(),
       themeMode: themeProvider.themeMode,
       //  home: const BottomNavbar(),
-      home: const OnboardingScreen(),
+      // home: const OnboardingScreen(),
+      home: const LoginPage(),
     );
   }
 }
+// https://111.90.159.132/romance/365-days/video/#download

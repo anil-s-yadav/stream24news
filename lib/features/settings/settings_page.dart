@@ -110,7 +110,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   themeProvider.toggleTheme(value);
                 },
               ),
-              sizedBoxH10,
+              sizedBoxH10(context),
               ListTile(
                 leading: Text(
                   "About",
@@ -174,7 +174,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       color: Theme.of(context).colorScheme.error,
                     )),
               ),
-              sizedBoxH5,
+              sizedBoxH5(context),
               Container(
                 margin:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -190,7 +190,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
-              sizedBoxH15,
+              sizedBoxH15(context),
             ],
           ),
         ));

@@ -34,7 +34,7 @@ class _ProfilepageState extends State<Profilepage> {
               Icons.share,
             ),
           ),
-          sizedBoxW20,
+          sizedBoxW20(context),
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -46,19 +46,19 @@ class _ProfilepageState extends State<Profilepage> {
               MyTabIcons.settings,
             ),
           ),
-          sizedBoxW30,
+          sizedBoxW30(context),
         ],
       ),
       body: Column(
         children: [
           Row(
             children: [
-              sizedBoxW15,
+              sizedBoxW15(context),
               const CircleAvatar(
                 radius: 50,
                 foregroundImage: AssetImage("lib/assets/images/profile.png"),
               ),
-              sizedBoxW20,
+              sizedBoxW20(context),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -71,7 +71,7 @@ class _ProfilepageState extends State<Profilepage> {
               )
             ],
           ),
-          sizedBoxH20,
+          sizedBoxH20(context),
           MyLightContainer(
             height: MediaQuery.of(context).size.height * 0.05,
             width: MediaQuery.of(context).size.width * 0.9,
@@ -112,7 +112,7 @@ class _ProfilepageState extends State<Profilepage> {
               ],
             ),
           ),
-          sizedBoxH10,
+          sizedBoxH10(context),
           const Divider(
             indent: 10,
             endIndent: 10,
