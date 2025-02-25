@@ -190,10 +190,14 @@ class _LiveTvPageState extends State<LiveTvPage> {
                       spacing: 15,
                       runSpacing: 10,
                       children: [
-                        SecondaryButton(text: "A - Z", onPressed: () {}),
-                        SecondaryButton(text: "Z - A", onPressed: () {}),
-                        SecondaryButton(text: "Newest First", onPressed: () {}),
-                        SecondaryButton(text: "Oldest First", onPressed: () {}),
+                        SecondaryButton(
+                            textWidget: Text("A - Z"), onPressed: () {}),
+                        SecondaryButton(
+                            textWidget: Text("Z - A"), onPressed: () {}),
+                        SecondaryButton(
+                            textWidget: Text("Newest First"), onPressed: () {}),
+                        SecondaryButton(
+                            textWidget: Text("Oldest First"), onPressed: () {}),
                       ],
                     ),
                     sizedBoxH20(context),

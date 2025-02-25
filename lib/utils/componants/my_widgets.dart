@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {
-  const PrimaryButton({super.key, required this.text, required this.onPressed});
-  final String text;
+  const PrimaryButton(
+      {super.key, required this.textWidget, required this.onPressed});
+  final Widget textWidget;
   final Function()? onPressed;
 
   @override
@@ -12,15 +13,15 @@ class PrimaryButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Theme.of(context).colorScheme.onPrimary),
-      child: Text(text),
+      child: textWidget,
     );
   }
 }
 
 class SecondaryButton extends StatelessWidget {
   const SecondaryButton(
-      {super.key, required this.text, required this.onPressed});
-  final String text;
+      {super.key, required this.textWidget, required this.onPressed});
+  final Widget textWidget;
   final Function()? onPressed;
 
   @override
@@ -31,14 +32,15 @@ class SecondaryButton extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.surface,
         foregroundColor: Theme.of(context).colorScheme.secondary,
       ),
-      child: Text(text),
+      child: textWidget,
     );
   }
 }
 
 class TersoryButton extends StatelessWidget {
-  const TersoryButton({super.key, required this.text, required this.onPressed});
-  final String text;
+  const TersoryButton(
+      {super.key, required this.textWidget, required this.onPressed});
+  final Widget textWidget;
   final Function()? onPressed;
 
   @override
@@ -48,7 +50,7 @@ class TersoryButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         elevation: 0.1,
       ),
-      child: Text(text),
+      child: textWidget,
     );
   }
 }

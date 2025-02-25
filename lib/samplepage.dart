@@ -16,9 +16,9 @@ class Samplepage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Center(
           child: Column(children: [
-            PrimaryButton(text: "Follow", onPressed: () {}),
-            SecondaryButton(text: "Follow", onPressed: () {}),
-            TersoryButton(text: "Follow", onPressed: () {}),
+            PrimaryButton(textWidget: const Text("Follow"), onPressed: () {}),
+            SecondaryButton(textWidget: const Text("Follow"), onPressed: () {}),
+            TersoryButton(textWidget: const Text("Follow"), onPressed: () {}),
             Icon(
               MyTabIcons.home_button_fill,
               color: Theme.of(context).colorScheme.primary,

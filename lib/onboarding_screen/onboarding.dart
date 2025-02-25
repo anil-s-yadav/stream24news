@@ -112,7 +112,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           height: MediaQuery.of(context).size.height * 0.08,
                           width: MediaQuery.of(context).size.width * 0.45,
                           child: TersoryButton(
-                              text: "Back",
+                              textWidget: Text("Back"),
                               onPressed: () {
                                 _pageController.previousPage(
                                     duration: Duration(milliseconds: 300),
@@ -123,7 +123,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         height: MediaQuery.of(context).size.height * 0.08,
                         width: MediaQuery.of(context).size.width * 0.45,
                         child: PrimaryButton(
-                            text: _currentPage != 4 ? "Next" : "Get Started",
+                            textWidget: Text(
+                                _currentPage != 4 ? "Next" : "Get Started"),
                             onPressed: () {
                               if (_currentPage == 4) {
                                 Navigator.pushReplacement(

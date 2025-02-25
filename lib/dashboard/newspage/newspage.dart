@@ -13,7 +13,7 @@ class Newspage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TersoryButton(
-                text: "My Button",
+                textWidget: const Text("My Button"),
                 onPressed: () {
                   ScaffoldMessenger.of(context)
                       .showSnackBar(const SnackBar(content: Text("My Button")));
@@ -68,10 +68,14 @@ class Newspage extends StatelessWidget {
               ),
               sizedBoxH5(context),
               Wrap(spacing: 15, children: [
-                SecondaryButton(text: "A - Z", onPressed: () {}),
-                SecondaryButton(text: "Z - A", onPressed: () {}),
-                SecondaryButton(text: "Newest First", onPressed: () {}),
-                SecondaryButton(text: "Oldest First", onPressed: () {}),
+                SecondaryButton(
+                    textWidget: const Text("A - Z"), onPressed: () {}),
+                SecondaryButton(
+                    textWidget: const Text("Z - A"), onPressed: () {}),
+                SecondaryButton(
+                    textWidget: const Text("Newest First"), onPressed: () {}),
+                SecondaryButton(
+                    textWidget: const Text("Oldest First"), onPressed: () {}),
               ]),
               sizedBoxH10(context),
               const Divider(),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
+import '../../utils/componants/bottom_navbar.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -19,39 +21,50 @@ class _LoginPageState extends State<LoginPage> {
             horizontal: MediaQuery.of(context).size.width * 0.05,
             vertical: MediaQuery.of(context).size.height * 0.02,
           ),
-          child: Column(
-            children: [
-              SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  child: Image.asset("lib/assets/images/login.png")),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.02,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BottomNavbar()));
+                  },
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      child: Image.asset("lib/assets/images/login.png")),
                 ),
-                child: Text(
-                  "Let's you in",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineLarge!
-                      .copyWith(color: Theme.of(context).colorScheme.primary),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  child: Text(
+                    "Let's you in",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineLarge!
+                        .copyWith(color: Theme.of(context).colorScheme.primary),
+                  ),
                 ),
-              ),
-              loginOption(
-                  "lib/assets/images/google_login.png", "Continue with Google"),
-              loginOption("lib/assets/images/facebook_login.png",
-                  "Continue with Facebook"),
-              loginOption(
-                  "lib/assets/images/apple_login.png", "Continue with Apple"),
-              loginOption("lib/assets/images/x_login.png",
-                  "Continue with  X (Twitter)"),
-              sizedBoxH30(context),
-              SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  child: PrimaryButton(
-                      text: "Sign in with password", onPressed: () {}))
-            ],
+                loginOption("lib/assets/images/google_login.png",
+                    "Continue with Google"),
+                loginOption("lib/assets/images/facebook_login.png",
+                    "Continue with Facebook"),
+                loginOption(
+                    "lib/assets/images/apple_login.png", "Continue with Apple"),
+                loginOption("lib/assets/images/x_login.png",
+                    "Continue with  X (Twitter)"),
+                sizedBoxH30(context),
+                SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    child: PrimaryButton(
+                        textWidget: Text("Sign in with password"),
+                        onPressed: () {})),
+              ],
+            ),
           ),
         ),
       ),

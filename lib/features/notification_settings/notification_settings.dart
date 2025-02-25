@@ -84,7 +84,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
             ),
             sizedBoxH30(context),
             TersoryButton(
-                text: "reset all settings!",
+                textWidget: const Text("reset all settings!"),
                 onPressed: () {
                   setState(() {
                     allNotificationSwitch = true;
