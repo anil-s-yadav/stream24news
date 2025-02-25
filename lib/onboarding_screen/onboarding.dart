@@ -40,21 +40,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         title: "Reading Comfort",
         discription:
             "Read your way!. Choose themes and colors that suit your eyes for a comfortable reading experience.",
-        image: "lib/assets/lottie_json/comfort.json"),
+        image: "lib/assets/lottie_json/test.json"),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            sizedBoxH30,
-            Row(
-              children: [
-                Spacer(),
-                TextButton(
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: Stack(
+            alignment: AlignmentDirectional.topStart,
+            children: [
+              Positioned(
+                top: MediaQuery.of(context).size.height * 0.015,
+                right: MediaQuery.of(context).size.height * 0.02,
+                child: TextButton(
+                    style: TextButton.styleFrom(
+                        elevation: 2,
+                        backgroundColor: Colors.black12.withAlpha(10)),
                     onPressed: () {
                       Navigator.pushReplacement(
                           context,
@@ -62,83 +66,84 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               builder: (context) => const BottomNavbar()));
                     },
                     child: const Text("Skip")),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.67,
-              child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: _pages.length,
-                  onPageChanged: (value) {
-                    setState(() {
-                      _currentPage = value;
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    return OnboardingPage(data: _pages[index]);
-                  }),
-            ),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                      _pages.length,
-                      (index) => AnimatedContainer(
-                            duration: Duration(milliseconds: 300),
-                            margin: EdgeInsets.symmetric(horizontal: 4),
-                            height: 8,
-                            width: _currentPage == index ? 24 : 8,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withAlpha(
-                                        _currentPage == index ? 255 : 200),
-                                borderRadius: BorderRadius.circular(8)),
-                          )),
-                ),
-                sizedBoxH15,
-                SizedBox(
-                  height: 70,
-                  child: Row(
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.55,
+                    child: PageView.builder(
+                        controller: _pageController,
+                        itemCount: _pages.length,
+                        onPageChanged: (value) {
+                          setState(() {
+                            _currentPage = value;
+                          });
+                        },
+                        itemBuilder: (context, index) {
+                          return OnboardingPage(data: _pages[index]);
+                        }),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                        _pages.length,
+                        (index) => AnimatedContainer(
+                              duration: Duration(milliseconds: 300),
+                              margin: EdgeInsets.symmetric(horizontal: 4),
+                              height: 8,
+                              width: _currentPage == index ? 24 : 8,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withAlpha(
+                                          _currentPage == index ? 255 : 200),
+                                  borderRadius: BorderRadius.circular(8)),
+                            )),
+                  ),
+                  Row(
+                    mainAxisAlignment: _currentPage == 0
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.spaceBetween,
                     children: [
                       if (_currentPage > 0)
-                        SecondaryButton(
-                            text: "Back",
-                            onPressed: () {
-                              _pageController.previousPage(
-                                  duration: Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut);
-                            }),
-                      const Spacer(),
-                      _currentPage != 4
-                          ? IconButton(
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.08,
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          child: TersoryButton(
+                              text: "Back",
                               onPressed: () {
+                                _pageController.previousPage(
+                                    duration: Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut);
+                              }),
+                        ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        width: MediaQuery.of(context).size.width * 0.45,
+                        child: PrimaryButton(
+                            text: _currentPage != 4 ? "Next" : "Get Started",
+                            onPressed: () {
+                              if (_currentPage == 4) {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const BottomNavbar()));
+                              } else {
                                 _pageController.nextPage(
                                     duration: Duration(milliseconds: 300),
                                     curve: Curves.easeInOut);
-                              },
-                              icon: Icon(
-                                Icons.arrow_circle_right,
-                                size: 55,
-                                color: Theme.of(context).colorScheme.primary,
-                              ))
-                          : PrimaryButton(
-                              text: "Get Started",
-                              onPressed: () {
-                                // Navigator.pushReplacement(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) =>
-                                //             const BottomNavbar()));
-                              })
+                              }
+                            }),
+                      )
                     ],
                   ),
-                )
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -166,29 +171,31 @@ class OnboardingPage extends StatelessWidget {
     return Scaffold(
       body: Center(
           child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Lottie.asset(
-            data.image,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.4,
+            width: MediaQuery.of(context).size.width,
+            child: Lottie.asset(
+              data.image,
+            ),
           ),
-          // data.image == lottieimage
-          //     ? Lottie.asset(
-          //         data.image,
-          //       )
-          //     : Image.asset(
-          //         data.image,
-          //         scale: 5,
-          //       ),
-          sizedBoxH30,
+          sizedBoxH10,
           Text(
             data.title,
-            style: Theme.of(context).textTheme.headlineMedium,
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                fontSize: MediaQuery.of(context).size.width * 0.05,
+                fontWeight: FontWeight.bold),
+
+            // TextStyle(
+            //    ),
           ),
-          sizedBoxH30,
+          sizedBoxH20,
           Text(
             data.discription,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontStyle: FontStyle.italic,
+                  fontSize: MediaQuery.of(context).size.width * 0.038,
+                ),
             textAlign: TextAlign.center,
           )
         ],
