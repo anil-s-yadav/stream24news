@@ -34,10 +34,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 title: const Divider(),
               ),
-              const ListTile(
-                leading: Icon(
-                  Icons.person_outlined,
-                  size: 35,
+              ListTile(
+                leading: Image.asset(
+                  "lib/assets/images/user_1.png",
+                  scale: 2.4,
                 ),
                 title: Text("Personal Info",
                     style: TextStyle(fontWeight: FontWeight.bold)),

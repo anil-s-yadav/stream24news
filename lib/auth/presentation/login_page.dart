@@ -88,10 +88,10 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
               sizedBoxH30(context),
-              Divider(
+              const Divider(
                 indent: 30,
                 endIndent: 30,
-                color: Theme.of(context).colorScheme.shadow,
+                color: Colors.black12,
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.15,

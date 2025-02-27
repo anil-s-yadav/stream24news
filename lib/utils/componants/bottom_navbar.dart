@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stream24news/dashboard/profile/profilepage.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
-import '../../dashboard/homepage/presentation/homepage.dart';
+import '../../dashboard/homepage/homepage.dart';
 import '../../dashboard/livetvpage/livetvpage.dart';
 import '../../dashboard/newspage/newspage.dart';
 

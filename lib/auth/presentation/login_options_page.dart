@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:stream24news/auth/presentation/login_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
 import '../../utils/componants/bottom_navbar.dart';
-import '../../utils/theme/theme_provider.dart';
 import '../create_account/create_account.dart';
 
 class LoginOptionsPage extends StatefulWidget {
@@ -135,8 +133,9 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
             border: Border.all(color: Theme.of(context).colorScheme.shadow)),
         child: Center(
           child: ListTile(
-            leading: icon == "lib/assets/images/x_login.png" ||
-                    icon == "lib/assets/images/apple_login.png" && isDarkMode
+            leading: icon == "lib/assets/images/x_login.png" &&
+                    icon == "lib/assets/images/apple_login.png" &&
+                    isDarkMode
                 ? ColorFiltered(
                     colorFilter: const ColorFilter.matrix([
                       -1, 0, 0, 0, 255, // Invert Red

@@ -3,7 +3,7 @@ import 'package:lottie/lottie.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
-import '../utils/componants/bottom_navbar.dart';
+import '../auth/presentation/login_options_page.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -63,7 +63,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const BottomNavbar()));
+                              builder: (context) => const LoginOptionsPage()));
                     },
                     child: const Text("Skip")),
               ),
@@ -131,7 +131,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const BottomNavbar()));
+                                            const LoginOptionsPage()));
                               } else {
                                 _pageController.nextPage(
                                     duration: Duration(milliseconds: 300),

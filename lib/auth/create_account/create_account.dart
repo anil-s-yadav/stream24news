@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stream24news/auth/presentation/login_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
-
 import '../../utils/componants/sizedbox.dart';
-import '../presentation/forgot_password.dart';
-import 'select_cuntory.dart';
 import 'select_profile_photo.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -89,10 +86,10 @@ class _CreateAccountState extends State<CreateAccount> {
                 ],
               ),
               sizedBoxH30(context),
-              Divider(
+              const Divider(
                 indent: 30,
                 endIndent: 30,
-                color: Theme.of(context).colorScheme.shadow,
+                color: Colors.black12,
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.15,
