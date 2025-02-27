@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:stream24news/auth/presentation/login_options_page.dart';
 
+import '../../utils/componants/login_success_dialog.dart';
 import '../../utils/componants/my_widgets.dart';
-import '../../utils/componants/sizedbox.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -16,7 +17,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -28,36 +29,50 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     ),
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: Text(
                 "Please enter your email address. We will send you a password reset link. Kindly check your inbox and reset your password.",
-                style: TextStyle(color: Colors.black54, fontSize: 16),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.shadow, fontSize: 16),
               ),
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.1,
             ),
             Text("Email", style: Theme.of(context).textTheme.titleSmall),
-            TextField(
+            const TextField(
               keyboardType: TextInputType.emailAddress,
             ),
-            Spacer(),
+            const Spacer(),
             SizedBox(
               width: double.infinity,
-              height: 70,
+              height: MediaQuery.of(context).size.height * 0.07,
               child: PrimaryButton(
                 textWidget: const Text(
                   "Send link",
                   style: TextStyle(fontSize: 18),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showCustomDialog();
+                },
               ),
             ),
-            sizedBoxH30(context),
           ],
         ),
       ),
     );
+  }
+
+  showCustomDialog() async {
+    showDialog(
+        context: context,
+        builder: (context) => const AlertDialog(
+              scrollable: true,
+              content: LoginSuccessDialog(
+                title: "Mail sent!",
+                desc: "Please check your email and reset password.",
+              ),
+            ));
   }
 }

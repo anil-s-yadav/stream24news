@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:stream24news/utils/theme/theme_provider.dart';
 // import 'onboarding_screen/onboarding.dart';
 // import 'utils/componants/bottom_navbar.dart';
+import 'auth/create_account/select_cuntory.dart';
 import 'auth/presentation/login_options_page.dart';
 import 'utils/theme/theme.dart';
 
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
       //  home: const BottomNavbar(),
       // home: const OnboardingScreen(),
       home: const LoginOptionsPage(),
+      // home: const SelectCuntory(),
     );
   }
 }
-// https://111.90.159.132/romance/365-days/video/#download

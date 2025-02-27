@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:stream24news/auth/presentation/login_options_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
@@ -96,7 +96,11 @@ class _ProfilepageState extends State<Profilepage> {
                   items: _setHomepageList.map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: Text(
+                        value,
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            color: Theme.of(context).colorScheme.shadow),
+                      ),
                       onTap: () {
                         setState(() {
                           _currentSelectedValue = value;
@@ -117,16 +121,24 @@ class _ProfilepageState extends State<Profilepage> {
             indent: 10,
             endIndent: 10,
           ),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginOptionsPage()));
+              },
+              child: Text("Login")),
           Spacer(),
           const Text(
             "This app is free to use. You can support the developer by",
-            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 10),
+            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 11),
           ),
           Padding(
             padding: const EdgeInsets.all(11),
             child: Image.asset(
               'lib/assets/images/buymeacopy.png',
-              scale: 10,
+              scale: 9,
             ),
           ),
         ],

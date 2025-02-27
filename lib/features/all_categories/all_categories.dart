@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'category_select.dart';
+
 class AllCategoriesPage extends StatefulWidget {
   const AllCategoriesPage({super.key});
 
@@ -8,25 +10,7 @@ class AllCategoriesPage extends StatefulWidget {
 }
 
 class _AllCategoriesPageState extends State<AllCategoriesPage> {
-  final List<Map<String, dynamic>> _categories = [
-    {
-      "title": "Travel",
-      "image": "lib/assets/images/military.jpg",
-    },
-    {
-      "title": "Travel",
-      "image": "lib/assets/images/military.jpg",
-    },
-    {
-      "title": "Travel",
-      "image": "lib/assets/images/military.jpg",
-    },
-    {
-      "title": "Travel",
-      "image": "lib/assets/images/military.jpg",
-    },
-  ];
-
+  final List<Map<String, dynamic>> _categoriesList = categories;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +21,7 @@ class _AllCategoriesPageState extends State<AllCategoriesPage> {
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: GridView.builder(
-          itemCount: _categories.length,
+          itemCount: _categoriesList.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             mainAxisSpacing: 12,
@@ -46,7 +30,7 @@ class _AllCategoriesPageState extends State<AllCategoriesPage> {
           ),
           itemBuilder: (context, index) {
             return categoryCardItem(
-              categories: _categories[index],
+              categories: _categoriesList[index],
             );
           },
         ),

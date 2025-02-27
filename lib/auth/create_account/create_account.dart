@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:stream24news/auth/presentation/forgot_password.dart';
-import 'package:stream24news/utils/componants/sizedbox.dart';
+import 'package:stream24news/auth/presentation/login_page.dart';
+import 'package:stream24news/utils/componants/my_widgets.dart';
 
-import '../../utils/componants/login_success_dialog.dart';
-import '../../utils/componants/my_widgets.dart';
-import '../create_account/create_account.dart';
+import '../../utils/componants/sizedbox.dart';
+import '../presentation/forgot_password.dart';
+import 'select_cuntory.dart';
+import 'select_profile_photo.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class CreateAccount extends StatefulWidget {
+  const CreateAccount({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<CreateAccount> createState() => _CreateAccountState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _CreateAccountState extends State<CreateAccount> {
   bool? checkBoxValue = true;
   bool passwordVisibility = true;
 
@@ -30,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Center(
                 child: Text(
-                  "Welcome back 👋",
+                  "Create Account 🧑‍💼",
                   style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                         fontStyle: FontStyle.italic,
                       ),
@@ -48,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               sizedBoxH30(context),
               Text("Email", style: Theme.of(context).textTheme.titleSmall),
-              const TextField(
+              TextField(
                 keyboardType: TextInputType.emailAddress,
               ),
               sizedBoxH30(context),
@@ -96,32 +97,25 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.15,
               ),
-              Center(
+              Padding(
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.height * 0.02),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const CreateAccount()));
+                            builder: (context) => const LoginPage()));
                   },
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const CreateAccount()));
-                    },
-                    child: const Text.rich(
+                  child: const Center(
+                    child: Text.rich(
                       TextSpan(
-                        text: 'Don\'t have an account?  ',
+                        text: 'Already have an account?  ',
                         style: TextStyle(fontSize: 15),
                         children: [
                           TextSpan(
-                            text: 'Sign up',
-                            style: TextStyle(
-                                fontSize: 17,
-                                //fontWeight: FontWeight.bold,
-                                color: Colors.blue),
+                            text: 'Sign in',
+                            style: TextStyle(fontSize: 17, color: Colors.blue),
                           ),
                         ],
                       ),
@@ -129,51 +123,28 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              sizedBoxH20(context),
+              sizedBoxH30(context),
               SizedBox(
                 width: double.infinity,
                 height: 70,
                 child: PrimaryButton(
                   textWidget: const Text(
-                    "Sign in",
+                    "Continue",
                     style: TextStyle(fontSize: 18),
                   ),
                   onPressed: () {
-                    showCustomDialog();
-                  },
-                ),
-              ),
-              sizedBoxH15(context),
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ForgotPassword()));
+                            builder: (context) => const SelectProfilePhoto()));
                   },
-                  child: const Text(
-                    'Forgot password?',
-                    style: TextStyle(fontSize: 17, color: Colors.blue),
-                  ),
                 ),
               ),
+              sizedBoxH20(context),
             ],
           ),
         ),
       ),
     );
-  }
-
-  showCustomDialog() {
-    showDialog(
-        context: context,
-        builder: (context) => const AlertDialog(
-              scrollable: true,
-              content: LoginSuccessDialog(
-                title: "Sign in successful!",
-                desc: "Please wait... \nYou will be directed to the homepage.",
-              ),
-            ));
   }
 }
