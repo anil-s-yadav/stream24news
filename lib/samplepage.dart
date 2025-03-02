@@ -54,3 +54,26 @@ class Samplepage extends StatelessWidget {
     );
   }
 }
+//  child: Container(
+//                           width: 100,
+//                           margin: const EdgeInsets.only(right: 8),
+//                           decoration: BoxDecoration(
+//                               color: selectedIndex != index
+//                                   ? Theme.of(context).colorScheme.surface
+//                                   : Theme.of(context).colorScheme.surfaceTint,
+//                               borderRadius: BorderRadius.circular(10),
+//                               border: Border.all(
+//                                   width: 1,
+//                                   color:
+//                                       Theme.of(context).colorScheme.primary)),
+//                           child: Center(
+//                             child: Text(
+//                               _categories[index]["title"].toString(),
+//                               style: TextStyle(
+//                                 color: selectedIndex != index
+//                                     ? Theme.of(context).colorScheme.secondary
+//                                     : Theme.of(context).colorScheme.surface,
+//                               ),
+//                             ),
+//                           ),
+//                         ),

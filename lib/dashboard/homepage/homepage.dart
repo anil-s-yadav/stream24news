@@ -20,7 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedIndex = -1;
+  //int selectedIndex = -1;
   final List<Map<String, dynamic>> _categories = categories;
 
   @override
@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
               sizedBoxH20(context),
               SizedBox(
                 width: double.infinity,
-                height: 40,
+                height: MediaQuery.of(context).size.height * 0.15,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: _categories.length,
@@ -182,31 +182,11 @@ class _HomePageState extends State<HomePage> {
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            selectedIndex = index;
+                            //  selectedIndex = index;
                           });
                         },
-                        child: Container(
-                          width: 100,
-                          margin: const EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                              color: selectedIndex != index
-                                  ? Theme.of(context).colorScheme.surface
-                                  : Theme.of(context).colorScheme.surfaceTint,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                  width: 1,
-                                  color:
-                                      Theme.of(context).colorScheme.primary)),
-                          child: Center(
-                            child: Text(
-                              _categories[index]["title"].toString(),
-                              style: TextStyle(
-                                color: selectedIndex != index
-                                    ? Theme.of(context).colorScheme.secondary
-                                    : Theme.of(context).colorScheme.surface,
-                              ),
-                            ),
-                          ),
+                        child: categoryCardItem(
+                          categories: _categories[index],
                         ),
                       );
                     }),
@@ -500,6 +480,55 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget categoryCardItem({required Map<String, dynamic> categories}) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.3,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  categories["image"],
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.black.withAlpha(200), Colors.transparent],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  Spacer(),
+                  Center(
+                    child: Text(
+                      categories["title"],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  sizedBoxH5(context),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

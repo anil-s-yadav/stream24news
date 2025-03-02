@@ -1,4 +1,4 @@
-package com.example.stream24news
+package com.legendarysoftware.stream24news
 
 import io.flutter.embedding.android.FlutterActivity
 
