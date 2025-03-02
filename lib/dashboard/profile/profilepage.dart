@@ -121,15 +121,7 @@ class _ProfilepageState extends State<Profilepage> {
             indent: 10,
             endIndent: 10,
           ),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginOptionsPage()));
-              },
-              child: Text("Login")),
-          Spacer(),
+          const Spacer(),
           const Text(
             "This app is free to use. You can support the developer by",
             style: TextStyle(fontStyle: FontStyle.italic, fontSize: 11),

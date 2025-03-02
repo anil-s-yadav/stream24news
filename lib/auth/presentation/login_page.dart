@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:stream24news/auth/presentation/forgot_password.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
+import '../../utils/componants/bottom_navbar.dart';
 import '../../utils/componants/login_success_dialog.dart';
 import '../../utils/componants/my_widgets.dart';
+import '../../utils/services/shared_pref_service.dart';
 import '../create_account/create_account.dart';
 
 class LoginPage extends StatefulWidget {
@@ -165,15 +167,29 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  showCustomDialog() {
+  Future<void> showCustomDialog() async {
     showDialog(
-        context: context,
-        builder: (context) => const AlertDialog(
-              scrollable: true,
-              content: LoginSuccessDialog(
-                title: "Sign in successful!",
-                desc: "Please wait... \nYou will be directed to the homepage.",
-              ),
-            ));
+      context: context,
+      barrierDismissible: false, // Prevent closing before navigation
+      builder: (context) => const AlertDialog(
+        scrollable: true,
+        content: LoginSuccessDialog(
+          title: "Sign in successful!",
+          desc: "Please wait... \nYou will be directed to the homepage.",
+        ),
+      ),
+    );
+
+    final sharedPrefs = SharedPrefService();
+    await sharedPrefs.setBool("is_userlogged_key", true);
+
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const BottomNavbar()),
+      );
+    }
   }
 }

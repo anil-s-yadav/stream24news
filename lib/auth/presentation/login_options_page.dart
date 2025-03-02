@@ -126,31 +126,37 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.010),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: Theme.of(context).colorScheme.shadow)),
-        child: Center(
-          child: ListTile(
-            leading: icon == "lib/assets/images/x_login.png" &&
-                    icon == "lib/assets/images/apple_login.png" &&
-                    isDarkMode
-                ? ColorFiltered(
-                    colorFilter: const ColorFilter.matrix([
-                      -1, 0, 0, 0, 255, // Invert Red
-                      0, -1, 0, 0, 255, // Invert Green
-                      0, 0, -1, 0, 255, // Invert Blue
-                      0, 0, 0, 1, 0, // Preserve Alpha
-                    ]),
-                    child: Image.asset(icon, scale: 2.6),
-                  )
-                : Image.asset(icon, scale: 2.6),
-            title: Text(
-              title,
-              style: TextStyle(fontSize: 14),
-            ),
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.010),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        border: Border.all(color: Theme.of(context).colorScheme.shadow),
+      ),
+      child: Center(
+        child: ListTile(
+          leading: icon == "lib/assets/images/x_login.png" && isDarkMode
+              ? ColorFiltered(
+                  colorFilter: const ColorFilter.matrix([
+                    -1, 0, 0, 0, 255, // Invert Red
+                    0, -1, 0, 0, 255, // Invert Green
+                    0, 0, -1, 0, 255, // Invert Blue
+                    0, 0, 0, 1, 0, // Preserve Alpha
+                  ]),
+                  child: Image.asset(icon, scale: 2.6),
+                )
+              : icon == "lib/assets/images/apple_login.png" && isDarkMode
+                  ? ColorFiltered(
+                      colorFilter:
+                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      child: Image.asset(icon, scale: 2.6),
+                    )
+                  : Image.asset(icon, scale: 2.6),
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 14),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

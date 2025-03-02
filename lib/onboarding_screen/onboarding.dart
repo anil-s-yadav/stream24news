@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
+import 'package:stream24news/utils/services/shared_pref_service.dart';
 
 import '../auth/presentation/login_options_page.dart';
+import '../utils/componants/bottom_navbar.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -15,12 +18,28 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _preloadLottieFiles();
+  }
+
+  void _preloadLottieFiles() {
+    rootBundle.loadString("lib/assets/lottie_json/quicknews.json");
+    rootBundle.loadString("lib/assets/lottie_json/scrollphone.json");
+    rootBundle.loadString("lib/assets/lottie_json/livetv_obs.json");
+    rootBundle.loadString("lib/assets/lottie_json/personalized.json");
+    rootBundle.loadString("lib/assets/lottie_json/darkmode.json");
+  }
+
   final List<OnboardingData> _pages = [
     OnboardingData(
-        title: "Quick News Summaries",
-        discription:
-            "Stay informed in seconds!. Get short, to-the-point news summaries and never miss an update.",
-        image: "lib/assets/lottie_json/test1.json"),
+      title: "Quick News Summaries",
+      discription:
+          "Stay informed in seconds!. Get short, to-the-point news summaries and never miss an update.",
+      image: "lib/assets/lottie_json/quicknews.json",
+    ),
     OnboardingData(
         title: "Scroll & Enjoy!",
         discription:
@@ -30,7 +49,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         title: "Live TV Access",
         discription:
             "Stream 100+ live news channels anytime, any language anywhere—stay ahead of the headlines.",
-        image: "lib/assets/lottie_json/livetv.json"),
+        image: "lib/assets/lottie_json/livetv_obs.json"),
     OnboardingData(
         title: "Personalized News Feed",
         discription:
@@ -40,8 +59,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         title: "Reading Comfort",
         discription:
             "Read your way!. Choose themes and colors that suit your eyes for a comfortable reading experience.",
-        image: "lib/assets/lottie_json/test.json"),
+        image: "lib/assets/lottie_json/darkmode.json"),
   ];
+
+  Future<bool?> onBoadingDone() async {
+    bool? isLogin = false;
+    final sharedPrefs = SharedPrefService();
+    await sharedPrefs.setBool("onBoadingDone_key", true);
+    setState(() {
+      isLogin = sharedPrefs.getBool("is_userlogged_key");
+    });
+    return isLogin;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +88,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     style: TextButton.styleFrom(
                         elevation: 2,
                         backgroundColor: Colors.black12.withAlpha(10)),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginOptionsPage()));
+                    onPressed: () async {
+                      bool? isLogin = await onBoadingDone() ?? false;
+                      if (isLogin == true) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const BottomNavbar()));
+                      } else {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const LoginOptionsPage()));
+                      }
                     },
                     child: const Text("Skip")),
               ),
@@ -112,7 +150,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           height: MediaQuery.of(context).size.height * 0.08,
                           width: MediaQuery.of(context).size.width * 0.45,
                           child: TersoryButton(
-                              textWidget: Text("Back"),
+                              textWidget: const Text(
+                                "Back",
+                                style: TextStyle(fontSize: 20),
+                              ),
                               onPressed: () {
                                 _pageController.previousPage(
                                     duration: Duration(milliseconds: 300),
@@ -124,14 +165,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         width: MediaQuery.of(context).size.width * 0.45,
                         child: PrimaryButton(
                             textWidget: Text(
-                                _currentPage != 4 ? "Next" : "Get Started"),
-                            onPressed: () {
+                              _currentPage != 4 ? "Next" : "Get Started",
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                            onPressed: () async {
                               if (_currentPage == 4) {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginOptionsPage()));
+                                bool? isLogin = await onBoadingDone() ?? false;
+                                if (isLogin == true) {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const BottomNavbar()));
+                                } else {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginOptionsPage()));
+                                }
                               } else {
                                 _pageController.nextPage(
                                     duration: Duration(milliseconds: 300),
@@ -165,42 +217,42 @@ class OnboardingData {
 class OnboardingPage extends StatelessWidget {
   final OnboardingData data;
   const OnboardingPage({super.key, required this.data});
-//  final String lottieimage = "lib/assets/lottie_json/scrollphone.json";
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.4,
-            width: MediaQuery.of(context).size.width,
-            child: Lottie.asset(
-              data.image,
-            ),
+    return Center(
+        child: Column(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.4,
+          width: MediaQuery.of(context).size.width,
+          child: Lottie.asset(
+            data.image,
+            repeat: true,
+            animate: true,
+            fit: BoxFit.contain,
           ),
-          sizedBoxH10(context),
-          Text(
-            data.title,
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                fontSize: MediaQuery.of(context).size.width * 0.05,
-                fontWeight: FontWeight.bold),
+        ),
+        sizedBoxH10(context),
+        Text(
+          data.title,
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+              fontSize: MediaQuery.of(context).size.width * 0.05,
+              fontWeight: FontWeight.bold),
 
-            // TextStyle(
-            //    ),
-          ),
-          sizedBoxH20(context),
-          Text(
-            data.discription,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontStyle: FontStyle.italic,
-                  fontSize: MediaQuery.of(context).size.width * 0.038,
-                ),
-            textAlign: TextAlign.center,
-          )
-        ],
-      )),
-    );
+          // TextStyle(
+          //    ),
+        ),
+        sizedBoxH20(context),
+        Text(
+          data.discription,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                fontStyle: FontStyle.italic,
+                fontSize: MediaQuery.of(context).size.width * 0.038,
+              ),
+          textAlign: TextAlign.center,
+        )
+      ],
+    ));
   }
 }

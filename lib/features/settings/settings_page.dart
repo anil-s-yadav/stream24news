@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stream24news/features/notification_settings/notification_settings.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
+import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import 'package:stream24news/utils/theme/theme_provider.dart';
+
+import '../../auth/presentation/login_options_page.dart';
+import '../../utils/componants/bottom_navbar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -13,6 +17,18 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool? isLogin = true;
+  bool? isBoadingScreenDone = false;
+  final sharedPrefs = SharedPrefService();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      isLogin = sharedPrefs.getBool("is_userlogged_key");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -162,17 +178,30 @@ class _SettingsPageState extends State<SettingsPage> {
                   Icons.arrow_forward_ios_rounded,
                 ),
               ),
-              ListTile(
-                leading: Icon(
-                  Icons.logout_outlined,
-                  size: 26,
-                  color: Theme.of(context).colorScheme.error,
+              GestureDetector(
+                onTap: () {
+                  if (isLogin == true) {
+                    logOut();
+                  } else {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginOptionsPage()),
+                    );
+                  }
+                },
+                child: ListTile(
+                  leading: Icon(
+                    Icons.logout_outlined,
+                    size: 26,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  title: Text(isLogin == true ? "Logout" : "Sign in",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.error,
+                      )),
                 ),
-                title: Text("Logout",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.error,
-                    )),
               ),
               sizedBoxH5(context),
               Container(
@@ -194,5 +223,44 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
         ));
+  }
+
+  void logOut() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Confirm Logout!"),
+        content: const Text("Are you sure you want to log out?"),
+        actions: [
+          TextButton(
+            child: const Text("Cancel"),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: const Text(
+              "Logout",
+              style: TextStyle(color: Colors.red),
+            ),
+            onPressed: () async {
+              Navigator.pop(context);
+
+              // final sharedPrefs = SharedPrefService();
+              await sharedPrefs.setBool("is_userlogged_key", false);
+
+              if (context.mounted) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LoginOptionsPage()),
+                  (route) => false, // Removes all previous routes
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

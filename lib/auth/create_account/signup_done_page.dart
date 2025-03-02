@@ -4,6 +4,7 @@ import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
 import '../../utils/componants/bottom_navbar.dart';
+import '../../utils/services/shared_pref_service.dart';
 
 class SignupDonePage extends StatelessWidget {
   const SignupDonePage({super.key});
@@ -39,11 +40,13 @@ class SignupDonePage extends StatelessWidget {
                   width: double.infinity,
                   height: MediaQuery.of(context).size.height * 0.06,
                   child: PrimaryButton(
-                      textWidget: Text(
+                      textWidget: const Text(
                         "Let\'s Go",
                         style: TextStyle(fontSize: 17),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        final sharedPrefs = SharedPrefService();
+                        await sharedPrefs.setBool("is_userlogged_key", true);
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
