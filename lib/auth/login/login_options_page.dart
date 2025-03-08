@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stream24news/auth/presentation/login_page.dart';
+import 'package:stream24news/auth/login/login_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 

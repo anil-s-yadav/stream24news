@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:stream24news/auth/network/auth_service.dart';
 import 'package:stream24news/features/notification_settings/notification_settings.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import 'package:stream24news/utils/theme/theme_provider.dart';
 
-import '../../auth/presentation/login_options_page.dart';
+import '../../auth/login/login_options_page.dart';
 import '../../utils/componants/bottom_navbar.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -20,6 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool? isLogin = true;
   bool? isBoadingScreenDone = false;
   final sharedPrefs = SharedPrefService();
+  final _myAuth = AuthService();
 
   @override
   void initState() {
@@ -244,9 +246,14 @@ class _SettingsPageState extends State<SettingsPage> {
               style: TextStyle(color: Colors.red),
             ),
             onPressed: () async {
+              try {
+                final user = await _myAuth.signOut();
+              } catch (e) {
+                print("Something went wrong. Please try again.");
+              }
+
               Navigator.pop(context);
 
-              // final sharedPrefs = SharedPrefService();
               await sharedPrefs.setBool("is_userlogged_key", false);
 
               if (context.mounted) {

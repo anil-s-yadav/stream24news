@@ -7,7 +7,7 @@ import 'package:stream24news/utils/theme/theme_provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'auth/presentation/login_options_page.dart';
+import 'auth/login/login_options_page.dart';
 import 'onboarding_screen/onboarding.dart';
 import 'utils/theme/theme.dart';
 
@@ -42,8 +42,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool? isLogin = false;
-  bool? isBoadingScreenDone = false;
+  bool isLogin = false;
+  bool isBoadingScreenDone = false;
 
   @override
   void initState() {
@@ -54,8 +54,8 @@ class _MyAppState extends State<MyApp> {
   void onBoadingDone() async {
     final sharedPrefs = SharedPrefService();
     setState(() {
-      isBoadingScreenDone = sharedPrefs.getBool("onBoadingDone_key");
-      isLogin = sharedPrefs.getBool("is_userlogged_key");
+      isBoadingScreenDone = sharedPrefs.getBool("onBoadingDone_key")!;
+      isLogin = sharedPrefs.getBool("is_userlogged_key")!;
     });
   }
 
@@ -69,10 +69,10 @@ class _MyAppState extends State<MyApp> {
         theme: MaterialTheme(textTheme).light(),
         darkTheme: MaterialTheme(textTheme).dark(),
         themeMode: themeProvider.themeMode,
-        home: isBoadingScreenDone == false
+        home: !isBoadingScreenDone
             ? const OnboardingScreen()
-            : isLogin == false
-                ? const LoginOptionsPage()
-                : const BottomNavbar());
+            : isLogin
+                ? const BottomNavbar()
+                : const LoginOptionsPage());
   }
 }
