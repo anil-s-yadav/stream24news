@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stream24news/auth/presentation/login_options_page.dart';
+import 'package:stream24news/auth/login/login_options_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
+import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 import '../../features/settings/settings_page.dart';
@@ -20,10 +22,28 @@ class _ProfilepageState extends State<Profilepage> {
     "Articals",
   ];
   String _currentSelectedValue = "Home";
+  final user = FirebaseAuth.instance.currentUser;
+  //final user = auth.currentUser;
+  bool isLogin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loginCheck();
+  }
+
+  void loginCheck() async {
+    final sharedPrefs = SharedPrefService();
+    setState(() {
+      isLogin = sharedPrefs.getBool("is_userlogged_key")!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         actions: [
           GestureDetector(
             // onTap: () {
@@ -51,26 +71,51 @@ class _ProfilepageState extends State<Profilepage> {
       ),
       body: Column(
         children: [
-          Row(
-            children: [
-              sizedBoxW15(context),
-              const CircleAvatar(
-                radius: 50,
-                foregroundImage: AssetImage("lib/assets/images/profile.png"),
-              ),
-              sizedBoxW20(context),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Anil S. Yadav",
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const Text("anilyadav@gmail.com"),
-                ],
-              )
-            ],
+          Visibility(
+            visible: isLogin,
+            child: Row(
+              children: [
+                sizedBoxW15(context),
+                const CircleAvatar(
+                  radius: 50,
+                  foregroundImage: AssetImage("lib/assets/images/profile.png"),
+                ),
+                sizedBoxW20(context),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      user!.displayName ?? "User",
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    const Text("anilyadav@gmail.com"),
+                  ],
+                )
+              ],
+            ),
           ),
+          Visibility(
+              visible: !isLogin,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginOptionsPage()),
+                  );
+                },
+                child: MyLightContainer(
+                  height: MediaQuery.of(context).size.height * 0.05,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.red),
+                  ),
+                ),
+              )),
           sizedBoxH20(context),
           MyLightContainer(
             height: MediaQuery.of(context).size.height * 0.05,
