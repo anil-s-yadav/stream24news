@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:stream24news/features/settings/settings_page.dart';
+import 'package:stream24news/utils/services/shared_pref_service.dart';
 
 import '../../utils/componants/my_widgets.dart';
 import '../../utils/componants/sizedbox.dart';
@@ -6,7 +10,8 @@ import 'list_data/country_data.dart';
 import 'select_language.dart';
 
 class SelectCuntory extends StatefulWidget {
-  const SelectCuntory({super.key});
+  final String commingFrom;
+  const SelectCuntory({super.key, required this.commingFrom});
 
   @override
   State<SelectCuntory> createState() => _SelectCuntoryState();
@@ -93,6 +98,7 @@ class _SelectCuntoryState extends State<SelectCuntory> {
                         itemCount: filteredList.length,
                         itemBuilder: (context, index) {
                           final country = filteredList[index];
+
                           return MyLightContainer(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height * 0.08,
@@ -107,13 +113,30 @@ class _SelectCuntoryState extends State<SelectCuntory> {
                               title: Text(country['name']!),
                               subtitle: Text("Code: ${country['code']}"),
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SelectLanguage(),
-                                  ),
-                                );
+                                log(widget.commingFrom);
+                                List<String> nameAndCode = [
+                                  country['flag']!,
+                                  country['name']!,
+                                  country['code']!
+                                ];
+                                SharedPrefService().setCounty(nameAndCode);
+                                if (widget.commingFrom == 'settings') {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SettingsPage()));
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SelectLanguage(
+                                        commingFrom: '',
+                                      ),
+                                    ),
+                                  );
+                                }
                               },
                             ),
                           );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/auth/login/login_page.dart';
-import 'package:stream24news/auth/network/auth_service.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import '../../utils/componants/sizedbox.dart';
 import 'select_profile_photo.dart';
@@ -13,22 +14,28 @@ class CreateAccount extends StatefulWidget {
 }
 
 class _CreateAccountState extends State<CreateAccount> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  final _myAuth = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool passwordVisibility = true;
+  bool confirmPasswordVisibility = true;
+  bool isLoading = false;
+
+  String name = '';
+  String email = '';
+  String password = '';
+  String confirmPassword = '';
+
   String? validateEmail(String? email) {
     RegExp emailRegEx = RegExp(r'^[\w\.-]+@[\w-]+\.\w{2,3}(\.\w{2,3})?$');
-    final isEmailValid = emailRegEx.hasMatch(email ?? "");
-    if (!isEmailValid) return "please  Enter a valid email";
+    if (email == null || !emailRegEx.hasMatch(email)) {
+      return "Please enter a valid email";
+    }
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, // Ensures keyboard doesn’t overflow UI
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -47,7 +54,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                  padding: const EdgeInsets.all(10),
                   child: Text(
                     "Please enter your email and password to sign in",
                     style: TextStyle(
@@ -57,68 +64,28 @@ class _CreateAccountState extends State<CreateAccount> {
                   ),
                 ),
                 sizedBoxH30(context),
-                Text("Email", style: Theme.of(context).textTheme.titleSmall),
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: validateEmail,
-                ),
+                inputField("Name", "Enter name", (val) => name = val, name),
+                inputField("Email", "Enter email", (val) => email = val, email,
+                    isEmail: true),
+                inputField("Password", "Enter password",
+                    (val) => password = val, password,
+                    isPassword: true),
+                inputField("Confirm Password", "Confirm password",
+                    (val) => confirmPassword = val, confirmPassword,
+                    isConfirmPassword: true),
                 sizedBoxH30(context),
-                Text("Password", style: Theme.of(context).textTheme.titleSmall),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          passwordVisibility = !passwordVisibility;
-                        });
-                      },
-                      child: Icon(
-                        passwordVisibility
-                            ? Icons.visibility_off
-                            : Icons.remove_red_eye,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                  obscureText: passwordVisibility,
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 8) {
-                      return 'At least 8 characters long.';
-                    }
-                    return null;
-                  },
-                ),
-                sizedBoxH10(context),
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    const Text(
-                        "By creating account, you agree to Stream24 News ",
-                        style: TextStyle(fontSize: 12)),
-                    const Text("Terms & Policy. ",
-                        style: TextStyle(fontSize: 12, color: Colors.blue)),
-                  ],
-                ),
                 sizedBoxH30(context),
-                const Divider(
-                  indent: 30,
-                  endIndent: 30,
-                  color: Colors.black12,
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.15,
-                ),
+                const Divider(indent: 30, endIndent: 30, color: Colors.black12),
                 Padding(
                   padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.height * 0.02),
                   child: GestureDetector(
                     onTap: () {
                       Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage()),
+                      );
                     },
                     child: const Center(
                       child: Text.rich(
@@ -146,18 +113,36 @@ class _CreateAccountState extends State<CreateAccount> {
                       "Continue",
                       style: TextStyle(fontSize: 18),
                     ),
-                    onPressed: _createAccoumt,
-                    // () {
-                    //   _createAccoumt;
-                    //   // Navigator.pushReplacement(
-                    //   //     context,
-                    //   //     MaterialPageRoute(
-                    //   //         builder: (context) =>
-                    //   //             const SelectProfilePhoto()));
-                    // },
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
+
+                        signUp();
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => const SelectProfilePhoto()),
+                        // );
+                      }
+                    },
                   ),
                 ),
-                sizedBoxH20(context),
+                sizedBoxH30(context),
+                Center(
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      const Text(
+                        "By creating an account, you agree to our ",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      const Text(
+                        "Terms & Policy.",
+                        style: TextStyle(fontSize: 12, color: Colors.blue),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -166,22 +151,119 @@ class _CreateAccountState extends State<CreateAccount> {
     );
   }
 
-  _createAccoumt() async {
+  Widget inputField(
+    String title,
+    String hint,
+    Function(String) onSaved,
+    String initialValue, {
+    bool isEmail = false,
+    bool isPassword = false,
+    bool isConfirmPassword = false,
+  }) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Material(
+          elevation: 8,
+          borderRadius: BorderRadius.circular(30.0),
+          shadowColor: Colors.black26,
+          child: TextFormField(
+            initialValue: initialValue,
+            keyboardType:
+                isEmail ? TextInputType.emailAddress : TextInputType.text,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return "This field cannot be empty!";
+              }
+              if (isEmail) {
+                return validateEmail(value);
+              }
+              return null;
+            },
+            onSaved: (value) {
+              if (value != null) {
+                onSaved(value);
+              }
+            },
+            obscureText: isPassword
+                ? passwordVisibility
+                : (isConfirmPassword ? confirmPasswordVisibility : false),
+            cursorColor: Theme.of(context).colorScheme.primary,
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onSurface),
+              filled: true,
+              fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: MediaQuery.of(context).size.width * 0.005,
+                ),
+              ),
+              suffixIcon: isPassword || isConfirmPassword
+                  ? GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (isPassword) {
+                            passwordVisibility = !passwordVisibility;
+                          } else {
+                            confirmPasswordVisibility =
+                                !confirmPasswordVisibility;
+                          }
+                        });
+                      },
+                      child: Icon(
+                        (isPassword
+                                ? passwordVisibility
+                                : confirmPasswordVisibility)
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
+                  : null,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void signUp() async {
+    EasyLoading.show(status: 'Creating account...'); // Show loading
+
     try {
-      final user = await _myAuth.createUserWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+      final user =
+          await AuthService().createUserWithEmailAndPassword(email, password);
+
       if (user != null) {
-        print("User ID: ${user.uid}");
-        print("Name: ${user.displayName}");
-        print("Email: ${user.email}");
-        print("Phone: ${user.phoneNumber}");
-        print("Photo URL: ${user.photoURL}");
-        // showCustomDialog();
+        await AuthService().updateUserProfile(name: name, photoUrl: null);
+
+        EasyLoading.dismiss(); // Hide loading
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Account created! Verify your email.")),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SelectProfilePhoto()),
+        );
       }
     } catch (e) {
-      //  _showErrorMessage("Something went wrong. Please try again.");
+      EasyLoading.dismiss(); // Hide loading on error
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
     }
   }
 }

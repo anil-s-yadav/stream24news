@@ -52,6 +52,9 @@ class _NotificationSettingsState extends State<NotificationSettings> {
               (value) {
                 setState(() {
                   breakingNewsSwitch = value;
+                  allNotificationSwitch == true
+                      ? allNotificationSwitch = false
+                      : null;
                 });
               },
             ),
@@ -61,6 +64,9 @@ class _NotificationSettingsState extends State<NotificationSettings> {
               (value) {
                 setState(() {
                   trendingNewsSwitch = value;
+                  allNotificationSwitch == true
+                      ? allNotificationSwitch = false
+                      : null;
                 });
               },
             ),
@@ -70,6 +76,9 @@ class _NotificationSettingsState extends State<NotificationSettings> {
               (value) {
                 setState(() {
                   dailyNewsSwitch = value;
+                  allNotificationSwitch == true
+                      ? allNotificationSwitch = false
+                      : null;
                 });
               },
             ),
@@ -79,21 +88,12 @@ class _NotificationSettingsState extends State<NotificationSettings> {
               (value) {
                 setState(() {
                   weeklyNewsSwitch = value;
+                  allNotificationSwitch == true
+                      ? allNotificationSwitch = false
+                      : null;
                 });
               },
             ),
-            sizedBoxH30(context),
-            TersoryButton(
-                textWidget: const Text("reset all settings!"),
-                onPressed: () {
-                  setState(() {
-                    allNotificationSwitch = true;
-                    breakingNewsSwitch = true;
-                    trendingNewsSwitch = true;
-                    dailyNewsSwitch = true;
-                    weeklyNewsSwitch = true;
-                  });
-                })
           ],
         ),
       ),

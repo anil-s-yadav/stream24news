@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -24,9 +27,23 @@ class _HomePageState extends State<HomePage> {
   final List<Map<String, dynamic>> _categories = categories;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+    log(user!.uid.toString());
+    log(user!.email.toString());
+    log(user!.displayName.toString());
+    log(user!.emailVerified.toString());
+    log(user!.photoURL.toString());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: GestureDetector(
           onTap: () {
             Navigator.push(context,

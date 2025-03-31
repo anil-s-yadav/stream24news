@@ -19,6 +19,17 @@ class _BottomNavbarState extends State<BottomNavbar> {
   int selectedIndex = 0;
   late final PageController _pageController;
 
+  // List<String> selectedCountry = SharedPrefService().getCounty() ?? [];
+  // List<String> selectedLanguage = SharedPrefService().getLanguage() ?? [];
+
+  //   Navigator.pushReplacement(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (context) => selectedLanguage.isEmpty ||
+  //                                     selectedCountry.isEmpty
+  //                                 ? SelectCuntory()
+  //                                 : BottomNavbar()));
+
   @override
   void initState() {
     super.initState();

@@ -44,9 +44,8 @@ class SignupDonePage extends StatelessWidget {
                         "Let\'s Go",
                         style: TextStyle(fontSize: 17),
                       ),
-                      onPressed: () async {
-                        final sharedPrefs = SharedPrefService();
-                        await sharedPrefs.setBool("is_userlogged_key", true);
+                      onPressed: () {
+                        SharedPrefService().setLoginDoneBool(true);
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

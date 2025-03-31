@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+/*
 class SharedPrefService {
   static final SharedPrefService _instance = SharedPrefService._internal();
   factory SharedPrefService() => _instance;
@@ -42,77 +43,86 @@ class SharedPrefService {
     await _prefs.clear();
   }
 }
+*/
 
-
-
-/*
-
-
-import 'dart:convert';
-
-import 'package:my_society/models/login_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-class LocalStoragePref {
-  static final LocalStoragePref _instance = LocalStoragePref._internal();
+class SharedPrefService {
+  static final SharedPrefService _instance = SharedPrefService._internal();
   static SharedPreferences? _storage;
 
-  factory LocalStoragePref() {
+  factory SharedPrefService() {
     return _instance;
   }
 
-  LocalStoragePref._internal();
+  SharedPrefService._internal();
 
   static Future<void> init() async {
     _storage ??= await SharedPreferences.getInstance();
   }
 
   Future<void> clearAllPref() async {
-    await _storage?.clear();
+    bool? isOnboardingDone = _storage?.getBool(LocalStorageKeys.isOnboading);
+
+    await _storage?.clear(); // Clears all stored data
+
+    // Restore only the onboarding status
+    if (isOnboardingDone != null) {
+      await _storage?.setBool(LocalStorageKeys.isOnboading, isOnboardingDone);
+    }
   }
 
-  // Optional: for strongly typed usage
-  Future<void> storeLoginModel(LoginModel model) async {
-    await _storage?.setString(
-        LocalStorageKeys.userProfile, jsonEncode(model.toJson()));
-  }
-
-  LoginModel? getLoginModel() {
-    final jsonStr = _storage?.getString(LocalStorageKeys.userProfile);
-    if (jsonStr == null) return null;
-    return LoginModel.fromJson(jsonDecode(jsonStr));
-  }
-/*
-  Future<void> setString(String key, String value) async {
-    await _storage?.setString(key, value);
-  }
-
-  String? getString(String key) {
-    return _storage?.getString(key);
-  }
-
-  Future<void> setBool(String key, bool value) async {
-    await _storage?.setBool(key, value);
-  }
-
-  bool? getBool(String key) {
-    return _storage?.getBool(key);
-  }
-*/
-
-  Future<void> setLoginBool(bool value) async {
+  Future<void> setLoginDoneBool(bool value) async {
     await _storage?.setBool(LocalStorageKeys.isLoggedIn, value);
   }
 
-  bool? getLoginBool() {
+  bool? getLoginDoneBool() {
     return _storage?.getBool(LocalStorageKeys.isLoggedIn);
+  }
+
+  Future<void> setSkippedBool(bool value) async {
+    await _storage?.setBool(LocalStorageKeys.isLoggedIn, value);
+  }
+
+  bool? getSkippedBool() {
+    return _storage?.getBool(LocalStorageKeys.isLoggedIn);
+  }
+
+  Future<void> setOnboadingDoneBool(bool value) async {
+    await _storage?.setBool(LocalStorageKeys.isOnboading, value);
+  }
+
+  bool? getOnboadingDoneBool() {
+    return _storage?.getBool(LocalStorageKeys.isOnboading);
+  }
+
+  Future<void> setLanguage(List<String> value) async {
+    await _storage?.setStringList(LocalStorageKeys.language, value);
+  }
+
+  List<String>? getLanguage() {
+    return _storage?.getStringList(LocalStorageKeys.language);
+  }
+
+  Future<void> setCounty(List<String> value) async {
+    await _storage?.setStringList(LocalStorageKeys.country, value);
+  }
+
+  List<String>? getCounty() {
+    return _storage?.getStringList(LocalStorageKeys.country);
+  }
+
+  Future<void> setProfilePhoto(String value) async {
+    await _storage?.setString(LocalStorageKeys.profilePhoto, value);
+  }
+
+  String? getProfilePhoto() {
+    return _storage?.getString(LocalStorageKeys.profilePhoto);
   }
 }
 
 class LocalStorageKeys {
-  static const userProfile = 'user_profile';
-  static const isLoggedIn = 'isLoggedIn';
+  static const isLoggedIn = 'isLoggedIn_key';
+  static const isOnboading = 'isOnboading_key';
+  static const country = 'country_key';
+  static const language = 'language_key';
+  static const profilePhoto = 'language_key';
 }
-
-
-*/

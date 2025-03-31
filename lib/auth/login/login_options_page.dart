@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:stream24news/auth/create_account/select_cuntory.dart';
 import 'package:stream24news/auth/login/login_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
+import 'package:stream24news/utils/services/shared_pref_service.dart';
 
 import '../../utils/componants/bottom_navbar.dart';
 import '../create_account/create_account.dart';
@@ -16,6 +18,8 @@ class LoginOptionsPage extends StatefulWidget {
 class _LoginOptionsPage extends State<LoginOptionsPage> {
   @override
   Widget build(BuildContext context) {
+    // List<String> selectedCountry = SharedPrefService().getCounty() ?? [];
+    // List<String> selectedLanguage = SharedPrefService().getLanguage() ?? [];
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -28,23 +32,27 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
                 right: 0,
                 top: 0,
                 child: SecondaryButton(
-                    textWidget: Text("Skip"),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BottomNavbar()));
-                    })),
+                    textWidget: Text("Skip"), onPressed: () {})),
             SingleChildScrollView(
               child: Column(
                 children: [
                   sizedBoxH10(context),
                   GestureDetector(
                     onTap: () {
+                      SharedPrefService().setSkippedBool(true);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const BottomNavbar()));
+                              builder: (context) => const SelectCuntory(
+                                    commingFrom: '',
+                                  )));
+                      // Navigator.pushReplacement(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => selectedLanguage.isEmpty ||
+                      //                 selectedCountry.isEmpty
+                      //             ? SelectCuntory()
+                      //             : BottomNavbar()));
                     },
                     child: SizedBox(
                         width: MediaQuery.of(context).size.width,

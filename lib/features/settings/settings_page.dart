@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stream24news/auth/network/auth_service.dart';
+import 'package:stream24news/auth/create_account/select_cuntory.dart';
+import 'package:stream24news/auth/create_account/select_language.dart';
+import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/features/notification_settings/notification_settings.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
@@ -8,7 +12,6 @@ import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import 'package:stream24news/utils/theme/theme_provider.dart';
 
 import '../../auth/login/login_options_page.dart';
-import '../../utils/componants/bottom_navbar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -19,15 +22,17 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool? isLogin = true;
-  bool? isBoadingScreenDone = false;
-  final sharedPrefs = SharedPrefService();
-  final _myAuth = AuthService();
+  List<String>? language;
+  late List<String>? countrty;
 
   @override
   void initState() {
     super.initState();
     setState(() {
-      isLogin = sharedPrefs.getBool("is_userlogged_key");
+      isLogin = SharedPrefService().getLoginDoneBool();
+      language = SharedPrefService().getLanguage() ?? ["English", "en"];
+      countrty = SharedPrefService().getCounty() ??
+          ["https://flagcdn.com/36x27/in.png", "india", "In"];
     });
   }
 
@@ -52,65 +57,90 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 title: const Divider(),
               ),
-              ListTile(
-                leading: Image.asset(
+              SettingTile(
+                icon: Image.asset(
                   "lib/assets/images/user_1.png",
                   scale: 2.4,
                 ),
-                title: Text("Personal Info",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                ),
+                title: "Personal Info",
+                onTap: () {},
               ),
-              GestureDetector(
+              SettingTile(
+                icon: Icon(
+                  MyTabIcons.notification,
+                  //size: 30,
+                ),
+                title: "Notification",
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const NotificationSettings()));
                 },
-                child: const ListTile(
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const SelectLanguage(commingFrom: 'settings')));
+                },
+                child: ListTile(
                   leading: Icon(
-                    MyTabIcons.notification,
-                    //size: 30,
+                    Icons.translate_rounded,
+                    size: 26,
                   ),
-                  title: Text("Notification",
+                  title: Text("Language",
                       style: TextStyle(fontWeight: FontWeight.bold)),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios_rounded,
+                  trailing: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 20.0,
+                    children: [
+                      Text('${language![0]} (${language![1]})',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14)),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const ListTile(
-                leading: Icon(
-                  Icons.shield_outlined,
-                  size: 26,
-                ),
-                title: Text("Security",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                ),
-              ),
-              const ListTile(
-                leading: Icon(
-                  MyTabIcons.listview,
-                  size: 26,
-                ),
-                title: Text("Language",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                trailing: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 20.0,
-                  children: [
-                    Text("English (In)",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14)),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                    ),
-                  ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const SelectCuntory(commingFrom: 'settings')));
+                },
+                child: ListTile(
+                  leading: Image.network(
+                    countrty![0],
+                    width: 20,
+                    height: 20,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.flag_outlined),
+                  ),
+                  //     Icon(
+                  //   Icons.flag_outlined,
+                  //   size: 26,
+                  // ),
+                  title: Text("Country",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  trailing: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 20.0,
+                    children: [
+                      Text('${countrty![1]} (${countrty![2]})',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14)),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SwitchListTile(
@@ -136,54 +166,40 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 title: const Divider(),
               ),
-              const ListTile(
-                leading: Icon(
+              SettingTile(
+                icon: Icon(
                   Icons.code,
                   size: 26,
                 ),
-                title: Text("Contact developer",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                ),
+                title: "Contact developer",
+                onTap: () {},
               ),
-              const ListTile(
-                leading: Icon(
-                  Icons.help_outline,
-                  size: 26,
-                ),
-                title: Text("Help Center",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                ),
-              ),
-              const ListTile(
-                leading: Icon(
-                  Icons.lock_outlined,
-                  size: 26,
-                ),
-                title: Text("Privacy Policy",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                ),
-              ),
-              const ListTile(
-                leading: Icon(
-                  Icons.info_outline_rounded,
-                  size: 26,
-                ),
-                title: Text("About Stream24 News App",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                ),
-              ),
+              SettingTile(
+                  icon: Icon(
+                    Icons.help_outline,
+                    size: 26,
+                  ),
+                  title: "Help Center",
+                  onTap: () {}),
+              SettingTile(
+                  icon: Icon(
+                    Icons.lock_outlined,
+                    size: 26,
+                  ),
+                  title: "Privacy Policy",
+                  onTap: () {}),
+              SettingTile(
+                  icon: Icon(
+                    Icons.info_outline_rounded,
+                    size: 26,
+                  ),
+                  title: "About Stream24 News App",
+                  onTap: () {}),
               GestureDetector(
                 onTap: () {
                   if (isLogin == true) {
                     logOut();
+                    SharedPrefService().clearAllPref();
                   } else {
                     Navigator.pushReplacement(
                       context,
@@ -227,6 +243,23 @@ class _SettingsPageState extends State<SettingsPage> {
         ));
   }
 
+  Widget SettingTile({
+    required Widget icon,
+    required String title,
+    void Function()? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: ListTile(
+        leading: icon,
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+        trailing: const Icon(
+          Icons.arrow_forward_ios_rounded,
+        ),
+      ),
+    );
+  }
+
   void logOut() {
     showDialog(
       context: context,
@@ -247,14 +280,13 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             onPressed: () async {
               try {
-                final user = await _myAuth.signOut();
+                await AuthService().signOut();
+                await SharedPrefService().clearAllPref();
               } catch (e) {
-                print("Something went wrong. Please try again.");
+                log("Something went wrong. Please try again.");
               }
 
               Navigator.pop(context);
-
-              await sharedPrefs.setBool("is_userlogged_key", false);
 
               if (context.mounted) {
                 Navigator.pushAndRemoveUntil(

@@ -63,11 +63,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   ];
 
   Future<bool?> onBoadingDone() async {
-    bool? isLogin = false;
-    final sharedPrefs = SharedPrefService();
-    await sharedPrefs.setBool("onBoadingDone_key", true);
+    bool isLogin = false;
     setState(() {
-      isLogin = sharedPrefs.getBool("is_userlogged_key");
+      SharedPrefService().setOnboadingDoneBool(true);
+      isLogin = SharedPrefService().getLoginDoneBool() ?? false;
     });
     return isLogin;
   }

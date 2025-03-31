@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stream24news/features/settings/settings_page.dart';
+import 'package:stream24news/utils/services/shared_pref_service.dart';
 
 import '../../utils/componants/my_widgets.dart';
 import '../../utils/componants/sizedbox.dart';
@@ -6,7 +8,8 @@ import 'list_data/language_data.dart';
 import 'signup_done_page.dart';
 
 class SelectLanguage extends StatefulWidget {
-  const SelectLanguage({super.key});
+  final String commingFrom;
+  const SelectLanguage({super.key, required this.commingFrom});
 
   @override
   State<SelectLanguage> createState() => _SelectLanguage();
@@ -114,11 +117,21 @@ class _SelectLanguage extends State<SelectLanguage> {
                               subtitle: Text("Code: $languageCode"),
                               trailing: const Icon(Icons.arrow_forward_ios),
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            SignupDonePage()));
+                                SharedPrefService()
+                                    .setLanguage([languageName, languageCode]);
+                                if (widget.commingFrom == 'settings') {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SettingsPage()));
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SignupDonePage()));
+                                }
                               },
                             ),
                           );

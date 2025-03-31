@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stream24news/auth/login/login_options_page.dart';
@@ -25,17 +26,14 @@ class _ProfilepageState extends State<Profilepage> {
   final user = FirebaseAuth.instance.currentUser;
   //final user = auth.currentUser;
   bool isLogin = false;
+  String? photo;
 
   @override
   void initState() {
     super.initState();
-    loginCheck();
-  }
-
-  void loginCheck() async {
-    final sharedPrefs = SharedPrefService();
     setState(() {
-      isLogin = sharedPrefs.getBool("is_userlogged_key")!;
+      isLogin = SharedPrefService().getLoginDoneBool() ?? false;
+      photo = SharedPrefService().getProfilePhoto();
     });
   }
 
@@ -76,19 +74,25 @@ class _ProfilepageState extends State<Profilepage> {
             child: Row(
               children: [
                 sizedBoxW15(context),
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 50,
-                  foregroundImage: AssetImage("lib/assets/images/profile.png"),
+                  child: CachedNetworkImage(
+                    imageUrl: photo ?? "",
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+
+                  //  AssetImage("lib/assets/images/profile.png"),
                 ),
                 sizedBoxW20(context),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user!.displayName ?? "User",
+                      user?.displayName ?? "User",
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
-                    const Text("anilyadav@gmail.com"),
+                    Text(user?.email ?? ""),
                   ],
                 )
               ],
@@ -173,9 +177,12 @@ class _ProfilepageState extends State<Profilepage> {
           ),
           Padding(
             padding: const EdgeInsets.all(11),
-            child: Image.asset(
-              'lib/assets/images/buymeacopy.png',
-              scale: 9,
+            child: Card(
+              elevation: 5,
+              child: Image.asset(
+                'lib/assets/images/buymeacopy.png',
+                scale: 9,
+              ),
             ),
           ),
         ],

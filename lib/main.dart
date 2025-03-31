@@ -1,5 +1,6 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:stream24news/utils/componants/bottom_navbar.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
@@ -16,22 +17,33 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await SharedPrefService().init();
+  await SharedPrefService.init();
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeProvider(),
       child: const MyApp(),
     ),
   );
+
+  configLoading(); // Configure loading styles
   // runApp(
-  //   DevicePreview(
+  //   ChangeNotifierProvider(
+  //   create: (_) => ThemeProvider(),
+  //    child: DevicePreview(
   //     enabled: true,
   //     builder: (context) => ChangeNotifierProvider(
   //       create: (_) => ThemeProvider(),
   //       child: const MyApp(),
-  //     ),
+  //     ),),
   //   ),
   // );
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..dismissOnTap = false;
 }
 
 class MyApp extends StatefulWidget {
@@ -44,18 +56,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool isLogin = false;
   bool isBoadingScreenDone = false;
+  bool isSkipped = false;
 
   @override
   void initState() {
     super.initState();
-    onBoadingDone();
-  }
-
-  void onBoadingDone() async {
-    final sharedPrefs = SharedPrefService();
     setState(() {
-      isBoadingScreenDone = sharedPrefs.getBool("onBoadingDone_key")!;
-      isLogin = sharedPrefs.getBool("is_userlogged_key")!;
+      isLogin = SharedPrefService().getLoginDoneBool() ?? false;
+      isBoadingScreenDone = SharedPrefService().getOnboadingDoneBool() ?? false;
+      isSkipped = SharedPrefService().getSkippedBool() ?? false;
     });
   }
 
@@ -69,10 +78,13 @@ class _MyAppState extends State<MyApp> {
         theme: MaterialTheme(textTheme).light(),
         darkTheme: MaterialTheme(textTheme).dark(),
         themeMode: themeProvider.themeMode,
+        builder: EasyLoading.init(), //  Ensure EasyLoading is initialized
         home: !isBoadingScreenDone
             ? const OnboardingScreen()
             : isLogin
                 ? const BottomNavbar()
-                : const LoginOptionsPage());
+                : !isSkipped
+                    ? const BottomNavbar()
+                    : const LoginOptionsPage());
   }
 }

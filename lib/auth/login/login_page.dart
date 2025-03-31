@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stream24news/auth/login/forgot_password.dart';
-import 'package:stream24news/auth/network/auth_service.dart';
+import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
 import '../../utils/componants/bottom_navbar.dart';
@@ -235,8 +235,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-    final sharedPrefs = SharedPrefService();
-    await sharedPrefs.setBool("is_userlogged_key", true);
+    SharedPrefService().setLoginDoneBool(true);
 
     await Future.delayed(const Duration(seconds: 3));
 
