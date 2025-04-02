@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stream24news/auth/auth_service.dart';
-import 'package:stream24news/auth/create_account/select_cuntory.dart';
+import 'package:stream24news/auth/create_account/select_country.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 
 class SelectProfilePhoto extends StatefulWidget {
@@ -13,10 +13,11 @@ class SelectProfilePhoto extends StatefulWidget {
 
 class _SelectProfilePhotoState extends State<SelectProfilePhoto> {
   int? selectedIndex;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: const Text("Select Profile Photo")),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -24,7 +25,7 @@ class _SelectProfilePhotoState extends State<SelectProfilePhoto> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Select profile photo",
+                "Select a Profile Photo",
                 style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                       fontStyle: FontStyle.italic,
                     ),
@@ -32,81 +33,96 @@ class _SelectProfilePhotoState extends State<SelectProfilePhoto> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 child: Text(
-                  "Choose a profile photo that  image will be not visible to others and it\' private to you only.",
+                  "Choose a profile photo. This image will be private and not visible to others.",
                   style: TextStyle(color: Colors.black54, fontSize: 17),
-                  textAlign: TextAlign.start,
+                  textAlign: TextAlign.center,
                 ),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.55,
-                child: GridView(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 5, // 2 columns
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 5,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                   ),
-                  children: List.generate(50, (index) {
-                    bool isSelected = selectedIndex != index;
-
+                  itemCount: 50,
+                  itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          selectedIndex = index; // Update selected index
+                          selectedIndex = index;
                         });
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          padding: EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              border:
-                                  Border.all(width: 1, color: Colors.green)),
-                          child: CircleAvatar(
-                            backgroundColor: isSelected
-                                ? Colors
-                                    .primaries[index % Colors.primaries.length]
-                                    .shade200
-                                : Colors
-                                    .primaries[index % Colors.primaries.length]
-                                    .shade900,
-                            child: SvgPicture.network(
-                              'https://api.dicebear.com/7.x/adventurer/svg?seed=$index',
-                            ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: selectedIndex == index
+                                ? Colors.green
+                                : Colors.grey,
+                            width: selectedIndex == index ? 3 : 1,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          backgroundColor: Colors
+                              .primaries[index % Colors.primaries.length]
+                              .shade200,
+                          child: SvgPicture.network(
+                            'https://api.dicebear.com/7.x/adventurer/svg?seed=$index',
                           ),
                         ),
                       ),
                     );
-                  }),
+                  },
                 ),
               ),
+              const SizedBox(height: 20),
+              selectedIndex != null
+                  ? CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors
+                          .primaries[selectedIndex! % Colors.primaries.length]
+                          .shade200,
+                      child: SvgPicture.network(
+                        'https://api.dicebear.com/7.x/adventurer/svg?seed=$selectedIndex',
+                      ),
+                    )
+                  : const SizedBox(),
+              const SizedBox(height: 20),
               IconButton(
-                  onPressed: () async {
-                    if (selectedIndex != null) {
-                      await AuthService().updateUserProfile(
-                          name: null,
-                          photoUrl:
-                              'https://api.dicebear.com/7.x/adventurer/svg?seed=$selectedIndex');
-                      SharedPrefService().setProfilePhoto(
-                          'https://api.dicebear.com/7.x/adventurer/svg?seed=$selectedIndex');
+                onPressed: () async {
+                  if (selectedIndex != null) {
+                    String selectedPhotoUrl =
+                        'https://api.dicebear.com/7.x/adventurer/svg?seed=$selectedIndex';
 
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SelectCuntory(
-                                    commingFrom: '',
-                                  )));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Please Select a profile photo!")));
-                    }
-                  },
-                  style: IconButton.styleFrom(
-                    iconSize: 50,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.surface,
-                  ),
-                  icon: Icon(Icons.arrow_forward_ios_rounded))
+                    await AuthService().updateUserProfile(
+                      name: null,
+                      photoUrl: selectedPhotoUrl,
+                    );
+                    await SharedPrefService().setProfilePhoto(selectedPhotoUrl);
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const SelectCountry(commingFrom: ''),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text("Please select a profile photo!")),
+                    );
+                  }
+                },
+                iconSize: 50,
+                style: IconButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.surface,
+                ),
+                icon: const Icon(Icons.arrow_forward_ios_rounded),
+              ),
             ],
           ),
         ),

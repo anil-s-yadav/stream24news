@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -56,7 +58,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool isLogin = false;
   bool isBoadingScreenDone = false;
-  bool isSkipped = false;
+  bool isLoginSkipped = false;
 
   @override
   void initState() {
@@ -64,14 +66,18 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       isLogin = SharedPrefService().getLoginDoneBool() ?? false;
       isBoadingScreenDone = SharedPrefService().getOnboadingDoneBool() ?? false;
-      isSkipped = SharedPrefService().getSkippedBool() ?? false;
+      isLoginSkipped = SharedPrefService().getLoginSkippedBool() ?? false;
     });
+    log('onBoading Main.dart $isBoadingScreenDone');
+    log('user login or not Main.dart $isLogin');
+    log('login is skipped Main.dart $isLoginSkipped');
   }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final textTheme = Theme.of(context).textTheme;
+
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Stream24 News',
@@ -81,10 +87,10 @@ class _MyAppState extends State<MyApp> {
         builder: EasyLoading.init(), //  Ensure EasyLoading is initialized
         home: !isBoadingScreenDone
             ? const OnboardingScreen()
-            : isLogin
+            : isLogin || isLoginSkipped
                 ? const BottomNavbar()
-                : !isSkipped
-                    ? const BottomNavbar()
-                    : const LoginOptionsPage());
+                // : !isLoginSkipped
+                //  ? const BottomNavbar()
+                : const LoginOptionsPage());
   }
 }

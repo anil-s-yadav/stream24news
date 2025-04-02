@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
-
 import '../../features/settings/settings_page.dart';
 
 class Profilepage extends StatefulWidget {
@@ -17,24 +17,29 @@ class Profilepage extends StatefulWidget {
 }
 
 class _ProfilepageState extends State<Profilepage> {
-  final List<String> _setHomepageList = [
-    "Home",
-    "Live TV",
-    "Articals",
-  ];
+  final List<String> _setHomepageList = ["Home", "Live TV", "Articles"];
   String _currentSelectedValue = "Home";
-  final user = FirebaseAuth.instance.currentUser;
-  //final user = auth.currentUser;
+  User? user;
   bool isLogin = false;
-  String? photo;
+  String photo = "";
 
   @override
   void initState() {
     super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefService = SharedPrefService();
+    bool loginStatus = prefService.getLoginDoneBool() ?? false;
+    String profilePhoto = prefService.getProfilePhoto() ?? "";
+
     setState(() {
-      isLogin = SharedPrefService().getLoginDoneBool() ?? false;
-      photo = SharedPrefService().getProfilePhoto();
+      isLogin = loginStatus;
+      photo = profilePhoto;
+      user = FirebaseAuth.instance.currentUser;
     });
+    log('User photo: $photo');
   }
 
   @override
@@ -43,26 +48,14 @@ class _ProfilepageState extends State<Profilepage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
-          GestureDetector(
-            // onTap: () {
-            //   Navigator.push(context,
-            //       MaterialPageRoute(builder: (context) => SettingsPage()));
-            // },
-            child: const Icon(
-              Icons.share,
-            ),
-          ),
+          const Icon(Icons.share),
           sizedBoxW20(context),
           GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsPage()));
-            },
-            child: const Icon(
-              MyTabIcons.settings,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsPage()),
             ),
+            child: const Icon(MyTabIcons.settings),
           ),
           sizedBoxW30(context),
         ],
@@ -76,22 +69,17 @@ class _ProfilepageState extends State<Profilepage> {
                 sizedBoxW15(context),
                 CircleAvatar(
                   radius: 50,
-                  child: CachedNetworkImage(
-                    imageUrl: photo ?? "",
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-
-                  //  AssetImage("lib/assets/images/profile.png"),
+                  backgroundImage: photo.isNotEmpty
+                      ? CachedNetworkImageProvider(photo)
+                      : const AssetImage("lib/assets/images/profile.png")
+                          as ImageProvider,
                 ),
                 sizedBoxW20(context),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      user?.displayName ?? "User",
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
+                    Text(user?.displayName ?? "User",
+                        style: Theme.of(context).textTheme.headlineMedium),
                     Text(user?.email ?? ""),
                   ],
                 )
@@ -99,27 +87,26 @@ class _ProfilepageState extends State<Profilepage> {
             ),
           ),
           Visibility(
-              visible: !isLogin,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginOptionsPage()),
-                  );
-                },
-                child: MyLightContainer(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: const Text(
-                    "Login",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.red),
-                  ),
+            visible: !isLogin,
+            child: GestureDetector(
+              onTap: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const LoginOptionsPage()),
+              ),
+              child: MyLightContainer(
+                height: MediaQuery.of(context).size.height * 0.05,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: const Text(
+                  "Login",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.red),
                 ),
-              )),
+              ),
+            ),
+          ),
           sizedBoxH20(context),
           MyLightContainer(
             height: MediaQuery.of(context).size.height * 0.05,
@@ -141,7 +128,9 @@ class _ProfilepageState extends State<Profilepage> {
                 DropdownButton(
                   value: _currentSelectedValue,
                   isDense: true,
-                  onChanged: (newValue) {},
+                  onChanged: (newValue) {
+                    setState(() => _currentSelectedValue = newValue.toString());
+                  },
                   items: _setHomepageList.map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -150,26 +139,16 @@ class _ProfilepageState extends State<Profilepage> {
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(
                             color: Theme.of(context).colorScheme.shadow),
                       ),
-                      onTap: () {
-                        setState(() {
-                          _currentSelectedValue = value;
-                        });
-                      },
                     );
                   }).toList(),
                 ),
-                Icon(
-                  Icons.info_outlined,
-                  color: Theme.of(context).colorScheme.outline,
-                )
+                Icon(Icons.info_outlined,
+                    color: Theme.of(context).colorScheme.outline),
               ],
             ),
           ),
           sizedBoxH10(context),
-          const Divider(
-            indent: 10,
-            endIndent: 10,
-          ),
+          const Divider(indent: 10, endIndent: 10),
           const Spacer(),
           const Text(
             "This app is free to use. You can support the developer by",

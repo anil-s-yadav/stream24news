@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:stream24news/features/settings/settings_page.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
@@ -117,6 +119,7 @@ class _SelectLanguage extends State<SelectLanguage> {
                               subtitle: Text("Code: $languageCode"),
                               trailing: const Icon(Icons.arrow_forward_ios),
                               onTap: () {
+                                log('comming from: $widget.commingFrom');
                                 SharedPrefService()
                                     .setLanguage([languageName, languageCode]);
                                 if (widget.commingFrom == 'settings') {
@@ -130,7 +133,7 @@ class _SelectLanguage extends State<SelectLanguage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              SignupDonePage()));
+                                              SignupDonePage())); //value is: loginSkip comming from loginoptions page
                                 }
                               },
                             ),

@@ -45,7 +45,7 @@ class SignupDonePage extends StatelessWidget {
                         style: TextStyle(fontSize: 17),
                       ),
                       onPressed: () {
-                        SharedPrefService().setLoginDoneBool(true);
+                        SharedPrefService().setLoginSkippedBool(true);
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

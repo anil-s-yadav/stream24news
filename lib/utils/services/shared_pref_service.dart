@@ -1,50 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-/*
-class SharedPrefService {
-  static final SharedPrefService _instance = SharedPrefService._internal();
-  factory SharedPrefService() => _instance;
-  SharedPrefService._internal();
-
-  late SharedPreferences _prefs;
-
-  /// Initialize SharedPreferences (Call this in `main()`)
-  Future<void> init() async {
-    _prefs = await SharedPreferences.getInstance();
-  }
-
-  /// Save a value
-  Future<void> setString(String key, String value) async {
-    await _prefs.setString(key, value);
-  }
-
-  /// Retrieve a value
-  String? getString(String key) {
-    return _prefs.getString(key);
-  }
-
-  /// Save a value
-  Future<void> setBool(String key, bool value) async {
-    await _prefs.setBool(key, value);
-  }
-
-  /// Retrieve a value
-  bool? getBool(String key) {
-    return _prefs.getBool(key);
-  }
-
-  /// Remove a key
-  Future<void> remove(String key) async {
-    await _prefs.remove(key);
-  }
-
-  /// Clear all preferences
-  Future<void> clearAll() async {
-    await _prefs.clear();
-  }
-}
-*/
-
 class SharedPrefService {
   static final SharedPrefService _instance = SharedPrefService._internal();
   static SharedPreferences? _storage;
@@ -78,12 +33,12 @@ class SharedPrefService {
     return _storage?.getBool(LocalStorageKeys.isLoggedIn);
   }
 
-  Future<void> setSkippedBool(bool value) async {
-    await _storage?.setBool(LocalStorageKeys.isLoggedIn, value);
+  Future<void> setLoginSkippedBool(bool value) async {
+    await _storage?.setBool(LocalStorageKeys.skippedDone, value);
   }
 
-  bool? getSkippedBool() {
-    return _storage?.getBool(LocalStorageKeys.isLoggedIn);
+  bool? getLoginSkippedBool() {
+    return _storage?.getBool(LocalStorageKeys.skippedDone);
   }
 
   Future<void> setOnboadingDoneBool(bool value) async {
@@ -121,6 +76,7 @@ class SharedPrefService {
 
 class LocalStorageKeys {
   static const isLoggedIn = 'isLoggedIn_key';
+  static const skippedDone = 'skippedDone_key';
   static const isOnboading = 'isOnboading_key';
   static const country = 'country_key';
   static const language = 'language_key';

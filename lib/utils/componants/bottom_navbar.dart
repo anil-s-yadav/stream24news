@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stream24news/dashboard/profile/profilepage.dart';
@@ -15,20 +14,13 @@ class BottomNavbar extends StatefulWidget {
   State<BottomNavbar> createState() => _BottomNavbarState();
 }
 
-class _BottomNavbarState extends State<BottomNavbar> {
+class _BottomNavbarState extends State<BottomNavbar>
+    with AutomaticKeepAliveClientMixin {
   int selectedIndex = 0;
   late final PageController _pageController;
 
-  // List<String> selectedCountry = SharedPrefService().getCounty() ?? [];
-  // List<String> selectedLanguage = SharedPrefService().getLanguage() ?? [];
-
-  //   Navigator.pushReplacement(
-  //                         context,
-  //                         MaterialPageRoute(
-  //                             builder: (context) => selectedLanguage.isEmpty ||
-  //                                     selectedCountry.isEmpty
-  //                                 ? SelectCuntory()
-  //                                 : BottomNavbar()));
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -37,14 +29,14 @@ class _BottomNavbarState extends State<BottomNavbar> {
   }
 
   void changeTab(int index) {
-    setState(() {
-      selectedIndex = index;
-      _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    });
+    if (index == selectedIndex || !_pageController.hasClients) return;
+
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    setState(() => selectedIndex = index);
   }
 
   @override
@@ -55,12 +47,11 @@ class _BottomNavbarState extends State<BottomNavbar> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
-        final shouldExit = await _onWillPop();
-
-        if (shouldExit) {
+        if (await _onWillPop()) {
           if (Platform.isAndroid) {
             SystemNavigator.pop();
           } else {
@@ -71,42 +62,36 @@ class _BottomNavbarState extends State<BottomNavbar> {
       child: Scaffold(
         body: PageView(
           controller: _pageController,
-          onPageChanged: (index) {
-            setState(() => selectedIndex = index);
-          },
+          physics:
+              const NeverScrollableScrollPhysics(), // Disable swipe gesture
           children: const [HomePage(), LiveTvPage(), Newspage(), Profilepage()],
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: selectedIndex,
-          onTap: changeTab, // Update PageView when tapping tabs
+          onTap: changeTab,
           type: BottomNavigationBarType.fixed,
           showSelectedLabels: false,
           showUnselectedLabels: false,
           items: [
+            _buildNavItem(
+                0, MyTabIcons.home_button, MyTabIcons.home_button_fill),
+            _buildNavItem(1, MyTabIcons.video, MyTabIcons.video_fill),
+            _buildNavItem(2, MyTabIcons.newspaper, MyTabIcons.newspaper_fill),
             BottomNavigationBarItem(
-                icon: Icon(selectedIndex == 0
-                    ? MyTabIcons.home_button_fill
-                    : MyTabIcons.home_button),
-                label: ""),
-            BottomNavigationBarItem(
-                icon: Icon(selectedIndex == 1
-                    ? MyTabIcons.video_fill
-                    : MyTabIcons.video),
-                label: ""),
-            BottomNavigationBarItem(
-                icon: Icon(selectedIndex == 2
-                    ? MyTabIcons.newspaper_fill
-                    : MyTabIcons.newspaper),
-                label: ""),
-            BottomNavigationBarItem(
-                icon: Image.asset(
-                  "lib/assets/images/profile.png",
-                  scale: 5,
-                ),
-                label: ""),
+              icon: Image.asset("lib/assets/images/profile.png", scale: 5),
+              label: "",
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  BottomNavigationBarItem _buildNavItem(
+      int index, IconData icon, IconData activeIcon) {
+    return BottomNavigationBarItem(
+      icon: Icon(selectedIndex == index ? activeIcon : icon),
+      label: "",
     );
   }
 
@@ -118,11 +103,11 @@ class _BottomNavbarState extends State<BottomNavbar> {
             content: const Text("Do you really want to exit the app?"),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(false), // Cancel
+                onPressed: () => Navigator.of(context).pop(false),
                 child: const Text("Cancel"),
               ),
               TextButton(
-                onPressed: () => Navigator.of(context).pop(true), // Exit
+                onPressed: () => Navigator.of(context).pop(true),
                 child: const Text("Exit"),
               ),
             ],

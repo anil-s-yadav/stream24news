@@ -235,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-    SharedPrefService().setLoginDoneBool(true);
+    // SharedPrefService().setLoginDoneBool(true);
 
     await Future.delayed(const Duration(seconds: 3));
 

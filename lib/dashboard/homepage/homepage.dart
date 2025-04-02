@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:stream24news/auth/create_account/list_data/language_data.dart';
 import 'package:stream24news/dashboard/livetvpage/livetvpage.dart';
 import 'package:stream24news/samplepage.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
@@ -14,6 +15,7 @@ import '../../features/all_categories/all_categories.dart';
 import '../../features/all_categories/category_select.dart';
 import '../../features/bookmark/bookmark_page.dart';
 import '../../features/notification/notification.dart';
+import '../../utils/services/shared_pref_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,15 +30,39 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    User? user = _auth.currentUser;
-    log(user!.uid.toString());
-    log(user!.email.toString());
-    log(user!.displayName.toString());
-    log(user!.emailVerified.toString());
-    log(user!.photoURL.toString());
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    if (user != null) {
+      log(user.uid.toString());
+      log(user.email.toString());
+      log(user.displayName.toString());
+      log(user.emailVerified.toString());
+      log(user.photoURL.toString());
+    } else {
+      log('Homepage : user null');
+    }
+
+    // testing letter delete
+    bool isLogintest = false;
+    bool isBoadingScreenDone = false;
+    bool isLoginSkipped = false;
+    late dynamic countory;
+    late dynamic languages;
+
+    setState(() {
+      isBoadingScreenDone = SharedPrefService().getOnboadingDoneBool() ?? false;
+      isLogintest = SharedPrefService().getLoginDoneBool() ?? false;
+      isLoginSkipped = SharedPrefService().getLoginSkippedBool() ?? false;
+      countory = SharedPrefService().getCounty();
+      languages = SharedPrefService().getLanguage();
+    });
+    log('onBoading Main.dart $isBoadingScreenDone');
+    log('user login or not Main.dart $isLogintest');
+    log('login is skipped Main.dart $isLoginSkipped');
+    log('countary: $countory');
+    log('languages: $languages');
+    //detele till here
   }
 
   @override

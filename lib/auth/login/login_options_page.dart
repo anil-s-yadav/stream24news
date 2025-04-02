@@ -39,7 +39,7 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
                   sizedBoxH10(context),
                   GestureDetector(
                     onTap: () {
-                      SharedPrefService().setSkippedBool(true);
+                      //shared preferences for storing skipped value is on sign_up_done_page
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

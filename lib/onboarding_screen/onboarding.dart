@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
@@ -62,14 +64,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         image: "lib/assets/lottie_json/darkmode.json"),
   ];
 
-  Future<bool?> onBoadingDone() async {
-    bool isLogin = false;
-    setState(() {
-      SharedPrefService().setOnboadingDoneBool(true);
-      isLogin = SharedPrefService().getLoginDoneBool() ?? false;
-    });
-    return isLogin;
-  }
+  // Future<bool?> onBoadingDone() async {
+  //   bool isLogin = false;
+
+  //   setState(() {
+  //     isLogin = SharedPrefService().getLoginDoneBool() ?? false;
+  //   });
+  //   return isLogin;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -88,19 +90,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         elevation: 2,
                         backgroundColor: Colors.black12.withAlpha(10)),
                     onPressed: () async {
-                      bool? isLogin = await onBoadingDone() ?? false;
-                      if (isLogin == true) {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const BottomNavbar()));
-                      } else {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const LoginOptionsPage()));
-                      }
+                      // bool? isLogin = await onBoadingDone() ?? false;
+                      // if (isLogin == true) {
+                      // } else {
+                      SharedPrefService().setOnboadingDoneBool(true);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginOptionsPage()));
+                      // }
+                      bool? testOnBoadingSkipped =
+                          SharedPrefService().getOnboadingDoneBool();
+                      log('onBoading Skipped $testOnBoadingSkipped.toString()');
                     },
                     child: const Text("Skip")),
               ),
@@ -169,25 +170,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ),
                             onPressed: () async {
                               if (_currentPage == 4) {
-                                bool? isLogin = await onBoadingDone() ?? false;
-                                if (isLogin == true) {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const BottomNavbar()));
-                                } else {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const LoginOptionsPage()));
-                                }
+                                SharedPrefService().setOnboadingDoneBool(true);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginOptionsPage()));
+                                // }
+                                bool? testOnBoadingSkipped =
+                                    SharedPrefService().getOnboadingDoneBool();
+                                log('onBoading Skipped $testOnBoadingSkipped.toString()');
                               } else {
                                 _pageController.nextPage(
                                     duration: Duration(milliseconds: 300),
                                     curve: Curves.easeInOut);
                               }
+                              bool? testOnBoadingSkipped =
+                                  SharedPrefService().getOnboadingDoneBool();
+                              log('onBoading Skipped $testOnBoadingSkipped');
                             }),
                       )
                     ],
