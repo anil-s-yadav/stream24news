@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stream24news/auth/auth_service.dart';
-import 'package:stream24news/auth/create_account/select_country.dart';
+import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
+
+import 'select_cuntory.dart';
 
 class SelectProfilePhoto extends StatefulWidget {
   const SelectProfilePhoto({super.key});
@@ -77,52 +79,67 @@ class _SelectProfilePhotoState extends State<SelectProfilePhoto> {
                   },
                 ),
               ),
-              const SizedBox(height: 20),
-              selectedIndex != null
-                  ? CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors
-                          .primaries[selectedIndex! % Colors.primaries.length]
-                          .shade200,
-                      child: SvgPicture.network(
-                        'https://api.dicebear.com/7.x/adventurer/svg?seed=$selectedIndex',
-                      ),
-                    )
-                  : const SizedBox(),
-              const SizedBox(height: 20),
-              IconButton(
-                onPressed: () async {
-                  if (selectedIndex != null) {
-                    String selectedPhotoUrl =
-                        'https://api.dicebear.com/7.x/adventurer/svg?seed=$selectedIndex';
+              sizedBoxH10(context),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  selectedIndex != null
+                      ? CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors
+                              .primaries[
+                                  selectedIndex! % Colors.primaries.length]
+                              .shade200,
+                          child: SvgPicture.network(
+                            'https://api.dicebear.com/7.x/adventurer/svg?seed=$selectedIndex',
+                          ),
+                        )
+                      : const SizedBox(),
+                  IconButton(
+                    onPressed: () async {
+                      if (selectedIndex != null) {
+                        String selectedPhotoUrl =
+                            'https://api.dicebear.com/7.x/adventurer/svg?seed=$selectedIndex';
 
-                    await AuthService().updateUserProfile(
-                      name: null,
-                      photoUrl: selectedPhotoUrl,
-                    );
-                    await SharedPrefService().setProfilePhoto(selectedPhotoUrl);
+                        bool isLoggedIn = AuthService().isUserLoggedIn();
 
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const SelectCountry(commingFrom: ''),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text("Please select a profile photo!")),
-                    );
-                  }
-                },
-                iconSize: 50,
-                style: IconButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.surface,
-                ),
-                icon: const Icon(Icons.arrow_forward_ios_rounded),
-              ),
+                        if (isLoggedIn) {
+                          try {
+                            await AuthService().updateUserProfile(
+                              name: null,
+                              photoUrl: selectedPhotoUrl,
+                            );
+                          } catch (e) {
+                            debugPrint("Error updating user profile: $e");
+                          }
+                        }
+
+                        // await SharedPrefService()
+                        //     .setProfilePhoto(selectedPhotoUrl);
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const SelectCuntory(commingFrom: ''),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Please select a profile photo!")),
+                        );
+                      }
+                    },
+                    iconSize: 50,
+                    style: IconButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.surface,
+                    ),
+                    icon: const Icon(Icons.arrow_forward_ios_rounded),
+                  ),
+                ],
+              )
             ],
           ),
         ),

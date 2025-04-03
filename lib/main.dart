@@ -9,6 +9,7 @@ import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/theme_provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'auth/auth_service.dart';
 import 'firebase_options.dart';
 import 'auth/login/login_options_page.dart';
 import 'onboarding_screen/onboarding.dart';
@@ -27,7 +28,9 @@ Future<void> main() async {
     ),
   );
 
-  configLoading(); // Configure loading styles
+  configLoading();
+  // Configure loading styles
+
   // runApp(
   //   ChangeNotifierProvider(
   //   create: (_) => ThemeProvider(),
@@ -64,13 +67,14 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     setState(() {
-      isLogin = SharedPrefService().getLoginDoneBool() ?? false;
+      isLogin = AuthService().isUserLoggedIn();
+
       isBoadingScreenDone = SharedPrefService().getOnboadingDoneBool() ?? false;
       isLoginSkipped = SharedPrefService().getLoginSkippedBool() ?? false;
     });
-    log('onBoading Main.dart $isBoadingScreenDone');
-    log('user login or not Main.dart $isLogin');
-    log('login is skipped Main.dart $isLoginSkipped');
+    log('Main.dart: onBoading  $isBoadingScreenDone');
+    log('Main.dart: user login or not $isLogin');
+    log('Main.dart: login is skipped $isLoginSkipped');
   }
 
   @override

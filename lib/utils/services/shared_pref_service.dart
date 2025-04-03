@@ -25,13 +25,13 @@ class SharedPrefService {
     }
   }
 
-  Future<void> setLoginDoneBool(bool value) async {
-    await _storage?.setBool(LocalStorageKeys.isLoggedIn, value);
-  }
+  // Future<void> setLoginDoneBool(bool value) async {
+  //   await _storage?.setBool(LocalStorageKeys.isLoggedIn, value);
+  // }
 
-  bool? getLoginDoneBool() {
-    return _storage?.getBool(LocalStorageKeys.isLoggedIn);
-  }
+  // bool? getLoginDoneBool() {
+  //   return _storage?.getBool(LocalStorageKeys.isLoggedIn);
+  // }
 
   Future<void> setLoginSkippedBool(bool value) async {
     await _storage?.setBool(LocalStorageKeys.skippedDone, value);
@@ -65,17 +65,17 @@ class SharedPrefService {
     return _storage?.getStringList(LocalStorageKeys.country);
   }
 
-  Future<void> setProfilePhoto(String value) async {
-    await _storage?.setString(LocalStorageKeys.profilePhoto, value);
-  }
+  // Future<void> setProfilePhoto(String value) async {
+  //   await _storage?.setString(LocalStorageKeys.profilePhoto, value);
+  // }
 
-  String? getProfilePhoto() {
-    return _storage?.getString(LocalStorageKeys.profilePhoto);
-  }
+  // String? getProfilePhoto() {
+  //   return _storage?.getString(LocalStorageKeys.profilePhoto);
+  // }
 }
 
 class LocalStorageKeys {
-  static const isLoggedIn = 'isLoggedIn_key';
+  // static const isLoggedIn = 'isLoggedIn_key';
   static const skippedDone = 'skippedDone_key';
   static const isOnboading = 'isOnboading_key';
   static const country = 'country_key';

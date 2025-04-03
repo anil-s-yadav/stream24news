@@ -8,7 +8,6 @@ import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 
 import '../auth/login/login_options_page.dart';
-import '../utils/componants/bottom_navbar.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});

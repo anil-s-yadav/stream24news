@@ -4,7 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:stream24news/auth/create_account/list_data/language_data.dart';
+import 'package:stream24news/auth/auth_service.dart';
+import 'package:stream24news/auth/create_account/select_cuntory.dart';
+import 'package:stream24news/auth/create_account/select_language.dart';
+import 'package:stream24news/auth/create_account/select_profile_photo.dart';
 import 'package:stream24news/dashboard/livetvpage/livetvpage.dart';
 import 'package:stream24news/samplepage.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
@@ -25,44 +28,72 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  //int selectedIndex = -1;
   final List<Map<String, dynamic>> _categories = categories;
-
   @override
   void initState() {
     super.initState();
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    User? user = auth.currentUser;
+    loadUser();
+  }
+
+  void loadUser() async {
+    User? user = AuthService().getUser();
+
     if (user != null) {
-      log(user.uid.toString());
-      log(user.email.toString());
-      log(user.displayName.toString());
-      log(user.emailVerified.toString());
-      log(user.photoURL.toString());
+      log("If user is not null");
+      log('HomePage Init uid: ${user.uid}');
+      log('HomePage Init email: ${user.email}');
+      log('HomePage Init name: ${user.displayName}');
+      log('HomePage Init: Email Verified: ${user.emailVerified}');
+      log('HomePage Init photo: ${user.photoURL}');
+      log('HomePage Init number: ${user.phoneNumber}');
     } else {
-      log('Homepage : user null');
+      log('Homepage: user null');
     }
 
-    // testing letter delete
-    bool isLogintest = false;
-    bool isBoadingScreenDone = false;
-    bool isLoginSkipped = false;
-    late dynamic countory;
-    late dynamic languages;
+    // Get stored values
+    bool isBoadingScreenDone =
+        SharedPrefService().getOnboadingDoneBool() ?? false;
+    bool isLogintest = user != null ? true : false;
+    bool isLoginSkipped = SharedPrefService().getLoginSkippedBool() ?? false;
+    List<String>? countory = SharedPrefService().getCounty();
+    List<String>? languages = SharedPrefService().getLanguage();
+    // String? profilephoto = SharedPrefService().getProfilePhoto();
 
-    setState(() {
-      isBoadingScreenDone = SharedPrefService().getOnboadingDoneBool() ?? false;
-      isLogintest = SharedPrefService().getLoginDoneBool() ?? false;
-      isLoginSkipped = SharedPrefService().getLoginSkippedBool() ?? false;
-      countory = SharedPrefService().getCounty();
-      languages = SharedPrefService().getLanguage();
+    log('HomePage: onBoading $isBoadingScreenDone');
+    log('HomePage: user login or not $isLogintest');
+    log('HomePage: login is skipped $isLoginSkipped');
+    log('HomePage: countary: $countory');
+    log('HomePage: languages: $languages');
+    // log('HomePage: photo: $profilephoto');
+
+    // Delay navigation to prevent UI issues
+    Future.delayed(Duration.zero, () {
+      // if (profilephoto == null || profilephoto.isEmpty) {
+      //   Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => const SelectProfilePhoto()),
+      //   );
+      //   return;
+      // }
+
+      if (countory == null || countory.isEmpty) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const SelectCuntory(commingFrom: "")),
+        );
+        return;
+      }
+
+      if (languages == null || languages.isEmpty) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const SelectLanguage(commingFrom: "")),
+        );
+        return;
+      }
     });
-    log('onBoading Main.dart $isBoadingScreenDone');
-    log('user login or not Main.dart $isLogintest');
-    log('login is skipped Main.dart $isLoginSkipped');
-    log('countary: $countory');
-    log('languages: $languages');
-    //detele till here
   }
 
   @override

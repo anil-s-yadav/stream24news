@@ -21,7 +21,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool? isLogin = true;
+  bool isLoggedIn = false;
   List<String>? language;
   late List<String>? countrty;
 
@@ -29,7 +29,9 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     setState(() {
-      isLogin = SharedPrefService().getLoginDoneBool();
+      // isLogin = SharedPrefService().getLoginDoneBool();
+      isLoggedIn = AuthService().isUserLoggedIn();
+
       language = SharedPrefService().getLanguage() ?? ["English", "en"];
       countrty = SharedPrefService().getCounty() ??
           ["https://flagcdn.com/36x27/in.png", "india", "In"];
@@ -197,7 +199,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onTap: () {}),
               GestureDetector(
                 onTap: () {
-                  if (isLogin == true) {
+                  if (isLoggedIn) {
                     logOut();
                     SharedPrefService().clearAllPref();
                   } else {
@@ -214,7 +216,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     size: 26,
                     color: Theme.of(context).colorScheme.error,
                   ),
-                  title: Text(isLogin == true ? "Logout" : "Sign in",
+                  title: Text(isLoggedIn ? "Logout" : "Sign in",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.error,

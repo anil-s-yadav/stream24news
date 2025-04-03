@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/auth/auth_service.dart';
@@ -238,8 +239,7 @@ class _CreateAccountState extends State<CreateAccount> {
   }
 
   void signUp() async {
-    EasyLoading.show(status: 'Creating account...'); // Show loading
-
+    EasyLoading.show(status: 'Creating account...');
     try {
       final user =
           await AuthService().createUserWithEmailAndPassword(email, password);
@@ -250,19 +250,46 @@ class _CreateAccountState extends State<CreateAccount> {
         EasyLoading.dismiss(); // Hide loading
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Account created! Verify your email.")),
+          const SnackBar(
+            content: Text("Account created! Verify your email."),
+            backgroundColor: Colors.greenAccent,
+          ),
         );
 
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const SelectProfilePhoto()),
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => const SelectProfilePhoto()));
       }
-    } catch (e) {
-      EasyLoading.dismiss(); // Hide loading on error
+    } on FirebaseAuthException catch (e) {
+      EasyLoading.dismiss();
+      String errorMessage = "An error occurred. Please try again.";
 
+      if (e.code == 'email-already-in-use') {
+        errorMessage =
+            "This email is already registered. Please Login instead.";
+      } else if (e.code == 'invalid-email') {
+        errorMessage = "Invalid email format. Please enter a valid email.";
+      } else if (e.code == 'weak-password') {
+        errorMessage = "Your password is too weak. Use a stronger password.";
+      } else if (e.code == 'operation-not-allowed') {
+        errorMessage = "Signing up with email/password is disabled.";
+      } else {
+        errorMessage = "Firebase Error: ${e.message}";
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: ${e.toString()}")),
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      EasyLoading.dismiss();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Something went wrong. Try again.\nError: $e"),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }

@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/auth/login/forgot_password.dart';
 import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
@@ -75,8 +78,8 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   controller: _passwordController,
                   validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 8) {
-                      return 'At least 8 characters long.';
+                    if (value == null || value.isEmpty || value.length < 6) {
+                      return 'At least 6 characters long.';
                     }
                     return null;
                   },
@@ -171,17 +174,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _signIn() async {
+    EasyLoading.show(status: 'Logging...');
+
     try {
       final user = await _myAuth.loginUserWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
       if (user != null) {
-        print("User ID: ${user.uid}");
-        print("Name: ${user.displayName}");
-        print("Email: ${user.email}");
-        print("Phone: ${user.phoneNumber}");
-        print("Photo URL: ${user.photoURL}");
+        EasyLoading.dismiss();
         showCustomDialog();
       }
     } on FirebaseAuthException catch (e) {
@@ -206,8 +207,10 @@ class _LoginPageState extends State<LoginPage> {
         default:
           errorMessage = "An error occurred. Please try again.";
       }
+      EasyLoading.dismiss();
       _showErrorMessage(errorMessage);
     } catch (e) {
+      EasyLoading.dismiss();
       _showErrorMessage("Something went wrong. Please try again.");
     }
   }
@@ -235,11 +238,10 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-    // SharedPrefService().setLoginDoneBool(true);
-
     await Future.delayed(const Duration(seconds: 3));
 
     if (context.mounted) {
+      Navigator.pop(context);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const BottomNavbar()),

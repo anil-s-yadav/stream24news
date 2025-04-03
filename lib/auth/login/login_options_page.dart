@@ -1,5 +1,10 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/auth/create_account/select_cuntory.dart';
+import 'package:stream24news/auth/create_account/select_profile_photo.dart';
 import 'package:stream24news/auth/login/login_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
@@ -40,12 +45,11 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
                   GestureDetector(
                     onTap: () {
                       //shared preferences for storing skipped value is on sign_up_done_page
-                      Navigator.pushReplacement(
+                      Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const SelectCuntory(
-                                    commingFrom: '',
-                                  )));
+                              builder: (context) =>
+                                  const SelectProfilePhoto()));
                       // Navigator.pushReplacement(
                       //     context,
                       //     MaterialPageRoute(
@@ -72,8 +76,15 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
                               color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
-                  loginOption("lib/assets/images/google_login.png",
-                      "Continue with Google"),
+                  GestureDetector(
+                    onTap: () async {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text("data")));
+                      handleGoogleSignIn();
+                    },
+                    child: loginOption("lib/assets/images/google_login.png",
+                        "Continue with Google"),
+                  ),
                   loginOption("lib/assets/images/apple_login.png",
                       "Continue with Apple"),
                   loginOption("lib/assets/images/facebook_login.png",
@@ -166,5 +177,31 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
         ),
       ),
     );
+  }
+
+  void handleGoogleSignIn() async {
+    try {
+      UserCredential? userCredential = await AuthService().loginWithGoogle();
+
+      if (userCredential != null) {
+        User? user = userCredential.user;
+        log("Google Sign-In Successful: ${user?.displayName}");
+
+        // Navigate to MainScreen or HomePage after login
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SelectProfilePhoto()),
+        );
+      } else {
+        log("Google Sign-In canceled by user.");
+      }
+    } catch (e) {
+      log("Error during Google Sign-In: $e");
+
+      // Show error message to user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Google Sign-In failed. Please try again.")),
+      );
+    }
   }
 }

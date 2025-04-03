@@ -2,11 +2,13 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:stream24news/auth/login/login_options_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
+import '../../auth/auth_service.dart';
 import '../../features/settings/settings_page.dart';
 
 class Profilepage extends StatefulWidget {
@@ -20,8 +22,9 @@ class _ProfilepageState extends State<Profilepage> {
   final List<String> _setHomepageList = ["Home", "Live TV", "Articles"];
   String _currentSelectedValue = "Home";
   User? user;
-  bool isLogin = false;
+  // bool isLogin = false;
   String photo = "";
+  bool isLoggedIn = false;
 
   @override
   void initState() {
@@ -30,16 +33,17 @@ class _ProfilepageState extends State<Profilepage> {
   }
 
   Future<void> _loadUserData() async {
-    final prefService = SharedPrefService();
-    bool loginStatus = prefService.getLoginDoneBool() ?? false;
-    String profilePhoto = prefService.getProfilePhoto() ?? "";
+    isLoggedIn = AuthService().isUserLoggedIn();
+
+    // final prefService = SharedPrefService();
+    // String profilePhoto = prefService.getProfilePhoto() ?? "";
 
     setState(() {
-      isLogin = loginStatus;
-      photo = profilePhoto;
-      user = FirebaseAuth.instance.currentUser;
+      user = AuthService().getUser();
+      photo =
+          user?.photoURL ?? 'https://demofree.sirv.com/nope-not-here.jpg?w=150';
     });
-    log('User photo: $photo');
+    // log('User photo: $photo');
   }
 
   @override
@@ -63,16 +67,21 @@ class _ProfilepageState extends State<Profilepage> {
       body: Column(
         children: [
           Visibility(
-            visible: isLogin,
+            visible: isLoggedIn,
             child: Row(
               children: [
                 sizedBoxW15(context),
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: photo.isNotEmpty
-                      ? CachedNetworkImageProvider(photo)
-                      : const AssetImage("lib/assets/images/profile.png")
-                          as ImageProvider,
+                  child: (photo.isNotEmpty)
+                      ? SvgPicture.network(
+                          photo,
+                          width: 100,
+                          height: 100,
+                          placeholderBuilder: (BuildContext context) =>
+                              const CircularProgressIndicator(),
+                        )
+                      : Image.asset("lib/assets/images/profile.png"),
                 ),
                 sizedBoxW20(context),
                 Column(
@@ -87,7 +96,7 @@ class _ProfilepageState extends State<Profilepage> {
             ),
           ),
           Visibility(
-            visible: !isLogin,
+            visible: !isLoggedIn,
             child: GestureDetector(
               onTap: () => Navigator.pushReplacement(
                 context,
