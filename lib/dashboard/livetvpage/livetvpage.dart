@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
+import '../../auth/create_account/list_data/language_data.dart';
 import '../../utils/componants/my_widgets.dart';
 
 class LiveTvPage extends StatefulWidget {
@@ -100,22 +102,29 @@ class _LiveTvPageState extends State<LiveTvPage> {
                           Radius.circular(8),
                         ),
                       ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "lib/assets/images/profile.png",
-                              scale: 1.5,
-                            ),
-                            sizedBoxH5(context),
-                            Text(
-                              maxLines: 1,
-                              "Channel Name",
-                              style: Theme.of(context).textTheme.labelSmall,
-                            )
-                          ],
+                      child: Center(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.1,
+                                child: CachedNetworkImage(
+                                    scale: 10,
+                                    imageUrl:
+                                        "https://firebasestorage.googleapis.com/v0/b/live-tv-6f21f.appspot.com/o/imageContent-834-j5m9nrrs-m1.png?alt=media&token=0045e79c-b2da-4805-b25b-5b202ee71a4d"),
+                              ),
+                              sizedBoxH5(context),
+                              Text(
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                "NDTV India",
+                                style: Theme.of(context).textTheme.labelSmall,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -212,11 +221,12 @@ class _LiveTvPageState extends State<LiveTvPage> {
 
                     // List of Filters
                     ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      controller: scrollController, // Enables smooth scrolling
+                      physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true, // Prevents infinite height issues
-                      itemCount: 10,
+                      itemCount: languages.length,
                       itemBuilder: (context, index) {
+                        final languageList = languages.entries.toList();
+
                         return ListTile(
                           leading: Checkbox(
                             value:
@@ -225,7 +235,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
                               // Handle checkbox state change
                             },
                           ),
-                          title: Text("Language ${index + 1}"),
+                          title: Text(languageList[index].key),
                         );
                       },
                     ),

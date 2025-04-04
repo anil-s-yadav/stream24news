@@ -2,14 +2,13 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/auth/create_account/select_cuntory.dart';
 import 'package:stream24news/auth/create_account/select_profile_photo.dart';
 import 'package:stream24news/auth/login/login_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
-import 'package:stream24news/utils/services/shared_pref_service.dart';
-
 import '../../utils/componants/bottom_navbar.dart';
 import '../create_account/create_account.dart';
 
@@ -48,8 +47,9 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const SelectProfilePhoto()));
+                              builder: (context) => const SelectCuntory(
+                                    commingFrom: '',
+                                  )));
                       // Navigator.pushReplacement(
                       //     context,
                       //     MaterialPageRoute(
@@ -78,8 +78,6 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text("data")));
                       handleGoogleSignIn();
                     },
                     child: loginOption("lib/assets/images/google_login.png",
@@ -180,27 +178,27 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
   }
 
   void handleGoogleSignIn() async {
+    EasyLoading.show(status: 'Logging...');
     try {
       UserCredential? userCredential = await AuthService().loginWithGoogle();
 
       if (userCredential != null) {
         User? user = userCredential.user;
         log("Google Sign-In Successful: ${user?.displayName}");
-
-        // Navigate to MainScreen or HomePage after login
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SelectProfilePhoto()),
+          MaterialPageRoute(builder: (context) => const BottomNavbar()),
         );
       } else {
         log("Google Sign-In canceled by user.");
       }
+      EasyLoading.dismiss();
     } catch (e) {
       log("Error during Google Sign-In: $e");
-
-      // Show error message to user
+      EasyLoading.dismiss();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Google Sign-In failed. Please try again.")),
+        const SnackBar(
+            content: Text("Google Sign-In failed. Please try again.")),
       );
     }
   }

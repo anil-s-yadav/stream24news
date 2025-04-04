@@ -200,8 +200,7 @@ class _SettingsPageState extends State<SettingsPage> {
               GestureDetector(
                 onTap: () {
                   if (isLoggedIn) {
-                    logOut();
-                    SharedPrefService().clearAllPref();
+                    logOut(); //dialog box call
                   } else {
                     Navigator.pushReplacement(
                       context,
@@ -283,7 +282,8 @@ class _SettingsPageState extends State<SettingsPage> {
             onPressed: () async {
               try {
                 await AuthService().signOut();
-                await SharedPrefService().clearAllPref();
+                //  await SharedPrefService().clearAllPref();
+                SharedPrefService().setLoginSkippedBool(false);
               } catch (e) {
                 log("Something went wrong. Please try again.");
               }

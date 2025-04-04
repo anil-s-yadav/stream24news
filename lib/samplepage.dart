@@ -1,7 +1,11 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
+import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 class Samplepage extends StatelessWidget {
@@ -10,9 +14,7 @@ class Samplepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("data"),
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Center(
           child: Column(children: [
@@ -23,6 +25,7 @@ class Samplepage extends StatelessWidget {
               MyTabIcons.home_button_fill,
               color: Theme.of(context).colorScheme.primary,
             ),
+            /*
             Container(
               margin: const EdgeInsets.all(10),
               width: 500,
@@ -48,32 +51,24 @@ class Samplepage extends StatelessWidget {
             Lottie.asset("lib/assets/lottie_json/scrollphone.json"),
             Lottie.asset("lib/assets/lottie_json/test.json"),
             Lottie.asset("lib/assets/lottie_json/test1.json"),
+            */
+
+            sizedBoxH30(context),
+            ElevatedButton(
+                onPressed: () {
+                  test();
+                },
+                child: Text("Test Api")),
           ]),
         ),
       ),
     );
   }
 }
-//  child: Container(
-//                           width: 100,
-//                           margin: const EdgeInsets.only(right: 8),
-//                           decoration: BoxDecoration(
-//                               color: selectedIndex != index
-//                                   ? Theme.of(context).colorScheme.surface
-//                                   : Theme.of(context).colorScheme.surfaceTint,
-//                               borderRadius: BorderRadius.circular(10),
-//                               border: Border.all(
-//                                   width: 1,
-//                                   color:
-//                                       Theme.of(context).colorScheme.primary)),
-//                           child: Center(
-//                             child: Text(
-//                               _categories[index]["title"].toString(),
-//                               style: TextStyle(
-//                                 color: selectedIndex != index
-//                                     ? Theme.of(context).colorScheme.secondary
-//                                     : Theme.of(context).colorScheme.surface,
-//                               ),
-//                             ),
-//                           ),
-//                         ),
+
+test() async {
+  String email = "anilyadav44x@gmail.com";
+  final signInMethods =
+      await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+  log("Sign-in methods found: $signInMethods");
+}

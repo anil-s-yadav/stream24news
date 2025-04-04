@@ -26,7 +26,6 @@ class _LoginPageState extends State<LoginPage> {
 
   final _formKey = GlobalKey<FormState>();
   bool passwordVisibility = true;
-  final _myAuth = AuthService();
 
   String? validateEmail(String? email) {
     RegExp emailRegEx = RegExp(r'^[\w\.-]+@[\w-]+\.\w{2,3}(\.\w{2,3})?$');
@@ -71,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  validator: validateEmail,
+                  // validator: validateEmail,
                 ),
                 sizedBoxH30(context),
                 Text("Password", style: Theme.of(context).textTheme.titleSmall),
@@ -80,6 +79,8 @@ class _LoginPageState extends State<LoginPage> {
                   validator: (value) {
                     if (value == null || value.isEmpty || value.length < 6) {
                       return 'At least 6 characters long.';
+                    } else if (value.length > 26) {
+                      return "Password can't be 25 characters long.";
                     }
                     return null;
                   },
@@ -175,54 +176,56 @@ class _LoginPageState extends State<LoginPage> {
 
   _signIn() async {
     EasyLoading.show(status: 'Logging...');
-
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
     try {
-      final user = await _myAuth.loginUserWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+      final user =
+          await AuthService().loginUserWithEmailAndPassword(email, password);
+
       if (user != null) {
-        EasyLoading.dismiss();
         showCustomDialog();
       }
+      EasyLoading.dismiss();
     } on FirebaseAuthException catch (e) {
-      String errorMessage;
-      switch (e.code) {
-        case 'user-not-found':
-          errorMessage = "User not registered. Please sign up.";
-          break;
-        case 'wrong-password':
-          errorMessage = "Incorrect password. Try again.";
-          break;
-        case 'invalid-email':
-          errorMessage = "Invalid email format.";
-          break;
-        case 'invalid-credential':
-          errorMessage =
-              "Invalid credentials. Please check email and password.";
-          break;
-        case 'too-many-requests':
-          errorMessage = "Too many failed attempts. Try again later.";
-          break;
-        default:
-          errorMessage = "An error occurred. Please try again.";
+      String errorMessage = e.code;
+      if (e.code == 'user-not-found') {
+        errorMessage = 'This email is not register, please signup!';
+      } else if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        errorMessage =
+            "Email or password is incorrect. \nOR\n If you Signup through Google, then please try signing in with Google";
+      } else if (e.code == 'too-many-requests') {
+        errorMessage = "Too many failed attempts. Try again later.";
       }
       EasyLoading.dismiss();
       _showErrorMessage(errorMessage);
     } catch (e) {
       EasyLoading.dismiss();
-      _showErrorMessage("Something went wrong. Please try again.");
+      _showErrorMessage("An error occurred. Please try again.");
     }
   }
 
   void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-        duration: Duration(seconds: 3),
-      ),
-    );
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              content: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.15,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      message.toString(),
+                      textAlign: TextAlign.center,
+                    ),
+                    sizedBoxH10(context),
+                    CloseButton(
+                      color: Colors.redAccent,
+                    )
+                  ],
+                ),
+              ),
+            ));
   }
 
   Future<void> showCustomDialog() async {

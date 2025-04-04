@@ -79,7 +79,9 @@ class _ProfilepageState extends State<Profilepage> {
                           width: 100,
                           height: 100,
                           placeholderBuilder: (BuildContext context) =>
-                              const CircularProgressIndicator(),
+                              CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         )
                       : Image.asset("lib/assets/images/profile.png"),
                 ),
@@ -117,10 +119,13 @@ class _ProfilepageState extends State<Profilepage> {
             ),
           ),
           sizedBoxH20(context),
-          MyLightContainer(
-            height: MediaQuery.of(context).size.height * 0.05,
-            width: MediaQuery.of(context).size.width * 0.9,
-            child: const Text("Edit Profile"),
+          Visibility(
+            visible: isLoggedIn,
+            child: MyLightContainer(
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: const Text("Edit Profile"),
+            ),
           ),
           MyLightContainer(
             height: MediaQuery.of(context).size.height * 0.05,
