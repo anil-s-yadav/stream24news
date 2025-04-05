@@ -66,9 +66,8 @@ class _ProfilepageState extends State<Profilepage> {
       ),
       body: Column(
         children: [
-          Visibility(
-            visible: isLoggedIn,
-            child: Row(
+          if (isLoggedIn)
+            Row(
               children: [
                 sizedBoxW15(context),
                 CircleAvatar(
@@ -96,10 +95,8 @@ class _ProfilepageState extends State<Profilepage> {
                 )
               ],
             ),
-          ),
-          Visibility(
-            visible: !isLoggedIn,
-            child: GestureDetector(
+          if (!isLoggedIn)
+            GestureDetector(
               onTap: () => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -117,16 +114,13 @@ class _ProfilepageState extends State<Profilepage> {
                 ),
               ),
             ),
-          ),
           sizedBoxH20(context),
-          Visibility(
-            visible: isLoggedIn,
-            child: MyLightContainer(
+          if (isLoggedIn)
+            MyLightContainer(
               height: MediaQuery.of(context).size.height * 0.05,
               width: MediaQuery.of(context).size.width * 0.9,
               child: const Text("Edit Profile"),
             ),
-          ),
           MyLightContainer(
             height: MediaQuery.of(context).size.height * 0.05,
             width: MediaQuery.of(context).size.width * 0.9,

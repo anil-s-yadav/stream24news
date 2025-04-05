@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
-import 'category_select.dart';
+import 'category_list/categories_list.dart';
+import 'selected_category_page.dart';
 
 class AllCategoriesPage extends StatefulWidget {
   const AllCategoriesPage({super.key});
@@ -29,8 +32,20 @@ class _AllCategoriesPageState extends State<AllCategoriesPage> {
             childAspectRatio: 1.2,
           ),
           itemBuilder: (context, index) {
-            return categoryCardItem(
-              categories: _categoriesList[index],
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SelectedCategoryPage(
+                      selectedCategory: _categoriesList[index],
+                    ),
+                  ),
+                );
+              },
+              child: categoryCardItem(
+                categories: _categoriesList[index],
+              ),
             );
           },
         ),

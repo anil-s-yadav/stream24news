@@ -15,9 +15,11 @@ import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 import '../../features/all_categories/all_categories.dart';
-import '../../features/all_categories/category_select.dart';
+import '../../features/all_categories/category_list/categories_list.dart';
+import '../../features/all_categories/selected_category_page.dart';
 import '../../features/bookmark/bookmark_page.dart';
 import '../../features/notification/notification.dart';
+import '../../features/trending_page/trending_page.dart';
 import '../../utils/services/shared_pref_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -213,7 +215,16 @@ class _HomePageState extends State<HomePage> {
                         ))),
               ),
               sizedBoxH10(context),
-              titleheading(context, "Trending", "See All"),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TrendingPage(
+                                  previousWidget: 'Trending',
+                                )));
+                  },
+                  child: titleheading(context, "Trending", "See All")),
               sizedBoxH10(context),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -255,9 +266,14 @@ class _HomePageState extends State<HomePage> {
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
                         onTap: () {
-                          setState(() {
-                            //  selectedIndex = index;
-                          });
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SelectedCategoryPage(
+                                selectedCategory: _categories[index],
+                              ),
+                            ),
+                          );
                         },
                         child: categoryCardItem(
                           categories: _categories[index],
@@ -266,7 +282,16 @@ class _HomePageState extends State<HomePage> {
                     }),
               ),
               sizedBoxH30(context),
-              titleheading(context, "Recomanded", "See All"),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TrendingPage(
+                                  previousWidget: 'Recomanded',
+                                )));
+                  },
+                  child: titleheading(context, "Recomanded", "See All")),
               recomendedPosts(context),
               recomendedPosts(context),
               Container(
