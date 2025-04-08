@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
 class NotificationSettings extends StatefulWidget {

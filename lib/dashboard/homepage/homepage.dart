@@ -7,7 +7,6 @@ import 'package:lottie/lottie.dart';
 import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/auth/create_account/select_cuntory.dart';
 import 'package:stream24news/auth/create_account/select_language.dart';
-import 'package:stream24news/auth/create_account/select_profile_photo.dart';
 import 'package:stream24news/dashboard/livetvpage/livetvpage.dart';
 import 'package:stream24news/samplepage.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
