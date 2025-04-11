@@ -26,10 +26,6 @@ Future<void> main() async {
       child: const MyApp(),
     ),
   );
-
-  configLoading();
-  // Configure loading styles
-
   // runApp(
   //   ChangeNotifierProvider(
   //   create: (_) => ThemeProvider(),
@@ -41,6 +37,7 @@ Future<void> main() async {
   //     ),),
   //   ),
   // );
+  configLoading();
 }
 
 void configLoading() {
