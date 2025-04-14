@@ -1,38 +1,20 @@
-import 'dart:developer';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stream24news/dashboard/livetvpage/bloc/live_tv_bloc.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
-import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 import '../../auth/create_account/list_data/language_data.dart';
 import '../../utils/componants/my_widgets.dart';
 
-class LiveTvPage extends StatefulWidget {
-  const LiveTvPage({super.key});
+class LiveTvPageTest extends StatefulWidget {
+  const LiveTvPageTest({super.key});
 
   @override
-  State<LiveTvPage> createState() => _LiveTvPageState();
+  State<LiveTvPageTest> createState() => _LiveTvPageStateTest();
 }
 
-class _LiveTvPageState extends State<LiveTvPage> {
+class _LiveTvPageStateTest extends State<LiveTvPageTest> {
   bool isSeachVisible = false;
-  @override
-  void initState() {
-    super.initState();
-    loadData();
-  }
-
-  loadData() {
-    List<String>? regionList = SharedPrefService().getCounty();
-    String region = regionList![2];
-    log('Country list :  $regionList');
-    log('Country code:  $region');
-    context.read<LiveTvBloc>().add(LiveTvDataLoadEvent(resion: region));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,93 +67,72 @@ class _LiveTvPageState extends State<LiveTvPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.1,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Theme.of(context).colorScheme.secondaryContainer,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.1,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                ),
+                child: Center(
+                    child: Text("Banner ad",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ))),
               ),
-              child: Center(
-                  child: Text("Banner ad",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ))),
-            ),
-            sizedBoxH15(context),
-            Expanded(
-              child: BlocBuilder<LiveTvBloc, LiveTvState>(
-                builder: (context, state) {
-                  if (state is LiveTvInitialState) {
-                    return channelsLoading(context);
-                  } else if (state is LiveTvSuccessState) {
-                    final channels = state.liveChannelModel;
-
-                    if (channels.isEmpty) {
-                      return const Center(child: Text("No channels available"));
-                    } else {
-                      return GridView.builder(
-                        padding: const EdgeInsets.all(10),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 0.8,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
+              sizedBoxH15(context),
+              GridView.count(
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 3,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+                shrinkWrap: true,
+                children: List.generate(
+                  20,
+                  (index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color:
+                            Theme.of(context).colorScheme.surfaceContainerLow,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
                         ),
-                        itemCount: channels.length,
-                        itemBuilder: (context, index) {
-                          final channel = channels[index];
-                          String language = languages.entries
-                              .firstWhere(
-                                  (entry) => entry.value == channel.language)
-                              .key;
-                          return Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerLow,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(8),
+                      ),
+                      child: Center(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.1,
+                                child: CachedNetworkImage(
+                                    scale: 10,
+                                    imageUrl:
+                                        "https://firebasestorage.googleapis.com/v0/b/live-tv-6f21f.appspot.com/o/imageContent-834-j5m9nrrs-m1.png?alt=media&token=0045e79c-b2da-4805-b25b-5b202ee71a4d"),
                               ),
-                            ),
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: Image.network(
-                                    channel.logo,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                                Text(channel.name,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                Text(language,
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .outline)),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    }
-                  } else if (state is LiveTvErrorState) {
-                    return Text("Error state");
-                  }
-                  return Center(child: const Text("error oitside if else"));
-                },
+                              sizedBoxH5(context),
+                              Text(
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                "NDTV India",
+                                style: Theme.of(context).textTheme.labelSmall,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -246,8 +207,6 @@ class _LiveTvPageState extends State<LiveTvPage> {
                             textWidget: Text("Newest First"), onPressed: () {}),
                         SecondaryButton(
                             textWidget: Text("Oldest First"), onPressed: () {}),
-                        SecondaryButton(
-                            textWidget: Text("Most Popular"), onPressed: () {}),
                       ],
                     ),
                     sizedBoxH20(context),
@@ -283,35 +242,6 @@ class _LiveTvPageState extends State<LiveTvPage> {
                   ],
                 ),
               ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  channelsLoading(BuildContext context) {
-    GridView.count(
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 3,
-      crossAxisSpacing: 10.0,
-      mainAxisSpacing: 10.0,
-      shrinkWrap: true,
-      children: List.generate(
-        12,
-        (index) {
-          return Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerLow,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(8),
-              ),
-            ),
-            child: Center(
-              child: SingleChildScrollView(
-                  child: Container(
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
-              )),
             ),
           );
         },

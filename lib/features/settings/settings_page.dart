@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stream24news/auth/create_account/select_cuntory.dart';
@@ -282,8 +283,6 @@ class _SettingsPageState extends State<SettingsPage> {
             onPressed: () async {
               try {
                 await AuthService().signOut();
-                //  await SharedPrefService().clearAllPref();
-                SharedPrefService().setLoginSkippedBool(false);
               } catch (e) {
                 log("Something went wrong. Please try again.");
               }

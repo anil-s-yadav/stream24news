@@ -72,6 +72,14 @@ class SharedPrefService {
   // String? getProfilePhoto() {
   //   return _storage?.getString(LocalStorageKeys.profilePhoto);
   // }
+
+  Future<void> setDefaultHomePage(String value) async {
+    await _storage?.setString(LocalStorageKeys.defaultHomePage, value);
+  } //"Home", "Live TV", "Articles"
+
+  String? getDefaultHomePage() {
+    return _storage?.getString(LocalStorageKeys.defaultHomePage);
+  }
 }
 
 class LocalStorageKeys {
@@ -81,4 +89,5 @@ class LocalStorageKeys {
   static const country = 'country_key';
   static const language = 'language_key';
   static const profilePhoto = 'language_key';
+  static const defaultHomePage = 'default_home_page';
 }

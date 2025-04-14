@@ -8,7 +8,8 @@ import '../../dashboard/livetvpage/livetvpage.dart';
 import '../../dashboard/newspage/newspage.dart';
 
 class BottomNavbar extends StatefulWidget {
-  const BottomNavbar({super.key});
+  final int index;
+  const BottomNavbar({super.key, this.index = 0}); // default to 0
 
   @override
   State<BottomNavbar> createState() => _BottomNavbarState();
@@ -16,7 +17,7 @@ class BottomNavbar extends StatefulWidget {
 
 class _BottomNavbarState extends State<BottomNavbar>
     with AutomaticKeepAliveClientMixin {
-  int selectedIndex = 0;
+  late int selectedIndex;
   late final PageController _pageController;
 
   @override
@@ -25,6 +26,7 @@ class _BottomNavbarState extends State<BottomNavbar>
   @override
   void initState() {
     super.initState();
+    selectedIndex = widget.index;
     _pageController = PageController(initialPage: selectedIndex);
   }
 

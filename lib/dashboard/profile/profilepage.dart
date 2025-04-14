@@ -20,7 +20,7 @@ class Profilepage extends StatefulWidget {
 
 class _ProfilepageState extends State<Profilepage> {
   final List<String> _setHomepageList = ["Home", "Live TV", "Articles"];
-  String _currentSelectedValue = "Home";
+  late String _currentSelectedValue;
   User? user;
   // bool isLogin = false;
   String photo = "";
@@ -34,16 +34,12 @@ class _ProfilepageState extends State<Profilepage> {
 
   Future<void> _loadUserData() async {
     isLoggedIn = AuthService().isUserLoggedIn();
-
-    // final prefService = SharedPrefService();
-    // String profilePhoto = prefService.getProfilePhoto() ?? "";
-
+    _currentSelectedValue = SharedPrefService().getDefaultHomePage() ?? "Home";
     setState(() {
       user = AuthService().getUser();
       photo =
-          user?.photoURL ?? 'https://demofree.sirv.com/nope-not-here.jpg?w=150';
+          user?.photoURL ?? 'https://demofree.sirv.com/nope-not-here.svg?w=150';
     });
-    // log('User photo: $photo');
   }
 
   @override
@@ -71,19 +67,18 @@ class _ProfilepageState extends State<Profilepage> {
               children: [
                 sizedBoxW15(context),
                 CircleAvatar(
-                  radius: 50,
-                  child: (photo.isNotEmpty)
-                      ? SvgPicture.network(
-                          photo,
-                          width: 100,
-                          height: 100,
-                          placeholderBuilder: (BuildContext context) =>
-                              CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        )
-                      : Image.asset("lib/assets/images/profile.png"),
-                ),
+                    radius: 50,
+                    child: SvgPicture.network(
+                      photo.isNotEmpty
+                          ? photo
+                          : "https://demofree.sirv.com/nope-not-here.svg?w=150",
+                      width: 100,
+                      height: 100,
+                      placeholderBuilder: (BuildContext context) =>
+                          CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )),
                 sizedBoxW20(context),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,6 +133,8 @@ class _ProfilepageState extends State<Profilepage> {
                   isDense: true,
                   onChanged: (newValue) {
                     setState(() => _currentSelectedValue = newValue.toString());
+                    SharedPrefService()
+                        .setDefaultHomePage(_currentSelectedValue);
                   },
                   items: _setHomepageList.map((String value) {
                     return DropdownMenuItem<String>(
