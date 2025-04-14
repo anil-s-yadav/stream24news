@@ -8,6 +8,7 @@ import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 import '../../auth/create_account/list_data/language_data.dart';
+import '../../features/video_play_screen/video_play_screen.dart';
 import '../../utils/componants/my_widgets.dart';
 
 class LiveTvPage extends StatefulWidget {
@@ -129,36 +130,44 @@ class _LiveTvPageState extends State<LiveTvPage> {
                               .firstWhere(
                                   (entry) => entry.value == channel.language)
                               .key;
-                          return Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerLow,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(8),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: Image.network(
-                                    channel.logo,
-                                    fit: BoxFit.contain,
-                                  ),
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => VideoPlayScreen()));
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerLow,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(8),
                                 ),
-                                Text(channel.name,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                Text(language,
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .outline)),
-                              ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: Image.network(
+                                      channel.logo,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                  Text(channel.name,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  Text(language,
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .outline)),
+                                ],
+                              ),
                             ),
                           );
                         },

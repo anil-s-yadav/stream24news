@@ -49,6 +49,9 @@ dependencies:
   bloc: ^9.0.0
   flutter_bloc: ^9.1.0
   equatable: ^2.0.7
+  video_player: ^2.7.1
+  chewie: ^1.7.4
+  android_pip: ^2.0.1
 
 
 
