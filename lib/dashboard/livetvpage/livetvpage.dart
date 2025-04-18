@@ -132,6 +132,12 @@ class _LiveTvPageState extends State<LiveTvPage> {
                               .key;
                           return GestureDetector(
                             onTap: () {
+                              // Navigator.pushAndRemoveUntil(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (_) => const VideoPlayScreen()),
+                              //   (route) => false,
+                              // );
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
