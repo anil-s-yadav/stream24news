@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -19,9 +20,17 @@ import 'utils/theme/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    log('Main.dart: Firebase initialization successful');
+    var snapshot = await FirebaseFirestore.instance.collection('news').get();
+    final news = snapshot.docs.map((doc) => doc.data()).toList();
+    log('News: $news');
+  } catch (e) {
+    log('Main.dart: Firebase initialization failed: $e');
+  }
   await SharedPrefService.init();
   runApp(
     ChangeNotifierProvider(
@@ -76,10 +85,10 @@ class _MyAppState extends State<MyApp> {
     isLoginSkipped = SharedPrefService().getLoginSkippedBool() ?? false;
     defaultHomePage = SharedPrefService().getDefaultHomePage() ?? "Home";
 
-    log('Main.dart: onBoading  $isBoadingScreenDone');
-    log('Main.dart: user login or not $isLogin');
-    log('Main.dart: login is skipped $isLoginSkipped');
-    log('Main.dart: defaultHomePage $defaultHomePage');
+    // log('Main.dart: onBoading  $isBoadingScreenDone');
+    // log('Main.dart: user login or not $isLogin');
+    // log('Main.dart: login is skipped $isLoginSkipped');
+    // log('Main.dart: defaultHomePage $defaultHomePage');
 
     setState(() {
       isDataReady = true;

@@ -40,13 +40,13 @@ class _HomePageState extends State<HomePage> {
     User? user = AuthService().getUser();
 
     if (user != null) {
-      log("If user is not null");
-      log('HomePage Init uid: ${user.uid}');
-      log('HomePage Init email: ${user.email}');
-      log('HomePage Init name: ${user.displayName}');
-      log('HomePage Init: Email Verified: ${user.emailVerified}');
-      log('HomePage Init photo: ${user.photoURL}');
-      log('HomePage Init number: ${user.phoneNumber}');
+      // log("If user is not null");
+      // log('HomePage Init uid: ${user.uid}');
+      // log('HomePage Init email: ${user.email}');
+      // log('HomePage Init name: ${user.displayName}');
+      // log('HomePage Init: Email Verified: ${user.emailVerified}');
+      // log('HomePage Init photo: ${user.photoURL}');
+      // log('HomePage Init number: ${user.phoneNumber}');
     } else {
       log('Homepage: user null');
     }
