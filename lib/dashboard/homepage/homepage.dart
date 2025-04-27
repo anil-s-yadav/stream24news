@@ -60,11 +60,11 @@ class _HomePageState extends State<HomePage> {
     List<String>? languages = SharedPrefService().getLanguage();
     // String? profilephoto = SharedPrefService().getProfilePhoto();
 
-    log('HomePage: onBoading $isBoadingScreenDone');
-    log('HomePage: user login or not $isLogintest');
-    log('HomePage: login is skipped $isLoginSkipped');
-    log('HomePage: countary: $countory');
-    log('HomePage: languages: $languages');
+    // log('HomePage: onBoading $isBoadingScreenDone');
+    // log('HomePage: user login or not $isLogintest');
+    // log('HomePage: login is skipped $isLoginSkipped');
+    // log('HomePage: countary: $countory');
+    // log('HomePage: languages: $languages');
     // log('HomePage: photo: $profilephoto');
 
     // Delay navigation to prevent UI issues

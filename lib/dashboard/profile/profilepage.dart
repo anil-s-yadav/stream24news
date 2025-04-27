@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +21,12 @@ class Profilepage extends StatefulWidget {
 
 class _ProfilepageState extends State<Profilepage> {
   final List<String> _setHomepageList = ["Home", "Live TV", "Articles"];
-  late String _currentSelectedValue;
+  String _currentSelectedValue = "Home";
+
   User? user;
   // bool isLogin = false;
-  String photo = "";
+  String photo = '';
+  Uint8List? imageBytes;
   bool isLoggedIn = false;
 
   @override
@@ -33,13 +36,18 @@ class _ProfilepageState extends State<Profilepage> {
   }
 
   Future<void> _loadUserData() async {
+    user = AuthService().getUser();
     isLoggedIn = AuthService().isUserLoggedIn();
     _currentSelectedValue = SharedPrefService().getDefaultHomePage() ?? "Home";
+
+    log("anil: ${user?.photoURL}");
     setState(() {
-      user = AuthService().getUser();
       photo =
           user?.photoURL ?? 'https://demofree.sirv.com/nope-not-here.svg?w=150';
+      imageBytes = SharedPrefService().getProfilePhoto();
     });
+    log("message: $photo");
+    log("message 2: $imageBytes");
   }
 
   @override
@@ -67,18 +75,21 @@ class _ProfilepageState extends State<Profilepage> {
               children: [
                 sizedBoxW15(context),
                 CircleAvatar(
-                    radius: 50,
-                    child: SvgPicture.network(
-                      photo.isNotEmpty
-                          ? photo
-                          : "https://demofree.sirv.com/nope-not-here.svg?w=150",
-                      width: 100,
-                      height: 100,
-                      placeholderBuilder: (BuildContext context) =>
-                          CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    )),
+                  radius: 50,
+                  child: imageBytes != null
+                      ? SvgPicture.memory(
+                          imageBytes!,
+                          width: 100,
+                          height: 100,
+                        )
+                      : SvgPicture.network(
+                          photo,
+                          width: 100,
+                          height: 100,
+                          placeholderBuilder: (BuildContext context) =>
+                              const CircularProgressIndicator(),
+                        ),
+                ),
                 sizedBoxW20(context),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // For base64 encoding
 
 class SharedPrefService {
   static final SharedPrefService _instance = SharedPrefService._internal();
@@ -65,13 +69,25 @@ class SharedPrefService {
     return _storage?.getStringList(LocalStorageKeys.country);
   }
 
-  // Future<void> setProfilePhoto(String value) async {
-  //   await _storage?.setString(LocalStorageKeys.profilePhoto, value);
-  // }
+  Future<void> setProfilePhoto(String value) async {
+    final response = await http.get(Uri.parse(value));
+    if (response.statusCode == 200) {
+      // Convert bytes to base64 string
+      String base64Image = base64Encode(response.bodyBytes);
+      // Save to SharedPreferences
+      await _storage?.setString(LocalStorageKeys.profilePhoto, base64Image);
+    } else {
+      throw Exception('Failed to load image');
+    }
+  }
 
-  // String? getProfilePhoto() {
-  //   return _storage?.getString(LocalStorageKeys.profilePhoto);
-  // }
+  Uint8List? getProfilePhoto() {
+    final base64Str = _storage?.getString(LocalStorageKeys.profilePhoto);
+    if (base64Str != null) {
+      return base64Decode(base64Str);
+    }
+    return null;
+  }
 
   Future<void> setDefaultHomePage(String value) async {
     await _storage?.setString(LocalStorageKeys.defaultHomePage, value);
@@ -88,6 +104,6 @@ class LocalStorageKeys {
   static const isOnboading = 'isOnboading_key';
   static const country = 'country_key';
   static const language = 'language_key';
-  static const profilePhoto = 'language_key';
+  static const profilePhoto = 'profile_photo_key';
   static const defaultHomePage = 'default_home_page';
 }

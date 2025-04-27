@@ -36,10 +36,10 @@ class AuthService {
       await cred.user?.sendEmailVerification();
       return cred.user;
     } on FirebaseAuthException catch (e) {
-      log("FirebaseAuthException (sign-up): ${e.code} - ${e.message}");
+      // log("FirebaseAuthException (sign-up): ${e.code} - ${e.message}");
       throw e;
     } catch (e) {
-      log("General Exception (sign-up): $e");
+      // log("General Exception (sign-up): $e");
       throw Exception("Something went wrong. Please try again.");
     }
   }
@@ -57,13 +57,13 @@ class AuthService {
       );
       return cred.user;
     } on FirebaseAuthException catch (e) {
-      log("FirebaseAuthException (login): ${e.code} - ${e.message}");
+      // log("FirebaseAuthException (login): ${e.code} - ${e.message}");
       throw FirebaseAuthException(
         code: e.code,
         message: e.message,
       );
     } catch (e) {
-      log("General Exception (login): $e");
+      // log("General Exception (login): $e");
       throw Exception(e.toString());
     }
   }
@@ -84,7 +84,7 @@ class AuthService {
 
       return await _auth.signInWithCredential(credential);
     } catch (e) {
-      log("Google Sign-In Error: $e");
+      // log("Google Sign-In Error: $e");
       throw Exception("Google sign-in failed. Please try again.");
     }
   }
@@ -99,10 +99,10 @@ class AuthService {
         await user.reload();
       }
     } on FirebaseAuthException catch (e) {
-      log("FirebaseAuthException (update profile): ${e.code} - ${e.message}");
+      // log("FirebaseAuthException (update profile): ${e.code} - ${e.message}");
       throw e;
     } catch (e) {
-      log("General Exception (update profile): $e");
+      // log("General Exception (update profile): $e");
       throw Exception("Failed to update profile. Please try again.");
     }
   }
@@ -129,7 +129,7 @@ class AuthService {
     try {
       await _auth.signOut();
     } catch (e) {
-      log("Error signing out: $e");
+      // log("Error signing out: $e");
       throw Exception("Error signing out. Please try again.");
     }
   }

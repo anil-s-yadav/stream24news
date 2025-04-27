@@ -15,7 +15,7 @@ class SelectedCategoryPage extends StatefulWidget {
 class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
   @override
   Widget build(BuildContext context) {
-    log(widget.selectedCategory['image']);
+    // log(widget.selectedCategory['image']);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.selectedCategory['title']),

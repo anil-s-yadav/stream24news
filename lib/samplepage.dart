@@ -68,5 +68,5 @@ test() async {
   String email = "anilyadav44x@gmail.com";
   final signInMethods =
       await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
-  log("Sign-in methods found: $signInMethods");
+  // log("Sign-in methods found: $signInMethods");
 }

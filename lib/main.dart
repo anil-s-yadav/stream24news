@@ -20,17 +20,11 @@ import 'utils/theme/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    log('Main.dart: Firebase initialization successful');
-    var snapshot = await FirebaseFirestore.instance.collection('news').get();
-    final news = snapshot.docs.map((doc) => doc.data()).toList();
-    log('News: $news');
-  } catch (e) {
-    log('Main.dart: Firebase initialization failed: $e');
-  }
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   await SharedPrefService.init();
   runApp(
     ChangeNotifierProvider(

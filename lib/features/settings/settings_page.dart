@@ -24,19 +24,23 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool isLoggedIn = false;
   List<String>? language;
-  late List<String>? countrty;
+  List<String>? countrty;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      // isLogin = SharedPrefService().getLoginDoneBool();
-      isLoggedIn = AuthService().isUserLoggedIn();
+    loadData();
+  }
 
-      language = SharedPrefService().getLanguage() ?? ["English", "en"];
-      countrty = SharedPrefService().getCounty() ??
-          ["https://flagcdn.com/36x27/in.png", "india", "In"];
-    });
+  void loadData() {
+    isLoggedIn = AuthService().isUserLoggedIn();
+
+    language = SharedPrefService().getLanguage() ?? ["English", "en"];
+    countrty = SharedPrefService().getCounty() ??
+        ["https://flagcdn.com/36x27/in.png", "india", "In"];
+
+    // log(" language: ${language}");
+    // log(" language: ${countrty}");
   }
 
   @override

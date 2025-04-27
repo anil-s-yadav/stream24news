@@ -113,7 +113,7 @@ class _SelectCuntoryState extends State<SelectCuntory> {
                               title: Text(country['name']!),
                               subtitle: Text("Code: ${country['code']}"),
                               onTap: () {
-                                log('comming from: $widget.commingFrom');
+                                // log('comming from: $widget.commingFrom');
                                 List<String> nameAndCode = [
                                   country['flag']!,
                                   country['name']!,

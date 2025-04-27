@@ -109,6 +109,8 @@ class _SelectProfilePhotoState extends State<SelectProfilePhoto> {
                               name: null,
                               photoUrl: selectedPhotoUrl,
                             );
+                            SharedPrefService()
+                                .setProfilePhoto(selectedPhotoUrl);
                           } catch (e) {
                             debugPrint("Error updating user profile: $e");
                           }

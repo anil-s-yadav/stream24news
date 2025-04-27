@@ -15,6 +15,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
 
   void _loadAllChennels(
       LiveTvDataLoadEvent event, Emitter<LiveTvState> emit) async {
+    emit(LiveTvInitialState());
     try {
       final snapshot = await FirebaseFirestore.instance
           .collection('live_chennels')
@@ -42,9 +43,9 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
       }
       // Combine with selected region on top
       List<LiveChannelModel> finalList = [...regionChannels, ...otherChannels];
-      log('$regionChannels');
-      log('$otherChannels');
-      log('$finalList');
+      // log('$regionChannels');
+      // log('$otherChannels');
+      // log('$finalList');
       emit(LiveTvSuccessState(liveChannelModel: finalList));
     } catch (e) {
       emit(LiveTvErrorState());
