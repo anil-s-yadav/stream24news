@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stream24news/auth/login/login_options_page.dart';
+import 'package:stream24news/test_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
@@ -170,13 +171,23 @@ class _ProfilepageState extends State<Profilepage> {
             "This app is free to use. You can support the developer by",
             style: TextStyle(fontStyle: FontStyle.italic, fontSize: 11),
           ),
-          Padding(
-            padding: const EdgeInsets.all(11),
-            child: Card(
-              elevation: 5,
-              child: Image.asset(
-                'lib/assets/images/buymeacopy.png',
-                scale: 9,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TestPage(),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(11),
+              child: Card(
+                elevation: 5,
+                child: Image.asset(
+                  'lib/assets/images/buymeacopy.png',
+                  scale: 9,
+                ),
               ),
             ),
           ),

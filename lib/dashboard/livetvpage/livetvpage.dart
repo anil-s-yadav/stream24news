@@ -21,7 +21,7 @@ class LiveTvPage extends StatefulWidget {
 
 class _LiveTvPageState extends State<LiveTvPage> {
   bool isSeachVisible = false;
-  bool isAllSelected = true;
+  bool isAllSelected = false;
   String _selectedLanguage = 'Hindi';
 
   @override
@@ -254,7 +254,7 @@ Widget buildFilterOptions({
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
       ChoiceChip(
-        label: Text('All',
+        label: Text('All Channels',
             style: TextStyle(
               color: isAllSelected
                   ? Theme.of(context).colorScheme.onPrimaryContainer
@@ -283,7 +283,7 @@ Widget buildFilterOptions({
           color: Theme.of(context).colorScheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
           ),
         ),
         child: DropdownButtonHideUnderline(
@@ -315,7 +315,7 @@ Widget buildFilterOptions({
       ),
       Icon(
         Icons.info_outline,
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.onPrimaryContainer,
         size: 30,
       )
     ],

@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/auth/create_account/select_cuntory.dart';
 import 'package:stream24news/auth/create_account/select_language.dart';
+import 'package:stream24news/dashboard/homepage/bloc/homepage_bloc.dart';
 import 'package:stream24news/dashboard/livetvpage/livetvpage.dart';
 import 'package:stream24news/samplepage.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
@@ -37,7 +39,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadUser() async {
-    User? user = AuthService().getUser();
+    List<String> region = SharedPrefService().getCounty() ?? ["", "", "in"];
+    final homepageBloc = BlocProvider.of<HomepageBloc>(context);
+    homepageBloc.add(
+      HomepageLoadChannelsEvent(region: region[2]),
+    );
+    // homepageBloc.add(
+    //   HomepageLoadTrendingEvent(region: region[2]),
+    // );
+
+    // Uncomment this if you want to use Firebase Auth user data
+    /* User? user = AuthService().getUser();
 
     if (user != null) {
       // log("If user is not null");
@@ -52,10 +64,10 @@ class _HomePageState extends State<HomePage> {
     }
 
     // Get stored values
-    bool isBoadingScreenDone =
-        SharedPrefService().getOnboadingDoneBool() ?? false;
-    bool isLogintest = user != null ? true : false;
-    bool isLoginSkipped = SharedPrefService().getLoginSkippedBool() ?? false;
+    // bool isBoadingScreenDone =
+    //     SharedPrefService().getOnboadingDoneBool() ?? false;
+    // bool isLogintest = user != null ? true : false;
+    // bool isLoginSkipped = SharedPrefService().getLoginSkippedBool() ?? false;
     List<String>? countory = SharedPrefService().getCounty();
     List<String>? languages = SharedPrefService().getLanguage();
     // String? profilephoto = SharedPrefService().getProfilePhoto();
@@ -76,7 +88,6 @@ class _HomePageState extends State<HomePage> {
       //   );
       //   return;
       // }
-
       if (countory == null || countory.isEmpty) {
         Navigator.pushReplacement(
           context,
@@ -94,7 +105,7 @@ class _HomePageState extends State<HomePage> {
         );
         return;
       }
-    });
+    }); */
   }
 
   @override
@@ -187,19 +198,48 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(
-                height: 100,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 8,
-                    itemBuilder: (BuildContext cotext, int index) {
-                      return Image.asset(
-                        "lib/assets/images/profile.png",
-                        scale: 1.5,
+                  height: 100,
+                  child: BlocBuilder<HomepageBloc, HomepageState>(
+                      builder: (context, state) {
+                    if (state is HomepageLiveChannelLoading) {
+                      return Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 8,
+                          itemBuilder: (BuildContext cotext, int index) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerLow,
+                              ),
+                            );
+                          },
+                        ),
                       );
-                    }),
-              ),
+                    } else if (state is HomepageLiveChannelSuccess) {
+                      return Text("success");
+                    } else if (state is HomepageLiveChannelError) {
+                      return Container(
+                        child: Text("error"),
+                      );
+                    }
+                    return Container();
+                  })
+
+                  // ListView.builder(
+                  //     scrollDirection: Axis.horizontal,
+                  //     itemCount: 8,
+                  //     itemBuilder: (BuildContext cotext, int index) {
+                  //       return Image.asset(
+                  //         "lib/assets/images/profile.png",
+                  //         scale: 1.5,
+                  //       );
+                  //     }),
+                  ),
               sizedBoxH5(context),
-              Container(
+              /* Container(
                 margin: const EdgeInsets.all(5),
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.2,
@@ -213,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
-              sizedBoxH10(context),
+              sizedBoxH10(context), */
               GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -287,13 +327,13 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const TrendingPage(
-                                  previousWidget: 'Recomanded',
+                                  previousWidget: 'Recommended',
                                 )));
                   },
                   child: titleheading(context, "Recomanded", "See All")),
               recomendedPosts(context),
               recomendedPosts(context),
-              Container(
+              /*  Container(
                 margin: const EdgeInsets.all(5),
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.1,
@@ -306,7 +346,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
-              ),
+              ), */
               recomendedPosts(context),
               recomendedPosts(context),
               sizedBoxH20(context),
@@ -326,7 +366,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               sizedBoxH20(context),
-              Container(
+              /*      Container(
                 margin: const EdgeInsets.all(5),
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.1,
@@ -340,7 +380,7 @@ class _HomePageState extends State<HomePage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
-              sizedBoxH20(context),
+              sizedBoxH20(context),*/
               GestureDetector(
                   onTap: () {
                     Navigator.push(context,
@@ -388,21 +428,21 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               sizedBoxH5(context),
-              Container(
-                margin: const EdgeInsets.all(5),
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.1,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                ),
-                child: Center(
-                    child: Text("Banner ad",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ))),
-              ),
-              sizedBoxH15(context),
+              // Container(
+              //   margin: const EdgeInsets.all(5),
+              //   width: double.infinity,
+              //   height: MediaQuery.of(context).size.height * 0.1,
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(8),
+              //     color: Theme.of(context).colorScheme.secondaryContainer,
+              //   ),
+              //   child: Center(
+              //       child: Text("Banner ad",
+              //           style: TextStyle(
+              //             color: Theme.of(context).colorScheme.secondary,
+              //           ))),
+              // ),
+              // sizedBoxH15(context),
             ],
           ),
         ),
