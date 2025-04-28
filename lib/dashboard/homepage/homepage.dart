@@ -1,15 +1,11 @@
-import 'dart:developer';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:stream24news/auth/auth_service.dart';
-import 'package:stream24news/auth/create_account/select_cuntory.dart';
-import 'package:stream24news/auth/create_account/select_language.dart';
 import 'package:stream24news/dashboard/homepage/bloc/homepage_bloc.dart';
 import 'package:stream24news/dashboard/livetvpage/livetvpage.dart';
+import 'package:stream24news/models/live_channel_model.dart';
+import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/samplepage.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
@@ -44,9 +40,12 @@ class _HomePageState extends State<HomePage> {
     homepageBloc.add(
       HomepageLoadChannelsEvent(region: region[2]),
     );
-    // homepageBloc.add(
-    //   HomepageLoadTrendingEvent(region: region[2]),
-    // );
+    homepageBloc.add(
+      HomepageLoadTrendingEvent(region: region[2]),
+    );
+    homepageBloc.add(
+      HomepageLoadRecommendedEvent(region: region[2]),
+    );
 
     // Uncomment this if you want to use Firebase Auth user data
     /* User? user = AuthService().getUser();
@@ -201,44 +200,75 @@ class _HomePageState extends State<HomePage> {
                   height: 100,
                   child: BlocBuilder<HomepageBloc, HomepageState>(
                       builder: (context, state) {
-                    if (state is HomepageLiveChannelLoading) {
-                      return Expanded(
+                    if (state is HomepageInitialState ||
+                        state is HomepageLiveChannelLoading ||
+                        state is HomepageLiveChannelError) {
+                      return SizedBox(
+                        height: 80,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: 8,
-                          itemBuilder: (BuildContext cotext, int index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Theme.of(context)
+                          itemCount: 4,
+                          itemBuilder: (BuildContext cotext, _) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: CircleAvatar(
+                                radius: 40,
+                                foregroundColor: Theme.of(context)
                                     .colorScheme
-                                    .surfaceContainerLow,
+                                    .surfaceContainer,
                               ),
                             );
                           },
                         ),
                       );
                     } else if (state is HomepageLiveChannelSuccess) {
-                      return Text("success");
-                    } else if (state is HomepageLiveChannelError) {
-                      return Container(
-                        child: Text("error"),
+                      return SizedBox(
+                        height: 100,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.only(left: 5),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 10,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainer,
+                                child: Image.network(
+                                  state.liveChannelModel![index].logo,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container();
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    } else {
+                      return SizedBox(
+                        height: 80,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          itemBuilder: (BuildContext cotext, int index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: CircleAvatar(
+                                radius: 40,
+                                foregroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainer,
+                              ),
+                            );
+                          },
+                        ),
                       );
                     }
-                    return Container();
-                  })
-
-                  // ListView.builder(
-                  //     scrollDirection: Axis.horizontal,
-                  //     itemCount: 8,
-                  //     itemBuilder: (BuildContext cotext, int index) {
-                  //       return Image.asset(
-                  //         "lib/assets/images/profile.png",
-                  //         scale: 1.5,
-                  //       );
-                  //     }),
-                  ),
-              sizedBoxH5(context),
+                  })),
+              sizedBoxH10(context),
               /* Container(
                 margin: const EdgeInsets.all(5),
                 width: double.infinity,
@@ -254,32 +284,64 @@ class _HomePageState extends State<HomePage> {
                         ))),
               ),
               sizedBoxH10(context), */
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const TrendingPage(
-                                  previousWidget: 'Trending',
-                                )));
-                  },
-                  child: titleheading(context, "Trending", "See All")),
-              sizedBoxH10(context),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    trendingPosts(context),
-                    sizedBoxW10(context),
-                    trendingPosts(context),
-                    sizedBoxW10(context),
-                    trendingPosts(context),
-                    sizedBoxW10(context),
-                    trendingPosts(context),
-                    sizedBoxW10(context),
-                  ],
-                ),
+              titleheading(
+                context,
+                "Trending",
+                "See All",
+                () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const TrendingPage(
+                                previousWidget: 'Trending',
+                              )));
+                },
               ),
+              sizedBoxH10(context),
+              SizedBox(child: BlocBuilder<HomepageBloc, HomepageState>(
+                builder: (context, state) {
+                  if (state is HomepageTrendingNewsLoading ||
+                      state is HomepageInitialState ||
+                      state is HomepageTrendingNewsError) {
+                    return Row(
+                      children: [
+                        trendingPosts(context, isErrorState: true),
+                        trendingPosts(context, isErrorState: true),
+                        trendingPosts(context, isErrorState: true),
+                      ],
+                    );
+                  } else if (state is HomepageTrendingNewsSuccess) {
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.7,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 10,
+                        itemBuilder: (BuildContext cotext, int index) {
+                          return trendingPosts(context,
+                              state: state.articles[index],
+                              isErrorState: false);
+                        },
+                      ),
+                    );
+                  }
+                  return trendingPosts(context, isErrorState: true);
+                },
+              )),
+              // SingleChildScrollView(
+              //   scrollDirection: Axis.horizontal,
+              //   child: Row(
+              //     children: [
+              //       trendingPosts(context),
+              //       sizedBoxW10(context),
+              //       trendingPosts(context),
+              //       sizedBoxW10(context),
+              //       trendingPosts(context),
+              //       sizedBoxW10(context),
+              //       trendingPosts(context),
+              //       sizedBoxW10(context),
+              //     ],
+              //   ),
+              // ),
               sizedBoxH30(context),
               GestureDetector(
                 onTap: () {
@@ -321,43 +383,108 @@ class _HomePageState extends State<HomePage> {
                     }),
               ),
               sizedBoxH30(context),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const TrendingPage(
-                                  previousWidget: 'Recommended',
-                                )));
-                  },
-                  child: titleheading(context, "Recomanded", "See All")),
-              recomendedPosts(context),
-              recomendedPosts(context),
-              /*  Container(
-                margin: const EdgeInsets.all(5),
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.1,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                ),
-                child: Center(
-                    child: Text("Banner ad",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ))),
-              ), */
-              recomendedPosts(context),
-              recomendedPosts(context),
-              sizedBoxH20(context),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const BookmarkPage()));
-                  },
-                  child: titleheading(context, "Saved", "See All ")),
+              titleheading(
+                context,
+                "Recomanded",
+                "See All",
+                () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const TrendingPage(
+                                previousWidget: 'Recommended',
+                              )));
+                },
+              ),
+              sizedBoxH5(context),
+
+              SizedBox(child: BlocBuilder<HomepageBloc, HomepageState>(
+                  builder: (context, state) {
+                if (state is HomepageRecommendedNewsLoading ||
+                    state is HomepageInitialState ||
+                    state is HomepageRecommendedNewsError) {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: 5,
+                      itemBuilder: (BuildContext context, _) {
+                        return Container(
+                          height: 50,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color:
+                                Theme.of(context).colorScheme.surfaceContainer,
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                } else if (state is HomepageRecommendedNewsSuccess) {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: state.articles.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return recomendedPosts(context,
+                            state: state.articles[index]);
+                      },
+                    ),
+                  );
+                } else {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: 5,
+                      itemBuilder: (BuildContext context, _) {
+                        return Container(
+                          height: 50,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color:
+                                Theme.of(context).colorScheme.surfaceContainer,
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }
+              })),
+
+              // recomendedPosts(context),
+              // recomendedPosts(context),
+              // /*  Container(
+              //   margin: const EdgeInsets.all(5),
+              //   width: double.infinity,
+              //   height: MediaQuery.of(context).size.height * 0.1,
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(8),
+              //     color: Theme.of(context).colorScheme.secondaryContainer,
+              //   ),
+              //   child: Center(
+              //       child: Text("Banner ad",
+              //           style: TextStyle(
+              //             color: Theme.of(context).colorScheme.secondary,
+              //           ))),
+              // ), */
+              // recomendedPosts(context),
+              // recomendedPosts(context),
+              // sizedBoxH20(context),
+              titleheading(
+                context,
+                "Saved",
+                "See All ",
+                () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const BookmarkPage()));
+                },
+              ),
               sizedBoxH5(context),
               Row(
                 children: [
@@ -381,68 +508,47 @@ class _HomePageState extends State<HomePage> {
                         ))),
               ),
               sizedBoxH20(context),*/
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LiveTvPage()));
-                  },
-                  child: titleheading(context, "Live channels", "See All ")),
-              sizedBoxH5(context),
-              GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 3,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-                shrinkWrap: true,
-                children: List.generate(
-                  6,
-                  (index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color:
-                            Theme.of(context).colorScheme.surfaceContainerLow,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                      ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "lib/assets/images/profile.png",
-                              scale: 1.5,
-                            ),
-                            sizedBoxH5(context),
-                            Text(
-                              maxLines: 1,
-                              "Channel Name",
-                              style: Theme.of(context).textTheme.labelSmall,
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              titleheading(
+                context,
+                "Live channels",
+                "See All ",
+                () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LiveTvPage()));
+                },
               ),
               sizedBoxH5(context),
-              // Container(
-              //   margin: const EdgeInsets.all(5),
-              //   width: double.infinity,
-              //   height: MediaQuery.of(context).size.height * 0.1,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(8),
-              //     color: Theme.of(context).colorScheme.secondaryContainer,
-              //   ),
-              //   child: Center(
-              //       child: Text("Banner ad",
-              //           style: TextStyle(
-              //             color: Theme.of(context).colorScheme.secondary,
-              //           ))),
-              // ),
-              // sizedBoxH15(context),
+              SizedBox(child: BlocBuilder<HomepageBloc, HomepageState>(
+                  builder: (context, state) {
+                if (state is HomepageLiveChannelLoading) {
+                  return _gridLiveChannel(isLoadingState: true);
+                } else if (state is HomepageLiveChannelSuccess) {
+                  return _gridLiveChannel(
+                      liveChannelModel: state.liveChannelModel,
+                      isLoadingState: false);
+                } else if (state is HomepageLiveChannelError) {
+                  return Text("error");
+                } else {
+                  return _gridLiveChannel(isLoadingState: true);
+                }
+              })),
+              sizedBoxH30(context),
+
+              /*   Container(
+                margin: const EdgeInsets.all(5),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.1,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                ),
+                child: Center(
+                    child: Text("Banner ad",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ))),
+              ),
+              sizedBoxH15(context),*/
             ],
           ),
         ),
@@ -450,64 +556,136 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget trendingPosts(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.5,
-          //height: MediaQuery.of(context).size.height * 0.6,
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  "lib/assets/images/test_sample1.jpg",
-                  fit: BoxFit.fill,
-                ),
+  Widget _gridLiveChannel(
+      {List<LiveChannelModel>? liveChannelModel, bool isLoadingState = false}) {
+    return GridView.count(
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 3,
+      crossAxisSpacing: 10.0,
+      mainAxisSpacing: 10.0,
+      shrinkWrap: true,
+      children: List.generate(
+        6,
+        (index) {
+          return Container(
+            height: 250,
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(8),
               ),
-              sizedBoxH5(context),
-              Padding(
-                padding: const EdgeInsets.only(left: 7),
-                child: Text(
-                    style: Theme.of(context).textTheme.labelMedium,
-                    "You should know how to make web requests in your chosen programming language"),
-              ),
-              sizedBoxH5(context),
-              Row(
-                //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  sizedBoxW5(context),
-                  Image.asset(
-                    "lib/assets/images/profile.png",
-                    scale: 7,
-                  ),
-                  sizedBoxW5(context),
-                  const Text(
-                    "Anil Yadav",
-                    style: TextStyle(fontSize: 10),
-                    softWrap: true,
-                  ),
-                  sizedBoxW5(context),
-                  const Text(
-                    "1 day ago",
-                    softWrap: true,
-                    style: TextStyle(fontSize: 10),
-                  ),
-                  const Spacer(),
-                  const Icon(
-                    Icons.more_vert_outlined,
-                    size: 18,
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
-      ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                    radius: 40,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    child: Image.network(
+                      liveChannelModel?[index].logo ?? "",
+                      scale: 1.5,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container();
+                      },
+                    )),
+                sizedBoxH5(context),
+                Text(
+                  maxLines: 1,
+                  isLoadingState == false ? liveChannelModel![index].name : "",
+                  style: Theme.of(context).textTheme.labelMedium,
+                )
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
-  Widget recomendedPosts(BuildContext context) {
+  Widget trendingPosts(BuildContext context,
+      {bool isErrorState = false, Article? state}) {
+    if (isErrorState == true) {
+      return SizedBox(
+        height: MediaQuery.of(context).size.width * 0.7,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: 2,
+          itemBuilder: (context, _) {
+            return Container(
+              height: MediaQuery.of(context).size.width * 0.7,
+              width: MediaQuery.of(context).size.width * 0.5,
+              margin: const EdgeInsets.only(right: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.surfaceContainer,
+              ),
+            );
+          },
+        ),
+      );
+    } else {
+      return Column(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.5,
+            //height: MediaQuery.of(context).size.height * 0.6,
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    "lib/assets/images/test_sample1.jpg",
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                sizedBoxH5(context),
+                Padding(
+                  padding: const EdgeInsets.only(left: 7),
+                  child: Text(
+                      style: Theme.of(context).textTheme.labelMedium,
+                      "You should know how to make web requests in your chosen programming language"),
+                ),
+                sizedBoxH5(context),
+                Row(
+                  //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    sizedBoxW5(context),
+                    Image.asset(
+                      "lib/assets/images/profile.png",
+                      scale: 7,
+                    ),
+                    sizedBoxW5(context),
+                    const Text(
+                      "Anil Yadav",
+                      style: TextStyle(fontSize: 10),
+                      softWrap: true,
+                    ),
+                    sizedBoxW5(context),
+                    const Text(
+                      "1 day ago",
+                      softWrap: true,
+                      style: TextStyle(fontSize: 10),
+                    ),
+                    const Spacer(),
+                    const Icon(
+                      Icons.more_vert_outlined,
+                      size: 18,
+                    )
+                  ],
+                ),
+                sizedBoxH5(context)
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  Widget recomendedPosts(BuildContext context, {required Article state}) {
     return Container(
       margin: const EdgeInsets.all(5),
       decoration: BoxDecoration(
@@ -516,8 +694,12 @@ class _HomePageState extends State<HomePage> {
       child: ListTile(
         leading: ClipRRect(
             borderRadius: BorderRadius.circular(5),
-            child: Image.asset(
-              "lib/assets/images/military.jpg",
+            child: Image.network(
+              state.imageUrl ?? "",
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container();
+              },
             )),
         title: Text(
           "To get started you'll need an API key. They're free while you are in development.",
@@ -556,26 +738,30 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget titleheading(BuildContext context, String text, String seeall) {
-    return Row(
-      children: [
-        Text(
-          text,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        const Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(
-            right: 8,
+  Widget titleheading(
+      BuildContext context, String text, String seeall, Function? onTap) {
+    return GestureDetector(
+      onTap: onTap != null ? () => onTap() : null,
+      child: Row(
+        children: [
+          Text(
+            text,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-          child: Text(
-            seeall,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.only(
+              right: 8,
+            ),
+            child: Text(
+              seeall,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

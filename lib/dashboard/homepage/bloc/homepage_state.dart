@@ -10,7 +10,7 @@ final class HomepageInitialState extends HomepageState {
 // For Live Channels
 final class HomepageLiveChannelLoading extends HomepageState {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 final class HomepageLiveChannelSuccess extends HomepageState {
@@ -28,7 +28,7 @@ final class HomepageLiveChannelError extends HomepageState {
 // For Trending News
 final class HomepageTrendingNewsLoading extends HomepageState {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 final class HomepageTrendingNewsSuccess extends HomepageState {
@@ -40,13 +40,13 @@ final class HomepageTrendingNewsSuccess extends HomepageState {
 
 final class HomepageTrendingNewsError extends HomepageState {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 // For Recommended News
 final class HomepageRecommendedNewsLoading extends HomepageState {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 final class HomepageRecommendedNewsSuccess extends HomepageState {
@@ -58,5 +58,5 @@ final class HomepageRecommendedNewsSuccess extends HomepageState {
 
 final class HomepageRecommendedNewsError extends HomepageState {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }

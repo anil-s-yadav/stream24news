@@ -163,7 +163,12 @@ class _LiveTvPageState extends State<LiveTvPage> {
         ),
         child: Column(
           children: [
-            Expanded(child: Image.network(channel.logo, fit: BoxFit.contain)),
+            Expanded(
+                child: Image.network(
+              channel.logo,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) => Container(),
+            )),
             Text(channel.name,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,

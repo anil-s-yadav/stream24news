@@ -15,3 +15,10 @@ final class HomepageLoadTrendingEvent extends HomepageEvent {
   @override
   List<Object?> get props => [region];
 }
+
+final class HomepageLoadRecommendedEvent extends HomepageEvent {
+  final String region;
+  HomepageLoadRecommendedEvent({required this.region});
+  @override
+  List<Object?> get props => [region];
+}
