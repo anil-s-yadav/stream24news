@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,6 +19,7 @@ import '../../features/all_categories/selected_category_page.dart';
 import '../../features/bookmark/bookmark_page.dart';
 import '../../features/notification/notification.dart';
 import '../../features/trending_page/trending_page.dart';
+import '../../utils/services/post_time.dart';
 import '../../utils/services/shared_pref_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,8 +30,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  HomepageBloc? _homepageBloc;
+  String errorInageUrl =
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s";
+
   final List<Map<String, dynamic>> _categories = categories;
   List<LiveChannelModel> liveChannelModel = [];
+  List<Article> trendingNewsModel = [];
+  List<Article> recommendedNewsModel = [];
   @override
   void initState() {
     super.initState();
@@ -57,56 +66,57 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              titleheading(context, "", "", LiveTvPage(),
+              titleheading(context, "", "", () => LiveTvPage(),
                   isLiveChannelTitle: true),
               SizedBox(
                   height: 100,
                   child: BlocBuilder<HomepageBloc, HomepageState>(
+                      bloc: _homepageBloc,
+                      buildWhen: (previous, current) =>
+                          current is HomepageLiveChannelLoading ||
+                          current is HomepageLiveChannelSuccess ||
+                          current is HomepageLiveChannelError,
                       builder: (context, state) {
-                    if (state is HomepageInitialState ||
-                        state is HomepageLiveChannelLoading ||
-                        state is HomepageLiveChannelError) {
-                      return _horizontalScrollLiveChannel(
-                        liveChannelModel: liveChannelModel,
-                        isErrorState: true,
-                      );
-                    } else if (state is HomepageLiveChannelSuccess) {
-                      setState(() {
-                        liveChannelModel = state.liveChannelModel ?? [];
-                      });
-                      return _horizontalScrollLiveChannel(
-                        liveChannelModel: state.liveChannelModel,
-                      );
-                    } else {
-                      return _horizontalScrollLiveChannel(
-                        liveChannelModel: liveChannelModel,
-                        isErrorState: true,
-                      );
-                    }
-                  })),
+                        if (state is HomepageLiveChannelSuccess) {
+                          return _horizontalScrollLiveChannel(
+                            liveChannelModel: state.liveChannelModel,
+                          );
+                        } else {
+                          return _horizontalScrollLiveChannel(
+                            liveChannelModel: liveChannelModel,
+                            isErrorState: true,
+                          );
+                        }
+                      })),
               sizedBoxH10(context),
               titleheading(
-                context,
-                "Trending",
-                "See All",
-                TrendingPage(
-                  previousWidget: 'Trending',
-                ),
-              ),
+                  context,
+                  "Trending",
+                  "See All",
+                  () => TrendingPage(
+                        previousWidget: 'Recommended',
+                        model: recommendedNewsModel,
+                      )),
               sizedBoxH10(context),
-              SizedBox(child: BlocBuilder<HomepageBloc, HomepageState>(
-                builder: (context, state) {
-                  if (state is HomepageTrendingNewsLoading ||
-                      state is HomepageInitialState ||
-                      state is HomepageTrendingNewsError) {
-                    return trendingPosts(context, isErrorState: true);
-                  } else if (state is HomepageTrendingNewsSuccess) {
-                    return trendingPosts(context,
-                        artical: state.articles, isErrorState: false);
+              SizedBox(
+                  child: BlocBuilder<HomepageBloc, HomepageState>(
+                bloc: _homepageBloc,
+                buildWhen: (previous, current) =>
+                    current is HomepageTrendingNewsLoading ||
+                    current is HomepageTrendingNewsSuccess ||
+                    current is HomepageTrendingNewsError,
+                builder: (context, trendingState) {
+                  if (trendingState is HomepageTrendingNewsSuccess) {
+                    trendingNewsModel = trendingState.articles;
+                    return trendingPosts(
+                      context,
+                      artical: trendingState.articles,
+                    );
                   } else {
-                    return trendingPosts(context, isErrorState: true);
+                    return trendingPosts(context,
+                        isErrorState: true, artical: []);
                   }
                 },
               )),
@@ -119,29 +129,35 @@ class _HomePageState extends State<HomePage> {
                   context,
                   "Recomanded",
                   "See All",
-                  TrendingPage(
-                    previousWidget: 'Recommended',
-                  )),
+                  () => TrendingPage(
+                        previousWidget: 'Recommended',
+                        model: recommendedNewsModel,
+                      )),
               sizedBoxH5(context),
-              SizedBox(child: BlocBuilder<HomepageBloc, HomepageState>(
-                  builder: (context, state) {
-                if (state is HomepageRecommendedNewsLoading ||
-                    state is HomepageInitialState ||
-                    state is HomepageRecommendedNewsError) {
-                  return recomendedPosts(context,
-                      isErrorState: true, artical: []);
-                } else if (state is HomepageRecommendedNewsSuccess) {
-                  return recomendedPosts(context, artical: state.articles);
-                } else {
-                  return recomendedPosts(context,
-                      isErrorState: true, artical: []);
-                }
-              })),
+              SizedBox(
+                  child: BlocBuilder<HomepageBloc, HomepageState>(
+                      bloc: _homepageBloc,
+                      buildWhen: (previous, current) =>
+                          current is HomepageRecommendedNewsLoading ||
+                          current is HomepageRecommendedNewsSuccess ||
+                          current is HomepageRecommendedNewsError,
+                      builder: (context, state) {
+                        if (state is HomepageRecommendedNewsSuccess) {
+                          recommendedNewsModel = state.articles;
+                          return recomendedPosts(
+                            context,
+                            artical: state.articles,
+                          );
+                        } else {
+                          return recomendedPosts(context,
+                              artical: [], isErrorState: true);
+                        }
+                      })),
               titleheading(
                 context,
                 "Saved",
                 "See All ",
-                BookmarkPage(),
+                () => BookmarkPage(),
               ),
               sizedBoxH5(context),
               Row(
@@ -155,11 +171,33 @@ class _HomePageState extends State<HomePage> {
                 context,
                 "Live channels",
                 "See All ",
-                LiveTvPage(),
+                () => LiveTvPage(),
               ),
               sizedBoxH5(context),
-              _gridLiveChannel(
-                  liveChannelModel: liveChannelModel, isLoadingState: false),
+              BlocBuilder<HomepageBloc, HomepageState>(
+                bloc: _homepageBloc,
+                buildWhen: (previous, current) =>
+                    current is HomepageLiveChannelLoading ||
+                    current is HomepageLiveChannelSuccess ||
+                    current is HomepageLiveChannelError,
+                builder: (context, state) {
+                  if (state is HomepageLiveChannelSuccess) {
+                    return _gridLiveChannel(
+                      liveChannelModel: state.liveChannelModel ?? [],
+                      isLoadingState: false,
+                    );
+                  } else if (state is HomepageLiveChannelLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return _gridLiveChannel(
+                      liveChannelModel: [],
+                      isLoadingState:
+                          true, // show empty/error placeholder state
+                    );
+                  }
+                },
+              ),
+
               sizedBoxH30(context),
             ],
           ),
@@ -205,51 +243,58 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _gridLiveChannel(
-      {List<LiveChannelModel>? liveChannelModel, bool isLoadingState = false}) {
-    return GridView.count(
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 3,
-      crossAxisSpacing: 10.0,
-      mainAxisSpacing: 10.0,
-      shrinkWrap: true,
-      children: List.generate(
-        liveChannelModel?.length ?? 0,
-        (index) {
-          return Container(
-            height: 250,
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHigh,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(8),
+  Widget _gridLiveChannel({
+    required List<LiveChannelModel> liveChannelModel,
+    bool isLoadingState = false,
+  }) {
+    return SizedBox(
+      height: 250,
+      child: GridView.count(
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 3,
+        crossAxisSpacing: 10.0,
+        mainAxisSpacing: 10.0,
+        shrinkWrap: true,
+        children: List.generate(
+          min(liveChannelModel.length, 6),
+          (index) {
+            return Container(
+              height: 250,
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(8),
+                ),
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircleAvatar(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
                     radius: 40,
                     backgroundColor:
                         Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: Image.network(
-                      liveChannelModel?[index].logo ?? "",
+                      liveChannelModel[index].logo,
                       scale: 1.5,
                       errorBuilder: (context, error, stackTrace) {
-                        return Container();
+                        return const Icon(Icons.broken_image);
                       },
-                    )),
-                sizedBoxH5(context),
-                Text(
-                  maxLines: 1,
-                  isLoadingState == false ? liveChannelModel![index].name : "",
-                  style: Theme.of(context).textTheme.labelMedium,
-                )
-              ],
-            ),
-          );
-        },
+                    ),
+                  ),
+                  sizedBoxH5(context),
+                  Text(
+                    !isLoadingState ? liveChannelModel[index].name : "",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -277,65 +322,74 @@ class _HomePageState extends State<HomePage> {
       );
     } else {
       return SizedBox(
-        height: MediaQuery.of(context).size.width * 0.7,
+        height: MediaQuery.of(context).size.height * 0.4,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: artical?.length ?? 0,
+          itemCount: artical!.isEmpty ? 2 : min(artical.length, 10),
           itemBuilder: (context, index) {
-            return Column(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  //height: MediaQuery.of(context).size.height * 0.6,
-                  child: Column(
+            String trendingPostedDate = getTimeAgo(artical[index].pubDate);
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      artical[index].imageUrl ?? errorInageUrl,
+                      fit: BoxFit.fitHeight,
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container();
+                      },
+                    ),
+                  ),
+                  sizedBoxH5(context),
+                  Padding(
+                      padding: const EdgeInsets.only(left: 7),
+                      child: Text(
+                        artical[index].title ?? "",
+                        maxLines: 3,
+                        style: Theme.of(context).textTheme.labelMedium,
+                      )),
+                  sizedBoxH5(context),
+                  Row(
+                    //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      sizedBoxW5(context),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.asset(
-                          "lib/assets/images/test_sample1.jpg",
-                          fit: BoxFit.fill,
+                        child: Image.network(
+                          artical[index].source?.sourceIcon ?? errorInageUrl,
+                          height: 20,
+                          width: 20,
+                          errorBuilder: (context, error, stackTrace) {
+                            return SizedBox();
+                          },
                         ),
                       ),
-                      sizedBoxH5(context),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 7),
-                        child: Text(
-                            style: Theme.of(context).textTheme.labelMedium,
-                            "You should know how to make web requests in your chosen programming language"),
+                      sizedBoxW5(context),
+                      Text(
+                        artical[index].source?.sourceName ?? "Source",
+                        style: TextStyle(fontSize: 10),
+                        softWrap: true,
                       ),
-                      sizedBoxH5(context),
-                      Row(
-                        //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          sizedBoxW5(context),
-                          Image.asset(
-                            "lib/assets/images/profile.png",
-                            scale: 7,
-                          ),
-                          sizedBoxW5(context),
-                          const Text(
-                            "Anil Yadav",
-                            style: TextStyle(fontSize: 10),
-                            softWrap: true,
-                          ),
-                          sizedBoxW5(context),
-                          const Text(
-                            "1 day ago",
-                            softWrap: true,
-                            style: TextStyle(fontSize: 10),
-                          ),
-                          const Spacer(),
-                          const Icon(
-                            Icons.more_vert_outlined,
-                            size: 18,
-                          )
-                        ],
+                      sizedBoxW5(context),
+                      Text(
+                        trendingPostedDate,
+                        softWrap: true,
+                        style: TextStyle(fontSize: 10),
                       ),
-                      sizedBoxH5(context)
+                      const Spacer(),
+                      const Icon(
+                        Icons.more_vert_outlined,
+                        size: 18,
+                      )
                     ],
                   ),
-                ),
-              ],
+                  sizedBoxH5(context)
+                ],
+              ),
             );
           },
         ),
@@ -367,13 +421,14 @@ class _HomePageState extends State<HomePage> {
       );
     } else {
       return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.35,
+        height: MediaQuery.of(context).size.height,
         child: ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           scrollDirection: Axis.vertical,
-          itemCount: artical.length,
+          itemCount: min(artical.length, 10),
           itemBuilder: (BuildContext context, int index) {
+            String date = getTimeAgo(artical[index].pubDate);
             return Container(
               margin: const EdgeInsets.all(5),
               decoration: BoxDecoration(
@@ -383,14 +438,15 @@ class _HomePageState extends State<HomePage> {
                 leading: ClipRRect(
                     borderRadius: BorderRadius.circular(5),
                     child: Image.network(
-                      artical[index].imageUrl ?? "",
+                      artical[index].imageUrl ?? errorInageUrl,
                       fit: BoxFit.cover,
+                      width: 100,
                       errorBuilder: (context, error, stackTrace) {
-                        return Container();
+                        return SizedBox();
                       },
                     )),
                 title: Text(
-                  "To get started you'll need an API key. They're free while you are in development.",
+                  artical[index].title ?? "",
                   style: Theme.of(context).textTheme.titleSmall,
                   maxLines: 2,
                 ),
@@ -398,19 +454,26 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(top: 2),
                   child: Row(
                     children: [
-                      Image.asset(
-                        "lib/assets/images/profile.png",
-                        scale: 9,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          artical[index].source?.sourceIcon ?? errorInageUrl,
+                          height: 20,
+                          // fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return SizedBox();
+                          },
+                        ),
                       ),
                       sizedBoxW5(context),
-                      const Text(
-                        "Anil Yadav",
+                      Text(
+                        artical[index].source?.sourceName ?? "Source",
                         style: TextStyle(fontSize: 10),
                         softWrap: true,
                       ),
                       sizedBoxW5(context),
-                      const Text(
-                        "1 day ago",
+                      Text(
+                        date,
                         softWrap: true,
                         style: TextStyle(fontSize: 10),
                       ),
@@ -430,14 +493,16 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget titleheading(
-      BuildContext context, String text, String seeall, Widget page,
+  Widget titleheading(BuildContext context, String text, String seeall,
+      Widget Function() pageBuilder,
       {bool isLiveChannelTitle = false}) {
     if (isLiveChannelTitle == true) {
       return GestureDetector(
         onTap: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => page));
+            context,
+            MaterialPageRoute(builder: (context) => pageBuilder()),
+          );
         },
         child: Row(
           children: [
@@ -463,7 +528,9 @@ class _HomePageState extends State<HomePage> {
       return GestureDetector(
         onTap: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => page));
+            context,
+            MaterialPageRoute(builder: (context) => pageBuilder()),
+          );
         },
         child: Row(
           children: [

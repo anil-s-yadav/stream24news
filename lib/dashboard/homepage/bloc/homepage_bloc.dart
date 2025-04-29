@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../auth/create_account/list_data/country_data.dart';
 import '../../../models/live_channel_model.dart';
 import '../../../models/new_model.dart';
 
@@ -51,22 +52,24 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       HomepageLoadTrendingEvent event, Emitter<HomepageState> emit) async {
     try {
       emit(HomepageTrendingNewsLoading());
-      final snapshot =
-          await FirebaseFirestore.instance.collection('news').get();
+      String? countryName = countries.firstWhere(
+          (country) => country['code'] == event.region,
+          orElse: () => {})['name'];
+      // Only fetch documents where 'country' array contains the target region
+      final snapshot = await FirebaseFirestore.instance
+          .collection('news')
+          .where('country', arrayContains: countryName ?? "india".toLowerCase())
+          .get();
 
       List<Article> allNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
 
-      // Filter news by country
-      List<Article> regionNews = allNews.where((news) {
-        return news.country?.contains(event.region.toLowerCase()) ?? false;
-      }).toList();
-
       // Sort by views (highest first)
-      regionNews.sort((a, b) => (b.views ?? 0).compareTo(a.views ?? 0));
+      allNews.sort((a, b) => (b.views ?? 0).compareTo(a.views ?? 0));
 
       // Take top 50
-      List<Article> trendingNews = regionNews.take(50).toList();
+      List<Article> trendingNews = allNews.take(50).toList();
+
       log('Trending news loaded: ${trendingNews.length}');
       emit(HomepageTrendingNewsSuccess(trendingNews));
     } catch (e) {
@@ -79,22 +82,28 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       HomepageLoadRecommendedEvent event, Emitter<HomepageState> emit) async {
     try {
       emit(HomepageRecommendedNewsLoading());
-      final snapshot =
-          await FirebaseFirestore.instance.collection('news').get();
+
+      String? countryName = countries.firstWhere(
+          (country) => country['code'] == event.region,
+          orElse: () => {})['name'];
+
+      // Only fetch documents where 'country' array contains the target region
+      final snapshot = await FirebaseFirestore.instance
+          .collection('news')
+          .where('country', arrayContains: countryName ?? "india".toLowerCase())
+          .get();
 
       List<Article> allNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
 
-      // Filter news by country
-      List<Article> regionNews = allNews.where((news) {
-        return news.country?.contains(event.region.toLowerCase()) ?? false;
-      }).toList();
-
       // Sort by views (highest first)
-      regionNews.sort((a, b) => (b.views ?? 0).compareTo(a.views ?? 0));
+      allNews.sort((a, b) => (b.views ?? 0).compareTo(a.views ?? 0));
 
       // Take top 50
-      List<Article> recommendedNews = regionNews.take(5).toList();
+      List<Article> recommendedNews = allNews.take(50).toList();
+
+      log('Trending news loaded: ${recommendedNews.length}');
+      log('Recommended news loaded: ${recommendedNews.length}');
       emit(HomepageRecommendedNewsSuccess(recommendedNews));
     } catch (e) {
       emit(HomepageRecommendedNewsError());

@@ -221,6 +221,7 @@ class _TestPageState extends State<TestPage> {
                         MaterialPageRoute(
                             builder: (context) => const TrendingPage(
                                   previousWidget: 'Trending',
+                                  model: [],
                                 )));
                   },
                   child: titleheading(context, "Trending", "See All")),
@@ -288,6 +289,7 @@ class _TestPageState extends State<TestPage> {
                         MaterialPageRoute(
                             builder: (context) => const TrendingPage(
                                   previousWidget: 'Recommended',
+                                  model: [],
                                 )));
                   },
                   child: titleheading(context, "Recomanded", "See All")),
