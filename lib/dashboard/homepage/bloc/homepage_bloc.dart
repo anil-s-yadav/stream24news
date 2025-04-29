@@ -34,9 +34,11 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       // Filter by region
       List<LiveChannelModel> regionChannels = allChannels
           .where((channel) => channel.region == event.region)
+          .take(9)
           .toList();
       // Sort by viewCount (highest first)
       // regionChannels.sort((a, b) => b.viewCount.compareTo(a.viewCount));
+
       log('Channels loaded: ${regionChannels.length}');
       emit(HomepageLiveChannelSuccess(liveChannelModel: regionChannels));
     } catch (e) {
@@ -65,6 +67,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
 
       // Take top 50
       List<Article> trendingNews = regionNews.take(50).toList();
+      log('Trending news loaded: ${trendingNews.length}');
       emit(HomepageTrendingNewsSuccess(trendingNews));
     } catch (e) {
       emit(HomepageTrendingNewsError());

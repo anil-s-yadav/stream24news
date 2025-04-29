@@ -28,6 +28,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<Map<String, dynamic>> _categories = categories;
+  List<LiveChannelModel> liveChannelModel = [];
   @override
   void initState() {
     super.initState();
@@ -46,156 +47,20 @@ class _HomePageState extends State<HomePage> {
     homepageBloc.add(
       HomepageLoadRecommendedEvent(region: region[2]),
     );
-
-    // Uncomment this if you want to use Firebase Auth user data
-    /* User? user = AuthService().getUser();
-
-    if (user != null) {
-      // log("If user is not null");
-      // log('HomePage Init uid: ${user.uid}');
-      // log('HomePage Init email: ${user.email}');
-      // log('HomePage Init name: ${user.displayName}');
-      // log('HomePage Init: Email Verified: ${user.emailVerified}');
-      // log('HomePage Init photo: ${user.photoURL}');
-      // log('HomePage Init number: ${user.phoneNumber}');
-    } else {
-      log('Homepage: user null');
-    }
-
-    // Get stored values
-    // bool isBoadingScreenDone =
-    //     SharedPrefService().getOnboadingDoneBool() ?? false;
-    // bool isLogintest = user != null ? true : false;
-    // bool isLoginSkipped = SharedPrefService().getLoginSkippedBool() ?? false;
-    List<String>? countory = SharedPrefService().getCounty();
-    List<String>? languages = SharedPrefService().getLanguage();
-    // String? profilephoto = SharedPrefService().getProfilePhoto();
-
-    // log('HomePage: onBoading $isBoadingScreenDone');
-    // log('HomePage: user login or not $isLogintest');
-    // log('HomePage: login is skipped $isLoginSkipped');
-    // log('HomePage: countary: $countory');
-    // log('HomePage: languages: $languages');
-    // log('HomePage: photo: $profilephoto');
-
-    // Delay navigation to prevent UI issues
-    Future.delayed(Duration.zero, () {
-      // if (profilephoto == null || profilephoto.isEmpty) {
-      //   Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => const SelectProfilePhoto()),
-      //   );
-      //   return;
-      // }
-      if (countory == null || countory.isEmpty) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const SelectCuntory(commingFrom: "")),
-        );
-        return;
-      }
-
-      if (languages == null || languages.isEmpty) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const SelectLanguage(commingFrom: "")),
-        );
-        return;
-      }
-    }); */
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: GestureDetector(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Samplepage()));
-          },
-          child: Row(
-            children: [
-              Text(
-                "Stream24 ",
-                style: GoogleFonts.dancingScript(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "News",
-                style: GoogleFonts.dancingScript(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16, top: 5),
-            child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const NotificationPage()));
-                },
-                child: const Icon(MyTabIcons.notification)),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              right: 20,
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const BookmarkPage()));
-              },
-              child: const Icon(
-                MyTabIcons.bookmark,
-                size: 21,
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: _buldAppBar(context),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () {
-                  //  widget.changeTab(1); // Switch to Live TV tab
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LiveTvPage()));
-                },
-                child: Row(
-                  children: [
-                    sizedBoxW5(context),
-                    Lottie.asset('lib/assets/lottie_json/livetv_title.json',
-                        animate: false, height: 15),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        right: 8,
-                      ),
-                      child: Text(
-                        "See All  >",
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              titleheading(context, "", "", LiveTvPage(),
+                  isLiveChannelTitle: true),
               SizedBox(
                   height: 100,
                   child: BlocBuilder<HomepageBloc, HomepageState>(
@@ -203,99 +68,32 @@ class _HomePageState extends State<HomePage> {
                     if (state is HomepageInitialState ||
                         state is HomepageLiveChannelLoading ||
                         state is HomepageLiveChannelError) {
-                      return SizedBox(
-                        height: 80,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 4,
-                          itemBuilder: (BuildContext cotext, _) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: CircleAvatar(
-                                radius: 40,
-                                foregroundColor: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
-                              ),
-                            );
-                          },
-                        ),
+                      return _horizontalScrollLiveChannel(
+                        liveChannelModel: liveChannelModel,
+                        isErrorState: true,
                       );
                     } else if (state is HomepageLiveChannelSuccess) {
-                      return SizedBox(
-                        height: 100,
-                        child: ListView.builder(
-                          padding: const EdgeInsets.only(left: 5),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 10,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: CircleAvatar(
-                                radius: 40,
-                                backgroundColor: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
-                                child: Image.network(
-                                  state.liveChannelModel![index].logo,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container();
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                      setState(() {
+                        liveChannelModel = state.liveChannelModel ?? [];
+                      });
+                      return _horizontalScrollLiveChannel(
+                        liveChannelModel: state.liveChannelModel,
                       );
                     } else {
-                      return SizedBox(
-                        height: 80,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 5,
-                          itemBuilder: (BuildContext cotext, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: CircleAvatar(
-                                radius: 40,
-                                foregroundColor: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
-                              ),
-                            );
-                          },
-                        ),
+                      return _horizontalScrollLiveChannel(
+                        liveChannelModel: liveChannelModel,
+                        isErrorState: true,
                       );
                     }
                   })),
               sizedBoxH10(context),
-              /* Container(
-                margin: const EdgeInsets.all(5),
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.2,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                ),
-                child: Center(
-                    child: Text("Banner ad",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ))),
-              ),
-              sizedBoxH10(context), */
               titleheading(
                 context,
                 "Trending",
                 "See All",
-                () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TrendingPage(
-                                previousWidget: 'Trending',
-                              )));
-                },
+                TrendingPage(
+                  previousWidget: 'Trending',
+                ),
               ),
               sizedBoxH10(context),
               SizedBox(child: BlocBuilder<HomepageBloc, HomepageState>(
@@ -303,187 +101,47 @@ class _HomePageState extends State<HomePage> {
                   if (state is HomepageTrendingNewsLoading ||
                       state is HomepageInitialState ||
                       state is HomepageTrendingNewsError) {
-                    return Row(
-                      children: [
-                        trendingPosts(context, isErrorState: true),
-                        trendingPosts(context, isErrorState: true),
-                        trendingPosts(context, isErrorState: true),
-                      ],
-                    );
+                    return trendingPosts(context, isErrorState: true);
                   } else if (state is HomepageTrendingNewsSuccess) {
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.7,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 10,
-                        itemBuilder: (BuildContext cotext, int index) {
-                          return trendingPosts(context,
-                              state: state.articles[index],
-                              isErrorState: false);
-                        },
-                      ),
-                    );
+                    return trendingPosts(context,
+                        artical: state.articles, isErrorState: false);
+                  } else {
+                    return trendingPosts(context, isErrorState: true);
                   }
-                  return trendingPosts(context, isErrorState: true);
                 },
               )),
-              // SingleChildScrollView(
-              //   scrollDirection: Axis.horizontal,
-              //   child: Row(
-              //     children: [
-              //       trendingPosts(context),
-              //       sizedBoxW10(context),
-              //       trendingPosts(context),
-              //       sizedBoxW10(context),
-              //       trendingPosts(context),
-              //       sizedBoxW10(context),
-              //       trendingPosts(context),
-              //       sizedBoxW10(context),
-              //     ],
-              //   ),
-              // ),
               sizedBoxH30(context),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AllCategoriesPage()));
-                },
-                child: Text(
-                  " See all catogeries    >",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 17),
-                ),
-              ),
-              sizedBoxH20(context),
-              SizedBox(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.15,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _categories.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SelectedCategoryPage(
-                                selectedCategory: _categories[index],
-                              ),
-                            ),
-                          );
-                        },
-                        child: categoryCardItem(
-                          categories: _categories[index],
-                        ),
-                      );
-                    }),
-              ),
+              //Category Card Static only
+              categoryCardItem(categories),
+              //Category card end
               sizedBoxH30(context),
               titleheading(
-                context,
-                "Recomanded",
-                "See All",
-                () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TrendingPage(
-                                previousWidget: 'Recommended',
-                              )));
-                },
-              ),
+                  context,
+                  "Recomanded",
+                  "See All",
+                  TrendingPage(
+                    previousWidget: 'Recommended',
+                  )),
               sizedBoxH5(context),
-
               SizedBox(child: BlocBuilder<HomepageBloc, HomepageState>(
                   builder: (context, state) {
                 if (state is HomepageRecommendedNewsLoading ||
                     state is HomepageInitialState ||
                     state is HomepageRecommendedNewsError) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: 5,
-                      itemBuilder: (BuildContext context, _) {
-                        return Container(
-                          height: 50,
-                          margin: const EdgeInsets.only(bottom: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                  return recomendedPosts(context,
+                      isErrorState: true, artical: []);
                 } else if (state is HomepageRecommendedNewsSuccess) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: state.articles.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return recomendedPosts(context,
-                            state: state.articles[index]);
-                      },
-                    ),
-                  );
+                  return recomendedPosts(context, artical: state.articles);
                 } else {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: 5,
-                      itemBuilder: (BuildContext context, _) {
-                        return Container(
-                          height: 50,
-                          margin: const EdgeInsets.only(bottom: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                  return recomendedPosts(context,
+                      isErrorState: true, artical: []);
                 }
               })),
-
-              // recomendedPosts(context),
-              // recomendedPosts(context),
-              // /*  Container(
-              //   margin: const EdgeInsets.all(5),
-              //   width: double.infinity,
-              //   height: MediaQuery.of(context).size.height * 0.1,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(8),
-              //     color: Theme.of(context).colorScheme.secondaryContainer,
-              //   ),
-              //   child: Center(
-              //       child: Text("Banner ad",
-              //           style: TextStyle(
-              //             color: Theme.of(context).colorScheme.secondary,
-              //           ))),
-              // ), */
-              // recomendedPosts(context),
-              // recomendedPosts(context),
-              // sizedBoxH20(context),
               titleheading(
                 context,
                 "Saved",
                 "See All ",
-                () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const BookmarkPage()));
-                },
+                BookmarkPage(),
               ),
               sizedBoxH5(context),
               Row(
@@ -493,65 +151,56 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               sizedBoxH20(context),
-              /*      Container(
-                margin: const EdgeInsets.all(5),
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.1,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                ),
-                child: Center(
-                    child: Text("Banner ad",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ))),
-              ),
-              sizedBoxH20(context),*/
               titleheading(
                 context,
                 "Live channels",
                 "See All ",
-                () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LiveTvPage()));
-                },
+                LiveTvPage(),
               ),
               sizedBoxH5(context),
-              SizedBox(child: BlocBuilder<HomepageBloc, HomepageState>(
-                  builder: (context, state) {
-                if (state is HomepageLiveChannelLoading) {
-                  return _gridLiveChannel(isLoadingState: true);
-                } else if (state is HomepageLiveChannelSuccess) {
-                  return _gridLiveChannel(
-                      liveChannelModel: state.liveChannelModel,
-                      isLoadingState: false);
-                } else if (state is HomepageLiveChannelError) {
-                  return Text("error");
-                } else {
-                  return _gridLiveChannel(isLoadingState: true);
-                }
-              })),
+              _gridLiveChannel(
+                  liveChannelModel: liveChannelModel, isLoadingState: false),
               sizedBoxH30(context),
-
-              /*   Container(
-                margin: const EdgeInsets.all(5),
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.1,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                ),
-                child: Center(
-                    child: Text("Banner ad",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ))),
-              ),
-              sizedBoxH15(context),*/
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _horizontalScrollLiveChannel(
+      {List<LiveChannelModel>? liveChannelModel, bool isErrorState = false}) {
+    return SizedBox(
+      height: 100,
+      child: ListView.builder(
+        padding: const EdgeInsets.only(left: 5),
+        scrollDirection: Axis.horizontal,
+        itemCount: 10,
+        itemBuilder: (BuildContext context, int index) {
+          if (isErrorState == true || liveChannelModel == null) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: CircleAvatar(
+                radius: 40,
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+              ),
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: CircleAvatar(
+                radius: 40,
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+                child: Image.network(
+                  liveChannelModel[index].logo,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container();
+                  },
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -565,7 +214,7 @@ class _HomePageState extends State<HomePage> {
       mainAxisSpacing: 10.0,
       shrinkWrap: true,
       children: List.generate(
-        6,
+        liveChannelModel?.length ?? 0,
         (index) {
           return Container(
             height: 250,
@@ -606,7 +255,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget trendingPosts(BuildContext context,
-      {bool isErrorState = false, Article? state}) {
+      {bool isErrorState = false, List<Article>? artical}) {
     if (isErrorState == true) {
       return SizedBox(
         height: MediaQuery.of(context).size.width * 0.7,
@@ -627,142 +276,217 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     } else {
-      return Column(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.5,
-            //height: MediaQuery.of(context).size.height * 0.6,
-            child: Column(
+      return SizedBox(
+        height: MediaQuery.of(context).size.width * 0.7,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: artical?.length ?? 0,
+          itemBuilder: (context, index) {
+            return Column(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    "lib/assets/images/test_sample1.jpg",
-                    fit: BoxFit.fill,
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  //height: MediaQuery.of(context).size.height * 0.6,
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          "lib/assets/images/test_sample1.jpg",
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      sizedBoxH5(context),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 7),
+                        child: Text(
+                            style: Theme.of(context).textTheme.labelMedium,
+                            "You should know how to make web requests in your chosen programming language"),
+                      ),
+                      sizedBoxH5(context),
+                      Row(
+                        //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          sizedBoxW5(context),
+                          Image.asset(
+                            "lib/assets/images/profile.png",
+                            scale: 7,
+                          ),
+                          sizedBoxW5(context),
+                          const Text(
+                            "Anil Yadav",
+                            style: TextStyle(fontSize: 10),
+                            softWrap: true,
+                          ),
+                          sizedBoxW5(context),
+                          const Text(
+                            "1 day ago",
+                            softWrap: true,
+                            style: TextStyle(fontSize: 10),
+                          ),
+                          const Spacer(),
+                          const Icon(
+                            Icons.more_vert_outlined,
+                            size: 18,
+                          )
+                        ],
+                      ),
+                      sizedBoxH5(context)
+                    ],
                   ),
                 ),
-                sizedBoxH5(context),
-                Padding(
-                  padding: const EdgeInsets.only(left: 7),
-                  child: Text(
-                      style: Theme.of(context).textTheme.labelMedium,
-                      "You should know how to make web requests in your chosen programming language"),
-                ),
-                sizedBoxH5(context),
-                Row(
-                  //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    sizedBoxW5(context),
-                    Image.asset(
-                      "lib/assets/images/profile.png",
-                      scale: 7,
-                    ),
-                    sizedBoxW5(context),
-                    const Text(
-                      "Anil Yadav",
-                      style: TextStyle(fontSize: 10),
-                      softWrap: true,
-                    ),
-                    sizedBoxW5(context),
-                    const Text(
-                      "1 day ago",
-                      softWrap: true,
-                      style: TextStyle(fontSize: 10),
-                    ),
-                    const Spacer(),
-                    const Icon(
-                      Icons.more_vert_outlined,
-                      size: 18,
-                    )
-                  ],
-                ),
-                sizedBoxH5(context)
               ],
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       );
     }
   }
 
-  Widget recomendedPosts(BuildContext context, {required Article state}) {
-    return Container(
-      margin: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Theme.of(context).colorScheme.surfaceContainer),
-      child: ListTile(
-        leading: ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: Image.network(
-              state.imageUrl ?? "",
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container();
-              },
-            )),
-        title: Text(
-          "To get started you'll need an API key. They're free while you are in development.",
-          style: Theme.of(context).textTheme.titleSmall,
-          maxLines: 2,
+  Widget recomendedPosts(BuildContext context,
+      {required List<Article> artical, bool isErrorState = false}) {
+    if (isErrorState == true) {
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.35,
+        child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: 5,
+          itemBuilder: (BuildContext context, _) {
+            return Container(
+              height: 50,
+              margin: const EdgeInsets.only(bottom: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.surfaceContainer,
+              ),
+            );
+          },
         ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 2),
-          child: Row(
-            children: [
-              Image.asset(
-                "lib/assets/images/profile.png",
-                scale: 9,
+      );
+    } else {
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.35,
+        child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: artical.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Container(
+              margin: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).colorScheme.surfaceContainer),
+              child: ListTile(
+                leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Image.network(
+                      artical[index].imageUrl ?? "",
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container();
+                      },
+                    )),
+                title: Text(
+                  "To get started you'll need an API key. They're free while you are in development.",
+                  style: Theme.of(context).textTheme.titleSmall,
+                  maxLines: 2,
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        "lib/assets/images/profile.png",
+                        scale: 9,
+                      ),
+                      sizedBoxW5(context),
+                      const Text(
+                        "Anil Yadav",
+                        style: TextStyle(fontSize: 10),
+                        softWrap: true,
+                      ),
+                      sizedBoxW5(context),
+                      const Text(
+                        "1 day ago",
+                        softWrap: true,
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      const Spacer(),
+                      const Icon(
+                        Icons.more_vert_outlined,
+                        size: 18,
+                      )
+                    ],
+                  ),
+                ),
               ),
-              sizedBoxW5(context),
-              const Text(
-                "Anil Yadav",
-                style: TextStyle(fontSize: 10),
-                softWrap: true,
-              ),
-              sizedBoxW5(context),
-              const Text(
-                "1 day ago",
-                softWrap: true,
-                style: TextStyle(fontSize: 10),
-              ),
-              const Spacer(),
-              const Icon(
-                Icons.more_vert_outlined,
-                size: 18,
-              )
-            ],
-          ),
+            );
+          },
         ),
-      ),
-    );
+      );
+    }
   }
 
   Widget titleheading(
-      BuildContext context, String text, String seeall, Function? onTap) {
-    return GestureDetector(
-      onTap: onTap != null ? () => onTap() : null,
-      child: Row(
-        children: [
-          Text(
-            text,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.only(
-              right: 8,
+      BuildContext context, String text, String seeall, Widget page,
+      {bool isLiveChannelTitle = false}) {
+    if (isLiveChannelTitle == true) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => page));
+        },
+        child: Row(
+          children: [
+            sizedBoxW5(context),
+            Lottie.asset('lib/assets/lottie_json/livetv_title.json',
+                animate: false, height: 15),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(
+                right: 8,
+              ),
+              child: Text(
+                "See All  >",
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
             ),
-            child: Text(
-              seeall,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+          ],
+        ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => page));
+        },
+        child: Row(
+          children: [
+            Text(
+              text,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-          ),
-        ],
-      ),
-    );
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(
+                right: 8,
+              ),
+              child: Text(
+                seeall,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Widget savedPosts(BuildContext context) {
@@ -808,52 +532,151 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget categoryCardItem({required Map<String, dynamic> categories}) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 4),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(5),
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.3,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Image.asset(
-                  categories["image"],
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.black.withAlpha(200), Colors.transparent],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                    ),
-                  ),
-                ),
-              ),
-              Column(
-                children: [
-                  Spacer(),
-                  Center(
-                    child: Text(
-                      categories["title"],
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  sizedBoxH5(context),
-                ],
-              ),
-            ],
-          ),
+  AppBar _buldAppBar(BuildContext context) {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      title: GestureDetector(
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Samplepage()));
+        },
+        child: Row(
+          children: [
+            Text(
+              "Stream24 ",
+              style: GoogleFonts.dancingScript(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "News",
+              style: GoogleFonts.dancingScript(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16, top: 5),
+          child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NotificationPage()));
+              },
+              child: const Icon(MyTabIcons.notification)),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            right: 20,
+          ),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BookmarkPage()));
+            },
+            child: const Icon(
+              MyTabIcons.bookmark,
+              size: 21,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget categoryCardItem(List<Map<String, dynamic>> categories) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => AllCategoriesPage()));
+          },
+          child: Text(
+            " See all catogeries    >",
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Theme.of(context).colorScheme.primary, fontSize: 17),
+          ),
+        ),
+        sizedBoxH20(context),
+
+        // Horizontal list of categories
+        SizedBox(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height * 0.15,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _categories.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SelectedCategoryPage(
+                            selectedCategory: _categories[index],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: Image.asset(
+                                  _categories[index]["image"],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.black.withAlpha(200),
+                                        Colors.transparent
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Spacer(),
+                                  Center(
+                                    child: Text(
+                                      _categories[index]["title"],
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  sizedBoxH5(context),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ));
+              }),
+        ),
+      ],
     );
   }
 }
