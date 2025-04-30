@@ -22,11 +22,16 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       HomepageLoadChannelsEvent event, Emitter<HomepageState> emit) async {
     try {
       emit(HomepageLiveChannelLoading());
+      // String? countryCode = countries.firstWhere(
+      //     (country) => country['name'] == event.region,
+      //     orElse: () => {})['code'];
       // log('Loading channels for region: ${event.region}');
       final snapshot = await FirebaseFirestore.instance
           .collection('live_chennels')
           .doc('6Kc57CnXtYzg85cD0FXS')
           .collection('all_channels')
+          .where("region", isEqualTo: event.region)
+          .where("language", isEqualTo: "hi")
           .get();
 
       List<LiveChannelModel> allChannels = snapshot.docs
@@ -39,7 +44,9 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .toList();
       // Sort by viewCount (highest first)
       // regionChannels.sort((a, b) => b.viewCount.compareTo(a.viewCount));
-
+      log('Category region Fetch Channel Countory Code: ${event.region}');
+      log('Category region Fetch Channel: ${event.region}');
+      log('Category lang Fetch Channel: ${event.lang}');
       log('Channels loaded: ${regionChannels.length}');
       emit(HomepageLiveChannelSuccess(liveChannelModel: regionChannels));
     } catch (e) {
@@ -52,13 +59,14 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       HomepageLoadTrendingEvent event, Emitter<HomepageState> emit) async {
     try {
       emit(HomepageTrendingNewsLoading());
-      String? countryName = countries.firstWhere(
-          (country) => country['code'] == event.region,
-          orElse: () => {})['name'];
+      // String? countryName = countries.firstWhere(
+      //     (country) => country['code'] == event.region,
+      //     orElse: () => {})['name'];
       // Only fetch documents where 'country' array contains the target region
       final snapshot = await FirebaseFirestore.instance
           .collection('news')
-          .where('country', arrayContains: countryName ?? "india".toLowerCase())
+          .where('country', arrayContains: event.region)
+          .where('language', isEqualTo: event.lang)
           .get();
 
       List<Article> allNews =
@@ -83,14 +91,15 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
     try {
       emit(HomepageRecommendedNewsLoading());
 
-      String? countryName = countries.firstWhere(
-          (country) => country['code'] == event.region,
-          orElse: () => {})['name'];
+      // String? countryName = countries.firstWhere(
+      //     (country) => country['code'] == event.region,
+      //     orElse: () => {})['name'];
 
       // Only fetch documents where 'country' array contains the target region
       final snapshot = await FirebaseFirestore.instance
           .collection('news')
-          .where('country', arrayContains: countryName ?? "india".toLowerCase())
+          .where('country', arrayContains: event.region)
+          .where('language', isEqualTo: event.lang)
           .get();
 
       List<Article> allNews =

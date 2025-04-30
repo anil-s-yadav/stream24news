@@ -12,6 +12,7 @@ class AllCategoriesPage extends StatefulWidget {
 
 class _AllCategoriesPageState extends State<AllCategoriesPage> {
   final List<Map<String, dynamic>> _categoriesList = categories;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

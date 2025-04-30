@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+const String defaultImageUrl =
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s";
+
 String getTimeAgo(String? pubDate) {
   // Parse the published date as UTC
   DateTime published = DateTime.parse(pubDate!).toUtc();

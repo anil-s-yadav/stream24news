@@ -1,24 +1,22 @@
 part of 'homepage_bloc.dart';
 
-abstract class HomepageEvent extends Equatable {}
+abstract class HomepageEvent extends Equatable {
+  final String region;
+  final String lang;
+  const HomepageEvent({required this.region, required this.lang});
+  @override
+  List<Object?> get props => [region, lang];
+}
 
 final class HomepageLoadChannelsEvent extends HomepageEvent {
-  final String region;
-  HomepageLoadChannelsEvent({required this.region});
-  @override
-  List<Object?> get props => [region];
+  const HomepageLoadChannelsEvent({required super.region, required super.lang});
 }
 
 final class HomepageLoadTrendingEvent extends HomepageEvent {
-  final String region;
-  HomepageLoadTrendingEvent({required this.region});
-  @override
-  List<Object?> get props => [region];
+  const HomepageLoadTrendingEvent({required super.region, required super.lang});
 }
 
 final class HomepageLoadRecommendedEvent extends HomepageEvent {
-  final String region;
-  HomepageLoadRecommendedEvent({required this.region});
-  @override
-  List<Object?> get props => [region];
+  const HomepageLoadRecommendedEvent(
+      {required super.region, required super.lang});
 }

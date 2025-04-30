@@ -32,8 +32,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   HomepageBloc? _homepageBloc;
-  String errorInageUrl =
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s";
 
   final List<Map<String, dynamic>> _categories = categories;
   List<LiveChannelModel> liveChannelModel = [];
@@ -46,17 +44,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadUser() async {
-    List<String> region = SharedPrefService().getCounty() ?? ["", "", "in"];
+    List<String> region = SharedPrefService().getCounty() ??
+        ["", "india", "in"]; //["flag", "name", "code"]
+    List<String> lang = SharedPrefService().getLanguage() ??
+        ["English", "en"]; //["name", "code"]
     final homepageBloc = BlocProvider.of<HomepageBloc>(context);
     homepageBloc.add(
-      HomepageLoadChannelsEvent(region: region[2]),
+      HomepageLoadChannelsEvent(
+          region: region[2].toLowerCase(), lang: lang[0].toLowerCase()),
     );
+
     homepageBloc.add(
-      HomepageLoadTrendingEvent(region: region[2]),
+      HomepageLoadTrendingEvent(
+          region: region[1].toLowerCase(), lang: lang[0].toLowerCase()),
     );
+
     homepageBloc.add(
-      HomepageLoadRecommendedEvent(region: region[2]),
+      HomepageLoadRecommendedEvent(
+          region: region[1].toLowerCase(), lang: lang[0].toLowerCase()),
     );
+    print("region[1]: ${region[1].toLowerCase()}");
+    print("region[2]: ${region[2].toLowerCase()}");
   }
 
   @override
@@ -121,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
               )),
-              sizedBoxH30(context),
+              sizedBoxH10(context),
               //Category Card Static only
               categoryCardItem(categories),
               //Category card end
@@ -334,7 +342,7 @@ class _HomePageState extends State<HomePage> {
       );
     } else {
       return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.46,
+        height: MediaQuery.of(context).size.height * 0.42,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: artical!.isEmpty ? 2 : min(artical.length, 10),
@@ -350,7 +358,7 @@ class _HomePageState extends State<HomePage> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: CachedNetworkImage(
-                      imageUrl: artical[index].imageUrl ?? errorInageUrl,
+                      imageUrl: artical[index].imageUrl ?? defaultImageUrl,
                       height: MediaQuery.of(context).size.height * 0.3,
                       fit: BoxFit.fitHeight,
                       placeholder: (context, url) => Container(
@@ -372,7 +380,7 @@ class _HomePageState extends State<HomePage> {
                     softWrap: true,
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
-                  sizedBoxH10(context),
+                  // sizedBoxH10(context),
                   // Text(
                   //   trendingPostedDate,
                   //   softWrap: true,
@@ -386,7 +394,7 @@ class _HomePageState extends State<HomePage> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
-                          artical[index].source?.sourceIcon ?? errorInageUrl,
+                          artical[index].source?.sourceIcon ?? defaultImageUrl,
                           height: 20,
                           width: 20,
                           errorBuilder: (context, error, stackTrace) {
@@ -462,7 +470,7 @@ class _HomePageState extends State<HomePage> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: CachedNetworkImage(
-                    imageUrl: artical[index].imageUrl ?? errorInageUrl,
+                    imageUrl: artical[index].imageUrl ?? defaultImageUrl,
                     height: 80,
                     width: 100,
                     fit: BoxFit.cover,
