@@ -1,10 +1,11 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:stream24news/models/new_model.dart';
 
 import '../../utils/componants/sizedbox.dart';
-import '../../utils/services/post_time.dart';
+import '../../utils/services/my_methods.dart';
 import '../../utils/theme/my_tab_icons_icons.dart';
 
 class TrendingPage extends StatefulWidget {
@@ -18,6 +19,9 @@ class TrendingPage extends StatefulWidget {
 }
 
 class _TrendingPageState extends State<TrendingPage> {
+  String errorInageUrl =
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s";
+
   @override
   Widget build(BuildContext context) {
     log("${widget.model.length}");
@@ -61,31 +65,60 @@ class _TrendingPageState extends State<TrendingPage> {
                             ),
                             sizedBoxH5(context),
                             Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Image.asset(
-                                  "lib/assets/images/profile.png",
-                                  scale: 6,
-                                ),
-                                sizedBoxW5(context),
-                                Text(
-                                  "Anil Yadav",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: CachedNetworkImage(
+                                    imageUrl: widget
+                                            .model[index].source?.sourceIcon ??
+                                        errorInageUrl,
+                                    height: 30,
+                                    width: 30,
+                                    // height: MediaQuery.of(context).size.height * 0.18,
+                                    // width: MediaQuery.of(context).size.width * 0.38,
+                                    // fit: BoxFit.fitHeight,
+                                    placeholder: (context, url) => Container(
+                                      // height: MediaQuery.of(context).size.height * 0.18,
+                                      // width: MediaQuery.of(context).size.width * 0.38,
+                                      height: 30,
+                                      width: 30,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainer,
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
                                   ),
-                                  softWrap: true,
                                 ),
-                                const Spacer(),
+                                // Image.asset(
+                                //   "lib/assets/images/profile.png",
+                                //   scale: 6,
+                                // ),
+                                sizedBoxW5(context),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.25,
+                                  child: Text(
+                                    widget.model[index].source?.sourceName ??
+                                        "Unknown",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                    softWrap: true,
+                                  ),
+                                ),
+                                // const Spacer(),
+                                sizedBoxW5(context),
                                 Icon(
                                   MyTabIcons.bookmark,
                                   size: 20,
                                   color: Theme.of(context).colorScheme.outline,
                                 ),
-                                Icon(
-                                  Icons.more_vert_rounded,
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
+                                newsMenuOptions(context)
                               ],
                             ),
                           ],
@@ -94,13 +127,20 @@ class _TrendingPageState extends State<TrendingPage> {
                       sizedBoxW10(context),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: SizedBox(
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              widget.model[index].imageUrl ?? errorInageUrl,
                           height: MediaQuery.of(context).size.height * 0.18,
                           width: MediaQuery.of(context).size.width * 0.38,
-                          child: Image.asset(
-                            "lib/assets/images/test_sample1.jpg",
-                            fit: BoxFit.fill,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            height: MediaQuery.of(context).size.height * 0.18,
+                            width: MediaQuery.of(context).size.width * 0.38,
+                            color:
+                                Theme.of(context).colorScheme.surfaceContainer,
                           ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
                         ),
                       ),
                     ]),

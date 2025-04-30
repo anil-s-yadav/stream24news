@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,7 +20,7 @@ import '../../features/all_categories/selected_category_page.dart';
 import '../../features/bookmark/bookmark_page.dart';
 import '../../features/notification/notification.dart';
 import '../../features/trending_page/trending_page.dart';
-import '../../utils/services/post_time.dart';
+import '../../utils/services/my_methods.dart';
 import '../../utils/services/shared_pref_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -90,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                           );
                         }
                       })),
-              sizedBoxH10(context),
+              // sizedBoxH10(context),
               titleheading(
                   context,
                   "Trending",
@@ -153,6 +154,7 @@ class _HomePageState extends State<HomePage> {
                               artical: [], isErrorState: true);
                         }
                       })),
+              sizedBoxH10(context),
               titleheading(
                 context,
                 "Saved",
@@ -209,11 +211,10 @@ class _HomePageState extends State<HomePage> {
   Widget _horizontalScrollLiveChannel(
       {List<LiveChannelModel>? liveChannelModel, bool isErrorState = false}) {
     return SizedBox(
-      height: 100,
       child: ListView.builder(
         padding: const EdgeInsets.only(left: 5),
         scrollDirection: Axis.horizontal,
-        itemCount: 10,
+        itemCount: min(liveChannelModel?.length ?? 0, 10),
         itemBuilder: (BuildContext context, int index) {
           if (isErrorState == true || liveChannelModel == null) {
             return Padding(
@@ -229,11 +230,18 @@ class _HomePageState extends State<HomePage> {
               child: CircleAvatar(
                 radius: 40,
                 backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-                child: Image.network(
-                  liveChannelModel[index].logo,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container();
-                  },
+                child: CachedNetworkImage(
+                  imageUrl: liveChannelModel[index].logo,
+                  fit: BoxFit.fitHeight,
+                  placeholder: (context, url) => Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),
             );
@@ -248,7 +256,6 @@ class _HomePageState extends State<HomePage> {
     bool isLoadingState = false,
   }) {
     return SizedBox(
-      height: 250,
       child: GridView.count(
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 3,
@@ -259,7 +266,6 @@ class _HomePageState extends State<HomePage> {
           min(liveChannelModel.length, 6),
           (index) {
             return Container(
-              height: 250,
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainerHigh,
@@ -275,12 +281,18 @@ class _HomePageState extends State<HomePage> {
                     radius: 40,
                     backgroundColor:
                         Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: Image.network(
-                      liveChannelModel[index].logo,
-                      scale: 1.5,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.broken_image);
-                      },
+                    child: CachedNetworkImage(
+                      imageUrl: liveChannelModel[index].logo,
+                      fit: BoxFit.fitHeight,
+                      placeholder: (context, url) => Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
                   sizedBoxH5(context),
@@ -322,7 +334,7 @@ class _HomePageState extends State<HomePage> {
       );
     } else {
       return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.4,
+        height: MediaQuery.of(context).size.height * 0.46,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: artical!.isEmpty ? 2 : min(artical.length, 10),
@@ -332,31 +344,45 @@ class _HomePageState extends State<HomePage> {
               margin: const EdgeInsets.only(right: 10),
               width: MediaQuery.of(context).size.width * 0.5,
               child: Column(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      artical[index].imageUrl ?? errorInageUrl,
-                      fit: BoxFit.fitHeight,
+                    child: CachedNetworkImage(
+                      imageUrl: artical[index].imageUrl ?? errorInageUrl,
                       height: MediaQuery.of(context).size.height * 0.3,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container();
-                      },
+                      fit: BoxFit.fitHeight,
+                      placeholder: (context, url) => Container(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
                   sizedBoxH5(context),
-                  Padding(
-                      padding: const EdgeInsets.only(left: 7),
-                      child: Text(
-                        artical[index].title ?? "",
-                        maxLines: 3,
-                        style: Theme.of(context).textTheme.labelMedium,
-                      )),
-                  sizedBoxH5(context),
+                  Text(
+                    artical[index].title ?? "",
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  sizedBoxH10(context),
+                  // Text(
+                  //   trendingPostedDate,
+                  //   softWrap: true,
+                  //   style: TextStyle(fontSize: 10),
+                  // ),
+                  // sizedBoxH5(context),
+                  // Spacer(),
                   Row(
-                    //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      sizedBoxW5(context),
+                      // sizedBoxW5(context),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
@@ -369,25 +395,21 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       sizedBoxW5(context),
-                      Text(
-                        artical[index].source?.sourceName ?? "Source",
-                        style: TextStyle(fontSize: 10),
-                        softWrap: true,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        child: Text(
+                          artical[index].source?.sourceName ?? "Source",
+                          style: TextStyle(fontSize: 10),
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
-                      sizedBoxW5(context),
-                      Text(
-                        trendingPostedDate,
-                        softWrap: true,
-                        style: TextStyle(fontSize: 10),
-                      ),
+                      // sizedBoxW5(context),
                       const Spacer(),
-                      const Icon(
-                        Icons.more_vert_outlined,
-                        size: 18,
-                      )
+                      newsMenuOptions(context)
                     ],
                   ),
-                  sizedBoxH5(context)
                 ],
               ),
             );
@@ -401,7 +423,7 @@ class _HomePageState extends State<HomePage> {
       {required List<Article> artical, bool isErrorState = false}) {
     if (isErrorState == true) {
       return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.35,
+        // height: MediaQuery.of(context).size.height * 0.35,
         child: ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -420,75 +442,94 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     } else {
-      return SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          itemCount: min(artical.length, 10),
-          itemBuilder: (BuildContext context, int index) {
-            String date = getTimeAgo(artical[index].pubDate);
-            return Container(
-              margin: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
+      return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: min(artical.length, 10),
+        itemBuilder: (BuildContext context, int index) {
+          String date = getTimeAgo(artical[index].pubDate);
+          return Container(
+            margin: const EdgeInsets.all(5),
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).colorScheme.surfaceContainer,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Image
+                ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(context).colorScheme.surfaceContainer),
-              child: ListTile(
-                leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Image.network(
-                      artical[index].imageUrl ?? errorInageUrl,
-                      fit: BoxFit.cover,
-                      width: 100,
-                      errorBuilder: (context, error, stackTrace) {
-                        return SizedBox();
-                      },
-                    )),
-                title: Text(
-                  artical[index].title ?? "",
-                  style: Theme.of(context).textTheme.titleSmall,
-                  maxLines: 2,
+                  child: CachedNetworkImage(
+                    imageUrl: artical[index].imageUrl ?? errorInageUrl,
+                    height: 80,
+                    width: 100,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Theme.of(context).colorScheme.surfaceContainer,
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
                 ),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Row(
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          artical[index].source?.sourceIcon ?? errorInageUrl,
-                          height: 20,
-                          // fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return SizedBox();
-                          },
-                        ),
-                      ),
-                      sizedBoxW5(context),
                       Text(
-                        artical[index].source?.sourceName ?? "Source",
-                        style: TextStyle(fontSize: 10),
-                        softWrap: true,
+                        artical[index].title ?? "",
+                        style: Theme.of(context).textTheme.titleSmall,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      sizedBoxW5(context),
-                      Text(
-                        date,
-                        softWrap: true,
-                        style: TextStyle(fontSize: 10),
+                      const SizedBox(height: 8),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          if (artical[index].source?.sourceIcon != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                artical[index].source!.sourceIcon!,
+                                height: 18,
+                                width: 18,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const SizedBox(),
+                              ),
+                            ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Text(
+                              artical[index].source?.sourceName ?? "Source",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    fontSize: 10,
+                                  ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Text(
+                            date,
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontSize: 10,
+                                    ),
+                          ),
+                          const SizedBox(width: 8),
+                          newsMenuOptions(context),
+                        ],
                       ),
-                      const Spacer(),
-                      const Icon(
-                        Icons.more_vert_outlined,
-                        size: 18,
-                      )
                     ],
                   ),
                 ),
-              ),
-            );
-          },
-        ),
+              ],
+            ),
+          );
+        },
       );
     }
   }
