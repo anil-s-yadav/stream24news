@@ -20,3 +20,8 @@ final class HomepageLoadRecommendedEvent extends HomepageEvent {
   const HomepageLoadRecommendedEvent(
       {required super.region, required super.lang});
 }
+
+final class HomepageLoadSavedDataEvent extends HomepageEvent {
+  const HomepageLoadSavedDataEvent(
+      {required super.region, required super.lang});
+}

@@ -1,4 +1,6 @@
 final Map<String, String> languages = {
+  "English": "en",
+  "Hindi": "hi",
   "Afrikaans": "af",
   "Albanian": "sq",
   "Amharic": "am",
@@ -20,7 +22,6 @@ final Map<String, String> languages = {
   "Czech": "cs",
   "Danish": "da",
   "Dutch": "nl",
-  "English": "en",
   "Estonian": "et",
   "Filipino": "pi",
   "Finnish": "fi",
@@ -32,7 +33,6 @@ final Map<String, String> languages = {
   "Gujarati": "gu",
   "Hausa": "ha",
   "Hebrew": "he",
-  "Hindi": "hi",
   "Hungarian": "hu",
   "Icelandic": "is",
   "Indonesian": "id",

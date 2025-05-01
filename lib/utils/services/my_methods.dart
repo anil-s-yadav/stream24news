@@ -26,12 +26,13 @@ String getTimeAgo(String? pubDate) {
 
 Widget newsMenuOptions(BuildContext context) {
   return PopupMenuButton<int>(
-    padding: EdgeInsets.all(2),
     icon: Icon(
       Icons.more_vert_outlined,
       size: 24,
       color: Theme.of(context).colorScheme.primary,
     ),
+    // splashRadius: 12,
+
     itemBuilder: (context) => [
       const PopupMenuItem<int>(
         value: 1,

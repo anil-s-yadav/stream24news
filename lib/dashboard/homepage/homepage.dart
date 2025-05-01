@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              titleheading(context, "", "", () => LiveTvPage(),
+              titleheading("", "", () => LiveTvPage(),
                   isLiveChannelTitle: true),
               SizedBox(
                   height: 100,
@@ -86,6 +86,7 @@ class _HomePageState extends State<HomePage> {
                       buildWhen: (previous, current) =>
                           current is HomepageLiveChannelLoading ||
                           current is HomepageLiveChannelSuccess ||
+                          current is HomepageInitialState ||
                           current is HomepageLiveChannelError,
                       builder: (context, state) {
                         if (state is HomepageLiveChannelSuccess) {
@@ -97,11 +98,11 @@ class _HomePageState extends State<HomePage> {
                             liveChannelModel: liveChannelModel,
                             isErrorState: true,
                           );
+                          // return Text("$state");
                         }
                       })),
               // sizedBoxH10(context),
               titleheading(
-                  context,
                   "Trending",
                   "See All",
                   () => TrendingPage(
@@ -135,7 +136,6 @@ class _HomePageState extends State<HomePage> {
               //Category card end
               sizedBoxH30(context),
               titleheading(
-                  context,
                   "Recomanded",
                   "See All",
                   () => TrendingPage(
@@ -162,23 +162,31 @@ class _HomePageState extends State<HomePage> {
                               artical: [], isErrorState: true);
                         }
                       })),
-              sizedBoxH10(context),
-              titleheading(
-                context,
-                "Saved",
-                "See All ",
-                () => BookmarkPage(),
-              ),
+              sizedBoxH20(context),
+              // titleheading(
+              //   "Saved",
+              //   "See All ",
+              //   () => BookmarkPage(),
+              // ),
               sizedBoxH5(context),
-              Row(
-                children: [
-                  savedPosts(context),
-                  savedPosts(context),
-                ],
+              BlocBuilder<HomepageBloc, HomepageState>(
+                bloc: _homepageBloc,
+                buildWhen: (previous, current) =>
+                    current is HomepageSavedDataError ||
+                    current is HomepageSavedDataLoading ||
+                    current is HomepageInitialState ||
+                    current is HomepageSavedDataSuccess,
+                builder: (context, state) {
+                  if (state is HomepageSavedDataSuccess) {
+                    return savedPosts(state.articles, state.channels);
+                  } else {
+                    return savedPosts([], []);
+                  }
+                },
               ),
+              // savedPosts(),
               sizedBoxH20(context),
               titleheading(
-                context,
                 "Live channels",
                 "See All ",
                 () => LiveTvPage(),
@@ -189,20 +197,17 @@ class _HomePageState extends State<HomePage> {
                 buildWhen: (previous, current) =>
                     current is HomepageLiveChannelLoading ||
                     current is HomepageLiveChannelSuccess ||
+                    current is HomepageInitialState ||
                     current is HomepageLiveChannelError,
                 builder: (context, state) {
                   if (state is HomepageLiveChannelSuccess) {
                     return _gridLiveChannel(
                       liveChannelModel: state.liveChannelModel ?? [],
-                      isLoadingState: false,
                     );
-                  } else if (state is HomepageLiveChannelLoading) {
-                    return const Center(child: CircularProgressIndicator());
                   } else {
                     return _gridLiveChannel(
                       liveChannelModel: [],
-                      isLoadingState:
-                          true, // show empty/error placeholder state
+                      isLoadingState: true,
                     );
                   }
                 },
@@ -218,45 +223,53 @@ class _HomePageState extends State<HomePage> {
 
   Widget _horizontalScrollLiveChannel(
       {List<LiveChannelModel>? liveChannelModel, bool isErrorState = false}) {
-    return SizedBox(
-      child: ListView.builder(
-        padding: const EdgeInsets.only(left: 5),
-        scrollDirection: Axis.horizontal,
-        itemCount: min(liveChannelModel?.length ?? 0, 10),
-        itemBuilder: (BuildContext context, int index) {
-          if (isErrorState == true || liveChannelModel == null) {
-            return Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: CircleAvatar(
-                radius: 40,
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-              ),
-            );
-          } else {
-            return Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: CircleAvatar(
-                radius: 40,
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-                child: CachedNetworkImage(
-                  imageUrl: liveChannelModel[index].logo,
-                  fit: BoxFit.fitHeight,
-                  placeholder: (context, url) => Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainer,
-                      borderRadius: BorderRadius.circular(100),
+    if (isErrorState == true ||
+        liveChannelModel == null ||
+        liveChannelModel.isEmpty) {
+      return SizedBox(
+          child: ListView.builder(
+              padding: const EdgeInsets.only(left: 5),
+              scrollDirection: Axis.horizontal,
+              itemCount: 5,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainer,
+                    ));
+              }));
+    } else {
+      return SizedBox(
+          child: ListView.builder(
+              padding: const EdgeInsets.only(left: 5),
+              scrollDirection: Axis.horizontal,
+              itemCount: min(liveChannelModel.length, 10),
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: CircleAvatar(
+                    radius: 40,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.surfaceContainer,
+                    child: CachedNetworkImage(
+                      imageUrl: liveChannelModel[index].logo,
+                      fit: BoxFit.fitHeight,
+                      placeholder: (context, url) => Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                ),
-              ),
-            );
-          }
-        },
-      ),
-    );
+                );
+              }));
+    }
   }
 
   Widget _gridLiveChannel({
@@ -271,7 +284,7 @@ class _HomePageState extends State<HomePage> {
         mainAxisSpacing: 10.0,
         shrinkWrap: true,
         children: List.generate(
-          min(liveChannelModel.length, 6),
+          isLoadingState == true ? 6 : min(liveChannelModel.length, 9),
           (index) {
             return Container(
               padding: const EdgeInsets.all(5),
@@ -289,19 +302,24 @@ class _HomePageState extends State<HomePage> {
                     radius: 40,
                     backgroundColor:
                         Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: CachedNetworkImage(
-                      imageUrl: liveChannelModel[index].logo,
-                      fit: BoxFit.fitHeight,
-                      placeholder: (context, url) => Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceContainer,
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
+                    child: isLoadingState == true
+                        ? null
+                        : CachedNetworkImage(
+                            imageUrl: liveChannelModel[index].logo,
+                            fit: BoxFit.fitHeight,
+                            placeholder: (context, url) => Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainer,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
                   ),
                   sizedBoxH5(context),
                   Text(
@@ -321,7 +339,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget trendingPosts(BuildContext context,
       {bool isErrorState = false, List<Article>? artical}) {
-    if (isErrorState == true) {
+    if (isErrorState == true || artical!.isEmpty) {
       return SizedBox(
         height: MediaQuery.of(context).size.width * 0.7,
         child: ListView.builder(
@@ -342,12 +360,12 @@ class _HomePageState extends State<HomePage> {
       );
     } else {
       return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.42,
+        height: MediaQuery.of(context).size.height * 0.43,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: artical!.isEmpty ? 2 : min(artical.length, 10),
+          itemCount: min(artical.length, 10),
           itemBuilder: (context, index) {
-            String trendingPostedDate = getTimeAgo(artical[index].pubDate);
+            // String trendingPostedDate = getTimeAgo(artical[index].pubDate);
             return Container(
               margin: const EdgeInsets.only(right: 10),
               width: MediaQuery.of(context).size.width * 0.5,
@@ -542,8 +560,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget titleheading(BuildContext context, String text, String seeall,
-      Widget Function() pageBuilder,
+  Widget titleheading(String text, String seeall, Widget Function() pageBuilder,
       {bool isLiveChannelTitle = false}) {
     if (isLiveChannelTitle == true) {
       return GestureDetector(
@@ -605,47 +622,110 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget savedPosts(BuildContext context) {
-    return SizedBox(
-      height: 140,
-      width: MediaQuery.of(context).size.width / 2.1,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          MyLightContainer(
-            height: 110,
-            width: MediaQuery.of(context).size.width / 2.1,
-            child: const Text("Datkka"),
-          ),
-          Row(
+  Widget savedPosts(
+    List<Article> articals,
+    List<LiveChannelModel> liveChannelModel,
+  ) {
+    return articals.isEmpty && liveChannelModel.isEmpty
+        ? SizedBox.shrink()
+        : Column(
             children: [
-              sizedBoxW15(context),
-              Image.asset(
-                "lib/assets/images/profile.png",
-                scale: 9,
+              titleheading(
+                "Saved",
+                "See All",
+                () => BookmarkPage(),
               ),
-              sizedBoxW5(context),
-              const Text(
-                "Anil Yadav",
-                style: TextStyle(fontSize: 10),
-                softWrap: true,
+              sizedBoxH5(context),
+              Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainer,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      liveChannelModel.isEmpty
+                          ? SizedBox.shrink()
+                          : SizedBox(
+                              height: 90,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: min(liveChannelModel.length, 10),
+                                itemBuilder: (context, index) => Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 6),
+                                  child: CircleAvatar(
+                                    radius: 35,
+                                    backgroundColor: Colors.white,
+                                    // backgroundImage: AssetImage(channelLogos[index]),
+                                    backgroundImage: CachedNetworkImageProvider(
+                                      liveChannelModel[index].logo,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                      sizedBoxH5(context),
+                      // News cards
+                      articals.isEmpty
+                          ? SizedBox.shrink()
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: min(articals.length, 5),
+                              itemBuilder: (context, index) {
+                                final article = articals[index];
+                                return Container(
+                                  padding: const EdgeInsets.all(2),
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
+                                  ),
+                                  child: ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.asset(
+                                        article.imageUrl ?? defaultImageUrl,
+                                        width: 60,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      article.title ?? "",
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text("See All saved items"),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
-              sizedBoxW5(context),
-              const Text(
-                "1 day ago",
-                softWrap: true,
-                style: TextStyle(fontSize: 10),
-              ),
-              const Spacer(),
-              const Icon(
-                Icons.more_vert_outlined,
-                size: 18,
-              )
             ],
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   AppBar _buldAppBar(BuildContext context) {

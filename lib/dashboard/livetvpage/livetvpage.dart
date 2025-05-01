@@ -200,26 +200,30 @@ class _LiveTvPageState extends State<LiveTvPage> {
           controller: scrollController,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Sort", style: Theme.of(context).textTheme.headlineSmall),
-                const SizedBox(height: 20),
-                Wrap(
-                  spacing: 15,
-                  runSpacing: 20,
-                  children: [
-                    "A - Z",
-                    "Z - A",
-                    "Newest First",
-                    "Oldest First",
-                    "Most Popular"
-                  ]
-                      .map((text) => SecondaryButton(
-                          textWidget: Text(text), onPressed: () {}))
-                      .toList(),
-                ),
-              ],
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Sort",
+                      style: Theme.of(context).textTheme.headlineSmall),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    spacing: 15,
+                    runSpacing: 20,
+                    children: [
+                      "A - Z",
+                      "Z - A",
+                      "Newest First",
+                      "Oldest First",
+                      "Most Popular"
+                    ]
+                        .map((text) => SecondaryButton(
+                            textWidget: Text(text), onPressed: () {}))
+                        .toList(),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

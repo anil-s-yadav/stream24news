@@ -15,7 +15,9 @@ final class HomepageLiveChannelLoading extends HomepageState {
 
 final class HomepageLiveChannelSuccess extends HomepageState {
   final List<LiveChannelModel>? liveChannelModel;
-  HomepageLiveChannelSuccess({required this.liveChannelModel});
+  HomepageLiveChannelSuccess({
+    required this.liveChannelModel,
+  });
   @override
   List<Object?> get props => [liveChannelModel];
 }
@@ -57,6 +59,26 @@ final class HomepageRecommendedNewsSuccess extends HomepageState {
 }
 
 final class HomepageRecommendedNewsError extends HomepageState {
+  @override
+  List<Object?> get props => [];
+}
+
+// For Saved News and saved Channels
+final class HomepageSavedDataLoading extends HomepageState {
+  @override
+  List<Object?> get props => [];
+}
+
+final class HomepageSavedDataSuccess extends HomepageState {
+  final List<Article> articles;
+  final List<LiveChannelModel> channels;
+
+  HomepageSavedDataSuccess({required this.articles, required this.channels});
+  @override
+  List<Object?> get props => [articles];
+}
+
+final class HomepageSavedDataError extends HomepageState {
   @override
   List<Object?> get props => [];
 }

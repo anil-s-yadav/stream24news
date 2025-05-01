@@ -86,7 +86,9 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
             Expanded(
               child: BlocBuilder<CategoriesBlocBloc, CategoriesBlocState>(
                   builder: (context, state) {
-                if (state is CategoriesBlocLoading) {
+                if (state is CategoriesBlocLoading ||
+                    state is CategoriesBlocError ||
+                    state is CategoriesBlocInitial) {
                   return categoryInitialAndErrrorState();
                   // const Center(
                   //   child: CircularProgressIndicator(),
@@ -98,22 +100,12 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
                       itemBuilder: (context, index) {
                         return categoryWidgetData(state.articalModel[index]);
                       });
-                } else if (state is CategoriesBlocError) {
-                  return const Center(
-                    child: Text("Error loading data"),
-                  );
                 } else {
                   return const Center(
                     child: Text("No data available"),
                   );
                 }
               }),
-              // ListView.builder(
-              //     shrinkWrap: true,
-              //     itemCount: 10,
-              //     itemBuilder: (context, index) {
-              //       return categoryWidgetData();
-              //     }),
             )
           ],
         ),
@@ -142,86 +134,94 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
     String? pubDate = getTimeAgo(articalModel.pubDate);
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: MediaQuery.of(context).size.width * 0.38,
-                  child: CachedNetworkImage(
-                      imageUrl: articalModel.imageUrl ?? defaultImageUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
-                          ))),
-            ),
-            sizedBoxW10(context),
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width * 0.38,
+              child: CachedNetworkImage(
+                  imageUrl: articalModel.imageUrl ?? defaultImageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                      ))),
+        ),
+        sizedBoxW10(context),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                height: 100,
+                child: Text(articalModel.title ?? "No title",
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 4,
+                    softWrap: true,
+                    style: Theme.of(context).textTheme.titleMedium),
+              ),
+              // sizedBoxH10(context),
+              Text(
+                pubDate,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+                softWrap: true,
+              ),
+              sizedBoxH10(context),
+              Row(
                 children: [
-                  Text(articalModel.title ?? "No title",
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    // radius: 12,
+                    child: CachedNetworkImage(
+                        imageUrl:
+                            articalModel.source?.sourceIcon ?? defaultImageUrl,
+                        fit: BoxFit.fill,
+                        height: 24,
+                        width: 24,
+                        placeholder: (context, url) => Container(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainer,
+                            )),
+                  ),
+                  // Image.asset(
+                  //   "lib/assets/images/profile.png",
+                  //   scale: 6,
+                  // ),
+                  sizedBoxW5(context),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.28,
+                    child: Text(
+                      articalModel.source?.sourceName ?? "No source",
                       textAlign: TextAlign.start,
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 4,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       softWrap: true,
-                      style: Theme.of(context).textTheme.titleMedium),
-                  sizedBoxH10(context),
-                  Text(
-                    pubDate,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.outline,
                     ),
-                    softWrap: true,
                   ),
-                  sizedBoxH10(context),
-                  Row(
-                    children: [
-                      CachedNetworkImage(
-                          imageUrl: articalModel.source?.sourceIcon ??
-                              defaultImageUrl,
-                          fit: BoxFit.cover,
-                          // height: 24,
-                          placeholder: (context, url) => Container(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
-                              )),
-                      Image.asset(
-                        "lib/assets/images/profile.png",
-                        scale: 6,
-                      ),
-                      sizedBoxW5(context),
-                      Text(
-                        "Anil Yadav",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        softWrap: true,
-                      ),
-                      const Spacer(),
-                      Icon(
-                        MyTabIcons.bookmark,
-                        size: 20,
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
-                      Icon(
-                        Icons.more_vert_rounded,
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
-                    ],
+                  // const Spacer(),
+                  // sizedBoxW5(context),
+                  Icon(
+                    MyTabIcons.bookmark,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.outline,
                   ),
+                  newsMenuOptions(context),
+                  // newsMenuOptions(context),
                 ],
               ),
-            )
-          ]),
-        ],
-      ),
+            ],
+          ),
+        )
+      ]),
     );
   }
 }
