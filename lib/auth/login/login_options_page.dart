@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/auth/create_account/select_cuntory.dart';
-import 'package:stream24news/auth/create_account/select_profile_photo.dart';
 import 'package:stream24news/auth/login/login_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import '../../utils/componants/bottom_navbar.dart';
+import '../../utils/services/shared_pref_service.dart';
 import '../create_account/create_account.dart';
 
 class LoginOptionsPage extends StatefulWidget {
@@ -22,8 +22,8 @@ class LoginOptionsPage extends StatefulWidget {
 class _LoginOptionsPage extends State<LoginOptionsPage> {
   @override
   Widget build(BuildContext context) {
-    // List<String> selectedCountry = SharedPrefService().getCounty() ?? [];
-    // List<String> selectedLanguage = SharedPrefService().getLanguage() ?? [];
+    List<String> selectedCountry = SharedPrefService().getCounty() ?? [];
+    List<String> selectedLanguage = SharedPrefService().getLanguage() ?? [];
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -44,19 +44,19 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
                   GestureDetector(
                     onTap: () {
                       //shared preferences for storing skipped value is on sign_up_done_page
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SelectCuntory(
-                                    commingFrom: '',
-                                  )));
-                      // Navigator.pushReplacement(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => selectedLanguage.isEmpty ||
-                      //                 selectedCountry.isEmpty
-                      //             ? SelectCuntory()
-                      //             : BottomNavbar()));
+                      if (selectedLanguage.isEmpty || selectedCountry.isEmpty) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SelectCuntory(
+                                      commingFrom: 'login',
+                                    )));
+                      } else {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const BottomNavbar()));
+                      }
                     },
                     child: SizedBox(
                         width: MediaQuery.of(context).size.width,

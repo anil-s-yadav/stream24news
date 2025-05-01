@@ -18,7 +18,7 @@ class BottomNavbar extends StatefulWidget {
 class _BottomNavbarState extends State<BottomNavbar>
     with AutomaticKeepAliveClientMixin {
   late int selectedIndex;
-  late final PageController _pageController;
+  // late final PageController _pageController;
 
   @override
   bool get wantKeepAlive => true;
@@ -27,23 +27,23 @@ class _BottomNavbarState extends State<BottomNavbar>
   void initState() {
     super.initState();
     selectedIndex = widget.index;
-    _pageController = PageController(initialPage: selectedIndex);
+    // _pageController = PageController(initialPage: selectedIndex);
   }
 
   void changeTab(int index) {
-    if (index == selectedIndex || !_pageController.hasClients) return;
+    // if (index == selectedIndex || !_pageController.hasClients) return;
 
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    // _pageController.animateToPage(
+    //   index,
+    //   duration: const Duration(milliseconds: 300),
+    //   curve: Curves.easeInOut,
+    // );
     setState(() => selectedIndex = index);
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
+    // _pageController.dispose();
     super.dispose();
   }
 
@@ -62,12 +62,7 @@ class _BottomNavbarState extends State<BottomNavbar>
         }
       },
       child: Scaffold(
-        body: PageView(
-          controller: _pageController,
-          physics:
-              const NeverScrollableScrollPhysics(), // Disable swipe gesture
-          children: const [HomePage(), LiveTvPage(), Newspage(), Profilepage()],
-        ),
+        body: _getSelectedPage(),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: selectedIndex,
           onTap: changeTab,
@@ -87,6 +82,21 @@ class _BottomNavbarState extends State<BottomNavbar>
         ),
       ),
     );
+  }
+
+  Widget _getSelectedPage() {
+    switch (selectedIndex) {
+      case 0:
+        return const HomePage();
+      case 1:
+        return const LiveTvPage();
+      case 2:
+        return const Newspage();
+      case 3:
+        return const Profilepage();
+      default:
+        return const HomePage();
+    }
   }
 
   BottomNavigationBarItem _buildNavItem(

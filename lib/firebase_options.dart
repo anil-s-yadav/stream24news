@@ -55,6 +55,7 @@ class DefaultFirebaseOptions {
     appId: '1:185360620575:android:7ddbf4b2b8a05ae72e092a',
     messagingSenderId: '185360620575',
     projectId: 'stream24-news',
+    authDomain: 'stream24-news.firebaseapp.com',
     storageBucket: 'stream24-news.firebasestorage.app',
   );
 
@@ -63,6 +64,7 @@ class DefaultFirebaseOptions {
     appId: '1:185360620575:ios:241909d0864e0df62e092a',
     messagingSenderId: '185360620575',
     projectId: 'stream24-news',
+    authDomain: 'stream24-news.firebaseapp.com',
     storageBucket: 'stream24-news.firebasestorage.app',
     iosBundleId: 'com.legendarysoftware.stream24news',
   );

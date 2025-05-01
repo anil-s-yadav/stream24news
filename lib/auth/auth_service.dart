@@ -84,7 +84,7 @@ class AuthService {
 
       return await _auth.signInWithCredential(credential);
     } catch (e) {
-      // log("Google Sign-In Error: $e");
+      log("Google Sign-In Error: $e");
       throw Exception("Google sign-in failed. Please try again.");
     }
   }
@@ -99,10 +99,10 @@ class AuthService {
         await user.reload();
       }
     } on FirebaseAuthException catch (e) {
-      // log("FirebaseAuthException (update profile): ${e.code} - ${e.message}");
+      log("FirebaseAuthException (update profile): ${e.code} - ${e.message}");
       throw e;
     } catch (e) {
-      // log("General Exception (update profile): $e");
+      log("General Exception (update profile): $e");
       throw Exception("Failed to update profile. Please try again.");
     }
   }
