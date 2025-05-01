@@ -360,7 +360,7 @@ class _HomePageState extends State<HomePage> {
       );
     } else {
       return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.43,
+        height: MediaQuery.of(context).size.height * 0.45,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: min(artical.length, 10),

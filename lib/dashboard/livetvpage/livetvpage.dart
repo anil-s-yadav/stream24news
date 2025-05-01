@@ -154,7 +154,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
   Widget _buildChannelItem(channel, String language) {
     return GestureDetector(
       onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (_) => VideoPlayScreen())),
+          context, MaterialPageRoute(builder: (_) => VideoPlayScreen(channel:channel))),
       child: Container(
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
