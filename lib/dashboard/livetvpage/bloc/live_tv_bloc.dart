@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../models/live_channel_model.dart';
 
 part 'live_tv_event.dart';
@@ -11,6 +12,7 @@ part 'live_tv_state.dart';
 class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
   LiveTvBloc() : super(LiveTvInitialState()) {
     on<LiveTvDataLoadEvent>(_loadAllChennels);
+    on<LiveChannelSaveEvent>(_saveChannel);
   }
 
   void _loadAllChennels(
@@ -24,7 +26,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
           .get();
 
       List<LiveChannelModel> allChannels = snapshot.docs
-          .map((doc) => LiveChannelModel.fromJson(doc.data()))
+          .map((doc) => LiveChannelModel.fromFirestore(doc))
           .toList();
 
       // Region code from the event
@@ -43,12 +45,37 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
       }
       // Combine with selected region on top
       List<LiveChannelModel> finalList = [...regionChannels, ...otherChannels];
-      // log('$regionChannels');
+      log('${regionChannels[0].channelDocId}');
       // log('$otherChannels');
       // log('$finalList');
       emit(LiveTvSuccessState(liveChannelModel: finalList));
     } catch (e) {
       emit(LiveTvErrorState());
+      throw Exception(e);
+    }
+  }
+
+  void _saveChannel(
+      LiveChannelSaveEvent event, Emitter<LiveTvState> emit) async {
+    try {
+      EasyLoading.show(status: 'Saving channel...');
+      // if (AuthService().isUserLoggedIn()) {
+      //   userId = AuthService().getUser()!.uid;
+      // } else {
+      //   emit(HomepageSavedDataError());
+      //   return;
+      // }
+      String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
+
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(testUserID)
+          .collection('saved_channels')
+          .doc(event.channelID)
+          .set({}); // You can store additional data if needed, like timestamp
+      EasyLoading.showSuccess('Channel saved successfully!');
+    } catch (e) {
+      EasyLoading.showError('Failed to save channel!');
       throw Exception(e);
     }
   }

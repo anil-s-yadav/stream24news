@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:stream24news/models/live_channel_model.dart';
@@ -7,6 +8,7 @@ import 'package:stream24news/models/live_channel_model.dart';
 
 import '../../utils/componants/sizedbox.dart';
 import '../../utils/theme/my_tab_icons_icons.dart';
+import 'bloc/live_tv_bloc.dart';
 import 'floating_video_manager.dart';
 
 class VideoPlayScreen extends StatefulWidget {
@@ -95,7 +97,11 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                     Spacer(),
                     TextButton.icon(
                       onPressed: () {
-                        setState(() => isSelected = !isSelected);
+                        setState(() {
+                          isSelected = !isSelected;
+                          context.read<LiveTvBloc>().add(LiveChannelSaveEvent(
+                              channelID: widget.channel.channelDocId));
+                        });
                       },
                       icon: Icon(
                         isSelected

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LiveChannelModel {
+  final String channelDocId;
   final String name;
   final String region;
   final String url;
@@ -10,6 +11,7 @@ class LiveChannelModel {
   final DateTime viewedAt;
 
   LiveChannelModel({
+    required this.channelDocId,
     required this.name,
     required this.region,
     required this.url,
@@ -19,16 +21,19 @@ class LiveChannelModel {
     required this.viewedAt,
   });
 
-  factory LiveChannelModel.fromJson(Map<String, dynamic> json) {
+  factory LiveChannelModel.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data()!;
     return LiveChannelModel(
-      name: json['name'] ?? '',
-      region: json['region'] ?? '',
-      url: json['url'] ?? '',
-      logo: json['logo'] ?? '',
-      language: json['language'] ?? '',
-      viewCount: json['viewCount'] ?? 0,
-      viewedAt: (json['viewedAt'] != null && json['viewedAt'] is Timestamp)
-          ? (json['viewedAt'] as Timestamp).toDate()
+      channelDocId: doc.id, // <-- assign document ID here
+      name: data['name'] ?? '',
+      region: data['region'] ?? '',
+      url: data['url'] ?? '',
+      logo: data['logo'] ?? '',
+      language: data['language'] ?? '',
+      viewCount: data['viewCount'] ?? 0,
+      viewedAt: (data['viewedAt'] != null && data['viewedAt'] is Timestamp)
+          ? (data['viewedAt'] as Timestamp).toDate()
           : DateTime.now(),
     );
   }

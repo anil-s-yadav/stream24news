@@ -138,11 +138,11 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
         ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.2,
-              width: MediaQuery.of(context).size.width * 0.38,
+              height: MediaQuery.of(context).size.height * 0.15,
+              width: MediaQuery.of(context).size.width * 0.32,
               child: CachedNetworkImage(
                   imageUrl: articalModel.imageUrl ?? defaultImageUrl,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                   placeholder: (context, url) => Container(
                         color: Theme.of(context).colorScheme.surfaceContainer,
                       ))),
@@ -154,7 +154,7 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                height: 100,
+                height: 70,
                 child: Text(articalModel.title ?? "No title",
                     textAlign: TextAlign.start,
                     overflow: TextOverflow.ellipsis,
@@ -214,7 +214,7 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
                     size: 20,
                     color: Theme.of(context).colorScheme.outline,
                   ),
-                  newsMenuOptions(context),
+                  newsMenuOptions(context, articalModel),
                   // newsMenuOptions(context),
                 ],
               ),

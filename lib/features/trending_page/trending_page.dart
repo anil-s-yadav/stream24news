@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:stream24news/dashboard/homepage/bloc/homepage_bloc.dart';
 import 'package:stream24news/models/new_model.dart';
 
 import '../../utils/componants/sizedbox.dart';
@@ -113,12 +115,18 @@ class _TrendingPageState extends State<TrendingPage> {
                                 ),
                                 // const Spacer(),
                                 sizedBoxW5(context),
-                                Icon(
-                                  MyTabIcons.bookmark,
-                                  size: 20,
-                                  color: Theme.of(context).colorScheme.outline,
+                                GestureDetector(
+                                  onTap: () => context.read<HomepageBloc>().add(
+                                      HomepageSaveArticleEvent(
+                                          articleModel: widget.model[index])),
+                                  child: Icon(
+                                    MyTabIcons.bookmark,
+                                    size: 20,
+                                    color:
+                                        Theme.of(context).colorScheme.outline,
+                                  ),
                                 ),
-                                newsMenuOptions(context)
+                                newsMenuOptions(context, widget.model[index]),
                               ],
                             ),
                           ],

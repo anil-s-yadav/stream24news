@@ -7,6 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:stream24news/dashboard/homepage/bloc/homepage_bloc.dart';
 import 'package:stream24news/dashboard/livetvpage/bloc/live_tv_bloc.dart';
+import 'package:stream24news/features/bookmark/bloc/bookmark_bloc.dart';
 import 'package:stream24news/utils/componants/bottom_navbar.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/theme_provider.dart';
@@ -115,6 +116,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => LiveTvBloc()),
         BlocProvider(create: (context) => HomepageBloc()),
         BlocProvider(create: (context) => CategoriesBlocBloc()),
+        BlocProvider(create: (context) => BookmarkBloc()),
       ],
       child: MaterialApp(
           navigatorKey: navigatorKey,

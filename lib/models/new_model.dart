@@ -22,14 +22,14 @@ class Source {
     );
   }
 
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'source_icon': sourceIcon,
-  //     'source_id': sourceId,
-  //     'source_name': sourceName,
-  //     'source_url': sourceUrl,
-  //   };
-  // }
+  Map<String, dynamic> toMap() {
+    return {
+      'source_icon': sourceIcon,
+      'source_id': sourceId,
+      'source_name': sourceName,
+      'source_url': sourceUrl,
+    };
+  }
 }
 
 class Article {
@@ -79,18 +79,19 @@ class Article {
     );
   }
 
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'article_id': articleId,
-  //     'category': category,
-  //     'country': country,
-  //     'description': description,
-  //     'language': language,
-  //     'link': link,
-  //     'pubDate': pubDate,
-  //     'source': source?.toMap(),
-  //     'title': title,
-  //     'views': views,
-  //   };
-  // }
+  Map<String, dynamic> toMap() {
+    return {
+      'article_id': articleId,
+      'category': category,
+      'country': country,
+      'description': description,
+      'image_url': imageUrl,
+      'language': language,
+      'link': link,
+      'pubDate': pubDate,
+      'source': source?.toMap(),
+      'title': title,
+      'views': views,
+    };
+  }
 }

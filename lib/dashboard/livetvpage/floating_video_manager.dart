@@ -54,7 +54,7 @@ class FloatingVideoManager {
 
   Widget _buildPlayer() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 50),
+      padding: const EdgeInsets.only(bottom: 30),
       child: Material(
         elevation: 8,
         borderRadius: BorderRadius.circular(12),

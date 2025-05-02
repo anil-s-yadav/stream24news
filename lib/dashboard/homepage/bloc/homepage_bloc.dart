@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/auth/auth_service.dart';
 
 import '../../../auth/create_account/list_data/country_data.dart';
@@ -18,7 +19,22 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
     on<HomepageLoadTrendingEvent>(_loadTrendingNews);
     on<HomepageLoadRecommendedEvent>(_loadRecommendedNews);
     on<HomepageLoadSavedDataEvent>(_loadSavedData);
+    on<HomepageSaveArticleEvent>(_saveArticle);
+    // on<HomepageUpdateSavedDataEvent>(_updateSavedData);
   }
+
+  // void _updateSavedData(
+  //     HomepageUpdateSavedDataEvent event, Emitter<HomepageState> emit) async {
+  //   try {
+  //     emit(HomepageSavedDataSuccess(
+  //       articles: event.articles,
+  //       channels: event.channels,
+  //     ));
+  //   } catch (e) {
+  //     emit(HomepageLiveChannelError());
+  //     throw Exception(e);
+  //   }
+  // }
 
   void _loadHomePageChannels(
       HomepageLoadChannelsEvent event, Emitter<HomepageState> emit) async {
@@ -37,7 +53,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .get();
 
       List<LiveChannelModel> allChannels = snapshot.docs
-          .map((doc) => LiveChannelModel.fromJson(doc.data()))
+          .map((doc) => LiveChannelModel.fromFirestore(doc))
           .toList();
       // Filter by region
       List<LiveChannelModel> regionChannels = allChannels
@@ -128,19 +144,20 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
     try {
       emit(HomepageSavedDataLoading());
 
-      if (AuthService().isUserLoggedIn()) {
-        userId = AuthService().getUser()!.uid;
-      } else {
-        emit(HomepageSavedDataError());
-        return;
-      }
-
+      // if (AuthService().isUserLoggedIn()) {
+      //   userId = AuthService().getUser()!.uid;
+      // } else {
+      //   emit(HomepageSavedDataError());
+      //   return;
+      // }
+      String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       // Step 1: Get all saved channel IDs for the user
       final savedChannelsSnapshot = await firestore
           .collection('user')
-          .doc(userId)
+          // .doc(userId)
+          .doc(testUserID)
           .collection('saved_channels')
           .get();
 
@@ -151,21 +168,21 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
 
         // Step 2: Fetch channel details from all_channels using the ID
         final channelDoc = await firestore
-            .collection('live_channels')
+            .collection('live_chennels')
             .doc('6Kc57CnXtYzg85cD0FXS') // your hardcoded or known document ID
             .collection('all_channels')
             .doc(channelId)
             .get();
 
         if (channelDoc.exists) {
-          savedChannels.add(LiveChannelModel.fromJson(channelDoc.data()!));
+          savedChannels.add(LiveChannelModel.fromFirestore(channelDoc));
         }
       }
 
       // Step 3: Get all saved article IDs for the user
       final savedArticlesSnapshot = await firestore
           .collection('user')
-          .doc(userId)
+          .doc(testUserID)
           .collection('saved_articles')
           .get();
       List<Article> savedArticles = [];
@@ -184,6 +201,53 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           articles: savedArticles, channels: savedChannels));
     } catch (e) {
       emit(HomepageRecommendedNewsError());
+      throw Exception(e);
+    }
+  }
+
+  void _saveArticle(
+      HomepageSaveArticleEvent event, Emitter<HomepageState> emit) async {
+    try {
+      EasyLoading.show(status: 'Saving article...');
+      // if (AuthService().isUserLoggedIn()) {
+      //   userId = AuthService().getUser()!.uid;
+      // } else {
+      //   emit(HomepageSavedDataError());
+      //   return;
+      // }
+      String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
+      final article = event.articleModel;
+
+      if (article.articleId == null) {
+        EasyLoading.showError('Invalid article ID');
+        return;
+      }
+
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(testUserID)
+          .collection('saved_articles')
+          .doc(article.articleId)
+          .set(article.toMap());
+
+      EasyLoading.showSuccess('Article saved successfully!');
+
+      // ✅ Get current state and emit updated success state
+      final currentState = state;
+      if (currentState is HomepageSavedDataSuccess) {
+        final updatedArticles = List<Article>.from(currentState.articles)
+          ..add(article);
+
+        emit(HomepageSavedDataSuccess(
+          articles: updatedArticles,
+          channels: currentState.channels,
+        ));
+      } else {
+        // Optional: Load fresh saved data if not already loaded
+        add(HomepageLoadSavedDataEvent());
+      }
+    } catch (e) {
+      EasyLoading.showError('Error saving article');
       throw Exception(e);
     }
   }

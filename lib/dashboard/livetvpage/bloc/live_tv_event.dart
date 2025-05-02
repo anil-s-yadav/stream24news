@@ -8,3 +8,10 @@ final class LiveTvDataLoadEvent extends LiveTvEvent {
   @override
   List<Object?> get props => [resion];
 }
+
+final class LiveChannelSaveEvent extends LiveTvEvent {
+  final String channelID;
+  LiveChannelSaveEvent({required this.channelID});
+  @override
+  List<Object?> get props => [channelID];
+}

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:stream24news/models/new_model.dart';
+import 'package:stream24news/utils/componants/sizedbox.dart';
+
+import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 
 const String defaultImageUrl =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s";
@@ -24,15 +29,13 @@ String getTimeAgo(String? pubDate) {
   }
 }
 
-Widget newsMenuOptions(BuildContext context) {
+Widget newsMenuOptions(BuildContext context, Article articleModel) {
   return PopupMenuButton<int>(
     icon: Icon(
       Icons.more_vert_outlined,
       size: 24,
       color: Theme.of(context).colorScheme.primary,
     ),
-    // splashRadius: 12,
-
     itemBuilder: (context) => [
       const PopupMenuItem<int>(
         value: 1,
@@ -52,8 +55,32 @@ Widget newsMenuOptions(BuildContext context) {
       ),
     ],
     onSelected: (value) {
-      if (value == 1) {
-      } else if (value == 2) {}
+      if (value == 3) {
+        // Save article
+        context
+            .read<HomepageBloc>()
+            .add(HomepageSaveArticleEvent(articleModel: articleModel));
+      }
     },
+  );
+}
+
+Widget noDataWidget(BuildContext context) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Image.asset(
+          "lib/assets/images/no_data.png",
+          scale: 6,
+        ),
+        sizedBoxH20(context),
+        Text(
+          "No Data Available for you countory or language. \n Please try to change your country or language.",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontStyle: FontStyle.italic),
+        ),
+      ],
+    ),
   );
 }

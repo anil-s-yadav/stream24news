@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stream24news/dashboard/homepage/bloc/homepage_bloc.dart';
 import 'package:stream24news/dashboard/livetvpage/livetvpage.dart';
+import 'package:stream24news/dashboard/livetvpage/video_play_screen.dart';
 import 'package:stream24news/models/live_channel_model.dart';
 import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/samplepage.dart';
@@ -17,6 +18,7 @@ import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import '../../features/all_categories/all_categories.dart';
 import '../../features/all_categories/category_list/categories_list.dart';
 import '../../features/all_categories/selected_category_page.dart';
+import '../../features/bookmark/bloc/bookmark_bloc.dart';
 import '../../features/bookmark/bookmark_page.dart';
 import '../../features/notification/notification.dart';
 import '../../features/trending_page/trending_page.dart';
@@ -62,6 +64,9 @@ class _HomePageState extends State<HomePage> {
     homepageBloc.add(
       HomepageLoadRecommendedEvent(
           region: region[1].toLowerCase(), lang: lang[0].toLowerCase()),
+    );
+    homepageBloc.add(
+      HomepageLoadSavedDataEvent(),
     );
     print("region[1]: ${region[1].toLowerCase()}");
     print("region[2]: ${region[2].toLowerCase()}");
@@ -249,22 +254,34 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (BuildContext context, int index) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 10),
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.surfaceContainer,
-                    child: CachedNetworkImage(
-                      imageUrl: liveChannelModel[index].logo,
-                      fit: BoxFit.fitHeight,
-                      placeholder: (context, url) => Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceContainer,
-                          borderRadius: BorderRadius.circular(100),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              VideoPlayScreen(channel: liveChannelModel[index]),
                         ),
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainer,
+                      child: CachedNetworkImage(
+                        imageUrl: liveChannelModel[index].logo,
+                        fit: BoxFit.fitHeight,
+                        placeholder: (context, url) => Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).colorScheme.surfaceContainer,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
                 );
@@ -286,49 +303,64 @@ class _HomePageState extends State<HomePage> {
         children: List.generate(
           isLoadingState == true ? 6 : min(liveChannelModel.length, 9),
           (index) {
-            return Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(8),
+            return GestureDetector(
+              onTap: () {
+                if (isLoadingState == true) {
+                  return;
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          VideoPlayScreen(channel: liveChannelModel[index]),
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(8),
+                  ),
                 ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: isLoadingState == true
-                        ? null
-                        : CachedNetworkImage(
-                            imageUrl: liveChannelModel[index].logo,
-                            fit: BoxFit.fitHeight,
-                            placeholder: (context, url) => Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
-                                borderRadius: BorderRadius.circular(100),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
+                      child: isLoadingState == true
+                          ? null
+                          : CachedNetworkImage(
+                              imageUrl: liveChannelModel[index].logo,
+                              fit: BoxFit.fitHeight,
+                              placeholder: (context, url) => Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainer,
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
                               ),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
                             ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                  ),
-                  sizedBoxH5(context),
-                  Text(
-                    !isLoadingState ? liveChannelModel[index].name : "",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                ],
+                    ),
+                    sizedBoxH5(context),
+                    Text(
+                      !isLoadingState ? liveChannelModel[index].name : "",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -433,7 +465,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       // sizedBoxW5(context),
                       const Spacer(),
-                      newsMenuOptions(context)
+                      newsMenuOptions(context, artical[index]),
                     ],
                   ),
                 ],
@@ -546,7 +578,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                           ),
                           const SizedBox(width: 8),
-                          newsMenuOptions(context),
+                          newsMenuOptions(context, artical[index]),
                         ],
                       ),
                     ],
@@ -655,15 +687,29 @@ class _HomePageState extends State<HomePage> {
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: min(liveChannelModel.length, 10),
-                                itemBuilder: (context, index) => Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 6),
-                                  child: CircleAvatar(
-                                    radius: 35,
-                                    backgroundColor: Colors.white,
-                                    // backgroundImage: AssetImage(channelLogos[index]),
-                                    backgroundImage: CachedNetworkImageProvider(
-                                      liveChannelModel[index].logo,
+                                itemBuilder: (context, index) =>
+                                    GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => VideoPlayScreen(
+                                          channel: liveChannelModel[index],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6),
+                                    child: CircleAvatar(
+                                      radius: 35,
+                                      backgroundColor: Colors.white,
+                                      // backgroundImage: AssetImage(channelLogos[index]),
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                        liveChannelModel[index].logo,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -680,33 +726,41 @@ class _HomePageState extends State<HomePage> {
                               itemBuilder: (context, index) {
                                 final article = articals[index];
                                 return Container(
-                                  padding: const EdgeInsets.all(2),
-                                  margin: const EdgeInsets.only(bottom: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                  ),
-                                  child: ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.asset(
-                                        article.imageUrl ?? defaultImageUrl,
-                                        width: 60,
-                                        height: 60,
-                                        fit: BoxFit.cover,
+                                    padding: const EdgeInsets.all(2),
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                    ),
+                                    child: ListTile(
+                                      leading: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: CachedNetworkImage(
+                                          imageUrl: article.imageUrl ??
+                                              defaultImageUrl,
+                                          height: 60,
+                                          width: 60,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) =>
+                                              Container(
+                                            height: 60,
+                                            width: 60,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .surfaceContainer,
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        ),
                                       ),
-                                    ),
-                                    title: Text(
-                                      article.title ?? "",
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                );
+                                      title: Text(
+                                        article.title ?? "",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ));
                               },
                             ),
                       Container(
@@ -716,7 +770,12 @@ class _HomePageState extends State<HomePage> {
                           color: Theme.of(context).colorScheme.primaryContainer,
                         ),
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BookmarkPage()));
+                          },
                           child: const Text("See All saved items"),
                         ),
                       )
