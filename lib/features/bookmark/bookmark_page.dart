@@ -110,9 +110,13 @@ class _BookmarkPageState extends State<BookmarkPage>
                         state is BookmarkArticleLoading) {
                       return articalLoading(context);
                     } else if (state is BookmarkArticleError) {
-                      return savedErrorStateWidget(context);
+                      // return savedErrorStateWidget(context);
+                      return const Center(
+                        child: Text("Error loading articles"),
+                      );
                     } else {
-                      return savedErrorStateWidget(context);
+                      // return savedErrorStateWidget(context);
+                      return SizedBox.shrink();
                     }
                   },
                 ),
@@ -130,9 +134,13 @@ class _BookmarkPageState extends State<BookmarkPage>
                         state is BookmarkChannelLoading) {
                       return channelLoading(context);
                     } else if (state is BookmarkChannelError) {
-                      return savedErrorStateWidget(context);
+                      // return savedErrorStateWidget(context);
+                      return const Center(
+                        child: Text("Error loading channels"),
+                      );
                     } else {
-                      return savedErrorStateWidget(context);
+                      return SizedBox.shrink();
+                      // return savedErrorStateWidget(context);
                     }
                   },
                 ),
@@ -361,31 +369,31 @@ class _BookmarkPageState extends State<BookmarkPage>
     );
   }
 
-  Widget savedErrorStateWidget(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.16,
-          ),
-          Image.asset(
-            "lib/assets/images/empty.png",
-            scale: 14,
-          ),
-          sizedBoxH20(context),
-          Text(
-            "Empty",
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          sizedBoxH10(context),
-          const Text(
-            "You have not saved anything to the collection!",
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget savedErrorStateWidget(BuildContext context) {
+  //   return Center(
+  //     child: Column(
+  //       children: [
+  //         SizedBox(
+  //           height: MediaQuery.of(context).size.height * 0.16,
+  //         ),
+  //         Image.asset(
+  //           "lib/assets/images/empty.png",
+  //           scale: 14,
+  //         ),
+  //         sizedBoxH20(context),
+  //         Text(
+  //           "Empty",
+  //           style: Theme.of(context).textTheme.headlineMedium,
+  //         ),
+  //         sizedBoxH10(context),
+  //         const Text(
+  //           "You have not saved anything to the collection!",
+  //           style: TextStyle(fontStyle: FontStyle.italic),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // Widget savedLoadingStateWidget(BuildContext context,
   Widget articalLoading(BuildContext context) {
