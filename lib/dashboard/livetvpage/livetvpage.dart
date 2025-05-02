@@ -9,7 +9,7 @@ import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 import '../../auth/create_account/list_data/country_data.dart';
 import '../../auth/create_account/list_data/language_data.dart';
-import '../../features/video_play_screen/video_play_screen.dart';
+import 'video_play_screen.dart';
 import '../../utils/componants/my_widgets.dart';
 
 class LiveTvPage extends StatefulWidget {
@@ -153,8 +153,8 @@ class _LiveTvPageState extends State<LiveTvPage> {
 
   Widget _buildChannelItem(channel, String language) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (_) => VideoPlayScreen(channel:channel))),
+      onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => VideoPlayScreen(channel: channel))),
       child: Container(
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(

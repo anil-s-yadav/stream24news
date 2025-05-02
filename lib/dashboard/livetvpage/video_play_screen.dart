@@ -1,3 +1,139 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
+import 'package:stream24news/models/live_channel_model.dart';
+// import 'package:stream24news/pip/floating_video_manager.dart';
+
+import '../../utils/componants/sizedbox.dart';
+import '../../utils/theme/my_tab_icons_icons.dart';
+import 'floating_video_manager.dart';
+
+class VideoPlayScreen extends StatefulWidget {
+  final LiveChannelModel channel;
+  const VideoPlayScreen({super.key, required this.channel});
+
+  @override
+  State<VideoPlayScreen> createState() => _VideoPlayScreenState();
+}
+
+class _VideoPlayScreenState extends State<VideoPlayScreen> {
+  late VideoPlayerController _videoController;
+  ChewieController? _chewieController;
+  bool isReported = false;
+  bool isSelected = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _videoController =
+        VideoPlayerController.networkUrl(Uri.parse(widget.channel.url));
+    _initializePlayer();
+  }
+
+  Future<void> _initializePlayer() async {
+    await _videoController.initialize();
+    _chewieController =
+        ChewieController(videoPlayerController: _videoController);
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _chewieController?.dispose();
+    _videoController.dispose();
+    super.dispose();
+  }
+
+  Future<bool> _onWillPop() async {
+    final rootContext = Navigator.of(context).context; // root overlay context
+    // Show PiP AFTER popping
+    Navigator.of(context).pop(); // pop current screen
+    // Wait for pop animation to complete
+    await Future.delayed(const Duration(milliseconds: 100));
+
+    FloatingVideoManager().show(rootContext, widget.channel.url);
+    FloatingVideoManager().getModel(widget.channel);
+    return false; // prevent default pop (already done manually)
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: SafeArea(
+        child: Scaffold(
+          // appBar: AppBar(title: Text(widget.channel.name)),
+          body: Column(
+            children: [
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: _chewieController != null &&
+                        _chewieController!
+                            .videoPlayerController.value.isInitialized
+                    ? Chewie(
+                        controller: _chewieController!,
+                      )
+                    : const Center(
+                        child: CircularProgressIndicator(
+                        color: Colors.white,
+                      )),
+              ),
+              sizedBoxH10(context),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl: widget.channel.logo,
+                      width: 50,
+                      height: 50,
+                    ),
+                    sizedBoxW10(context),
+                    Text(widget.channel.name),
+                    Spacer(),
+                    TextButton.icon(
+                      onPressed: () {
+                        setState(() => isSelected = !isSelected);
+                      },
+                      icon: Icon(
+                        isSelected
+                            ? MyTabIcons.bookmark_fill
+                            : MyTabIcons.bookmark,
+                        size: 20,
+                      ),
+                      label: const Text('Save'),
+                    ),
+                    TextButton.icon(
+                      onPressed: () {
+                        // setState(() => isReported = !isReported);
+                      },
+                      icon: Icon(
+                        Icons.flag_outlined,
+                        size: 24,
+                      ),
+                      label: const Text('Report'),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+/*
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pip_view/pip_view.dart';
@@ -170,3 +306,4 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
     );
   }
 }
+*/

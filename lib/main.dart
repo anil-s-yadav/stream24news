@@ -47,6 +47,8 @@ Future<void> main() async {
   configLoading();
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void configLoading() {
   EasyLoading.instance
     ..loadingStyle = EasyLoadingStyle.light
@@ -115,6 +117,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => CategoriesBlocBloc()),
       ],
       child: MaterialApp(
+          navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
           title: 'Stream24 News',
           theme: MaterialTheme(textTheme).light(),
