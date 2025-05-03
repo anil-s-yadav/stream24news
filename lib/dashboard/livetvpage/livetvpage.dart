@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream24news/dashboard/livetvpage/bloc/live_tv_bloc.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
+import 'package:stream24news/utils/services/my_methods.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
@@ -124,8 +125,9 @@ class _LiveTvPageState extends State<LiveTvPage> {
         if (state is LiveTvInitialState) return channelsLoading(context);
         if (state is LiveTvSuccessState) {
           final channels = state.liveChannelModel;
-          if (channels.isEmpty)
-            return const Center(child: Text("No channels available"));
+          if (channels.isEmpty) {
+            return noDataWidget(context);
+          }
           return GridView.builder(
             padding: const EdgeInsets.all(10),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -144,17 +146,22 @@ class _LiveTvPageState extends State<LiveTvPage> {
             },
           );
         }
-        if (state is LiveTvErrorState)
-          return const Center(child: Text("Error state"));
-        return const Center(child: Text("Error outside if else"));
+        if (state is LiveTvErrorState) {
+          return noDataWidget(context);
+        } else {
+          return noDataWidget(context);
+        }
       },
     );
   }
 
   Widget _buildChannelItem(channel, String language) {
     return GestureDetector(
-      onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (_) => VideoPlayScreen(channel: channel))),
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) =>
+                  VideoPlayScreen(channel: channel, comingFrom: "LiveTvPage"))),
       child: Container(
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(

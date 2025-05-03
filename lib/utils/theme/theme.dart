@@ -125,12 +125,12 @@ class MaterialTheme {
         ),
         scaffoldBackgroundColor: colorScheme.surface,
         canvasColor: colorScheme.surface,
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: SwipePageTransitionBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          },
-        ),
+        // pageTransitionsTheme: const PageTransitionsTheme(
+        //   builders: {
+        //     TargetPlatform.android: SwipePageTransitionBuilder(),
+        //     TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        //   },
+        // ),
       );
 
   List<ExtendedColor> get extendedColors => [];
@@ -171,23 +171,23 @@ class ColorFamily {
   final Color onColorContainer;
 }
 
-class SwipePageTransitionBuilder extends PageTransitionsBuilder {
-  const SwipePageTransitionBuilder();
+// class SwipePageTransitionBuilder extends PageTransitionsBuilder {
+//   const SwipePageTransitionBuilder();
 
-  @override
-  Widget buildTransitions<T>(
-    PageRoute<T> route,
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    return SlideTransition(
-      position: Tween<Offset>(
-        begin: const Offset(1.0, 0.0), // Slide in from the right
-        end: Offset.zero,
-      ).animate(animation),
-      child: child,
-    );
-  }
-}
+//   @override
+//   Widget buildTransitions<T>(
+//     PageRoute<T> route,
+//     BuildContext context,
+//     Animation<double> animation,
+//     Animation<double> secondaryAnimation,
+//     Widget child,
+//   ) {
+//     return SlideTransition(
+//       position: Tween<Offset>(
+//         begin: const Offset(1.0, 0.0), // Slide in from the right
+//         end: Offset.zero,
+//       ).animate(animation),
+//       child: child,
+//     );
+//   }
+// }

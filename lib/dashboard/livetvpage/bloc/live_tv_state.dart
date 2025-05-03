@@ -18,3 +18,22 @@ final class LiveTvErrorState extends LiveTvState {
   @override
   List<Object?> get props => [];
 }
+
+//////////////////////////
+
+final class LoadRelatedChannelLoading extends LiveTvState {
+  @override
+  List<Object?> get props => [];
+}
+
+final class LoadRelatedChannelSuccess extends LiveTvState {
+  final List<LiveChannelModel> liveChannelModel;
+  LoadRelatedChannelSuccess({required this.liveChannelModel});
+  @override
+  List<Object?> get props => [liveChannelModel];
+}
+
+final class LoadRelatedChannelError extends LiveTvState {
+  @override
+  List<Object?> get props => [];
+}

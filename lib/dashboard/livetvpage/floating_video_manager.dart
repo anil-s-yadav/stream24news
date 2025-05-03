@@ -111,7 +111,8 @@ class FloatingVideoManager {
     Navigator.push(
       navigatorKey.currentContext!,
       MaterialPageRoute(
-          builder: (context) => VideoPlayScreen(channel: channel!)),
+          builder: (context) =>
+              VideoPlayScreen(channel: channel!, comingFrom: "")),
     );
   }
 }

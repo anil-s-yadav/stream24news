@@ -15,3 +15,10 @@ final class LiveChannelSaveEvent extends LiveTvEvent {
   @override
   List<Object?> get props => [channelID];
 }
+
+final class LoadRelatedChannelEvent extends LiveTvEvent {
+  final String language;
+  LoadRelatedChannelEvent({required this.language});
+  @override
+  List<Object?> get props => [language];
+}

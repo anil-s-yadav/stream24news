@@ -259,8 +259,8 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              VideoPlayScreen(channel: liveChannelModel[index]),
+                          builder: (context) => VideoPlayScreen(
+                              channel: liveChannelModel[index], comingFrom: ""),
                         ),
                       );
                     },
@@ -311,8 +311,8 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          VideoPlayScreen(channel: liveChannelModel[index]),
+                      builder: (context) => VideoPlayScreen(
+                          channel: liveChannelModel[index], comingFrom: ""),
                     ),
                   );
                 }
@@ -694,8 +694,8 @@ class _HomePageState extends State<HomePage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => VideoPlayScreen(
-                                          channel: liveChannelModel[index],
-                                        ),
+                                            channel: liveChannelModel[index],
+                                            comingFrom: ""),
                                       ),
                                     );
                                   },

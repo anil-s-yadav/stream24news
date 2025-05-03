@@ -13,6 +13,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
   LiveTvBloc() : super(LiveTvInitialState()) {
     on<LiveTvDataLoadEvent>(_loadAllChennels);
     on<LiveChannelSaveEvent>(_saveChannel);
+    on<LoadRelatedChannelEvent>(_loadRelatedChannels);
   }
 
   void _loadAllChennels(
@@ -76,6 +77,36 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
       EasyLoading.showSuccess('Channel saved successfully!');
     } catch (e) {
       EasyLoading.showError('Failed to save channel!');
+      throw Exception(e);
+    }
+  }
+
+  void _loadRelatedChannels(
+      LoadRelatedChannelEvent event, Emitter<LiveTvState> emit) async {
+    emit(LoadRelatedChannelLoading());
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('live_chennels')
+          .doc('6Kc57CnXtYzg85cD0FXS')
+          .collection('all_channels')
+          .get();
+
+      List<LiveChannelModel> allChannels = snapshot.docs
+          .map((doc) => LiveChannelModel.fromFirestore(doc))
+          .toList();
+
+      List<LiveChannelModel> languageChannels = [];
+
+      for (var channel in allChannels) {
+        if ((channel.language) == event.language) {
+          languageChannels.add(channel);
+        }
+      }
+      List<LiveChannelModel> finalList = [...languageChannels];
+
+      emit(LoadRelatedChannelSuccess(liveChannelModel: finalList));
+    } catch (e) {
+      emit(LoadRelatedChannelError());
       throw Exception(e);
     }
   }

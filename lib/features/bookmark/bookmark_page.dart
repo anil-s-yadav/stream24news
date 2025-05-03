@@ -284,8 +284,8 @@ class _BookmarkPageState extends State<BookmarkPage>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        VideoPlayScreen(channel: liveChannelModel[index]),
+                    builder: (context) => VideoPlayScreen(
+                        channel: liveChannelModel[index], comingFrom: ""),
                   ),
                 );
               },

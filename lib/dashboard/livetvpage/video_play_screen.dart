@@ -1,19 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:stream24news/models/live_channel_model.dart';
 // import 'package:stream24news/pip/floating_video_manager.dart';
 
 import '../../utils/componants/sizedbox.dart';
+import '../../utils/services/my_methods.dart';
+import '../../utils/services/shared_pref_service.dart';
 import '../../utils/theme/my_tab_icons_icons.dart';
 import 'bloc/live_tv_bloc.dart';
 import 'floating_video_manager.dart';
 
 class VideoPlayScreen extends StatefulWidget {
   final LiveChannelModel channel;
-  const VideoPlayScreen({super.key, required this.channel});
+  final String comingFrom;
+  const VideoPlayScreen(
+      {super.key, required this.channel, required this.comingFrom});
 
   @override
   State<VideoPlayScreen> createState() => _VideoPlayScreenState();
@@ -22,6 +26,7 @@ class VideoPlayScreen extends StatefulWidget {
 class _VideoPlayScreenState extends State<VideoPlayScreen> {
   late VideoPlayerController _videoController;
   ChewieController? _chewieController;
+  // LiveTvBloc? _liveTvBloc;
   bool isReported = false;
   bool isSelected = false;
 
@@ -31,13 +36,25 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
     _videoController =
         VideoPlayerController.networkUrl(Uri.parse(widget.channel.url));
     _initializePlayer();
+    // loadBloc();
   }
+
+  // void loadBloc() {
+  //   context
+  //       .read<LiveTvBloc>()
+  //       .add(LiveTvDataLoadEvent(resion: widget.channel.region));
+  // }
 
   Future<void> _initializePlayer() async {
     await _videoController.initialize();
     _chewieController =
         ChewieController(videoPlayerController: _videoController);
     setState(() {});
+    if (mounted) {
+      context.read<LiveTvBloc>().add(
+            LoadRelatedChannelEvent(language: widget.channel.language),
+          );
+    }
   }
 
   @override
@@ -56,6 +73,10 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
 
     FloatingVideoManager().show(rootContext, widget.channel.url);
     FloatingVideoManager().getModel(widget.channel);
+    if (widget.comingFrom == "LiveTvPage" && mounted) {
+      final region = SharedPrefService().getCounty()![2];
+      context.read<LiveTvBloc>().add(LiveTvDataLoadEvent(resion: region));
+    }
     return false; // prevent default pop (already done manually)
   }
 
@@ -66,72 +87,165 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
       child: SafeArea(
         child: Scaffold(
           // appBar: AppBar(title: Text(widget.channel.name)),
-          body: Column(
-            children: [
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: _chewieController != null &&
-                        _chewieController!
-                            .videoPlayerController.value.isInitialized
-                    ? Chewie(
-                        controller: _chewieController!,
-                      )
-                    : const Center(
-                        child: CircularProgressIndicator(
-                        color: Colors.white,
-                      )),
-              ),
-              sizedBoxH10(context),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: widget.channel.logo,
-                      width: 50,
-                      height: 50,
-                    ),
-                    sizedBoxW10(context),
-                    Text(widget.channel.name),
-                    Spacer(),
-                    TextButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          isSelected = !isSelected;
-                          context.read<LiveTvBloc>().add(LiveChannelSaveEvent(
-                              channelID: widget.channel.channelDocId));
-                        });
-                      },
-                      icon: Icon(
-                        isSelected
-                            ? MyTabIcons.bookmark_fill
-                            : MyTabIcons.bookmark,
-                        size: 20,
-                      ),
-                      label: const Text('Save'),
-                    ),
-                    TextButton.icon(
-                      onPressed: () {
-                        // setState(() => isReported = !isReported);
-                      },
-                      icon: Icon(
-                        Icons.flag_outlined,
-                        size: 24,
-                      ),
-                      label: const Text('Report'),
-                    )
-                  ],
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  // aspectRatio: 16 / 9,
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.black,
+                  child: _chewieController != null &&
+                          _chewieController!
+                              .videoPlayerController.value.isInitialized
+                      ? Chewie(
+                          controller: _chewieController!,
+                        )
+                      : const Center(
+                          child: CircularProgressIndicator(
+                          color: Colors.white,
+                        )),
                 ),
-              )
-            ],
+                sizedBoxH10(context),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: widget.channel.logo,
+                            width: 50,
+                            height: 50,
+                          ),
+                          sizedBoxW10(context),
+                          Text(widget.channel.name),
+                          Spacer(),
+                          TextButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                isSelected = !isSelected;
+                                context.read<LiveTvBloc>().add(
+                                    LiveChannelSaveEvent(
+                                        channelID:
+                                            widget.channel.channelDocId));
+                              });
+                            },
+                            icon: Icon(
+                              isSelected
+                                  ? MyTabIcons.bookmark_fill
+                                  : MyTabIcons.bookmark,
+                              size: 20,
+                            ),
+                            label: const Text('Save'),
+                          ),
+                          TextButton.icon(
+                            onPressed: () {
+                              // setState(() => isReported = !isReported);
+                            },
+                            icon: Icon(
+                              Icons.flag_outlined,
+                              size: 24,
+                            ),
+                            label: const Text('Report'),
+                          )
+                        ],
+                      ),
+                      sizedBoxH20(context),
+                      BlocBuilder<LiveTvBloc, LiveTvState>(
+                        // bloc: _liveTvBloc,
+                        buildWhen: (previous, current) =>
+                            current is LoadRelatedChannelLoading ||
+                            current is LoadRelatedChannelSuccess ||
+                            current is LoadRelatedChannelError ||
+                            current is LiveTvInitialState,
+                        builder: (context, state) {
+                          if (state is LoadRelatedChannelSuccess) {
+                            return relatedChannelsWidget(
+                                state.liveChannelModel);
+                            // return channelsLoading();
+                          } else if (state is LoadRelatedChannelLoading) {
+                            return channelsLoading();
+                          } else {
+                            return noDataWidget(context);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-}
 
+  Widget channelsLoading() {
+    return GridView.count(
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 3,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      shrinkWrap: true,
+      children: List.generate(
+        9,
+        (index) => Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget relatedChannelsWidget(List<LiveChannelModel> channels) {
+    return GridView.count(
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 3,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      shrinkWrap: true,
+      children: channels.map((channel) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => VideoPlayScreen(
+                  channel: channel,
+                  comingFrom: "",
+                ),
+              ),
+            );
+          },
+          child: Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CachedNetworkImage(
+                  imageUrl: channel.logo,
+                  height: 50,
+                  width: 50,
+                ),
+                Text(channel.name, overflow: TextOverflow.ellipsis),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
 
 
 
