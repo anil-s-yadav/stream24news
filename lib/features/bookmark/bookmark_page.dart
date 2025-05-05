@@ -21,19 +21,6 @@ class BookmarkPage extends StatefulWidget {
 
 class _BookmarkPageState extends State<BookmarkPage>
     with TickerProviderStateMixin {
-  // BookmarkBloc? _bookmarkBloc;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   callEvent();
-  // }
-
-  // void callEvent() {
-  //   _bookmarkBloc = BlocProvider.of<BookmarkBloc>(context);
-  //   _bookmarkBloc!.add(LoadSavedArticlesEvent());
-  //   _bookmarkBloc!.add(LoadSavedChannelsEvent());
-  // }
-
   late TabController _tabController;
 
   @override
