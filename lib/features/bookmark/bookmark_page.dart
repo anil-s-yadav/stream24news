@@ -92,10 +92,14 @@ class _BookmarkPageState extends State<BookmarkPage>
                       current is BookmarkArticleError,
                   builder: (context, state) {
                     if (state is BookmarkArticleSuccess) {
-                      return articalsSuccess(context, state.savedArticles);
+                      if (state.savedArticles.isNotEmpty) {
+                        return articalsSuccess(state.savedArticles);
+                      } else {
+                        return savedEmpty();
+                      }
                     } else if (state is BookmarkInitial ||
                         state is BookmarkArticleLoading) {
-                      return articalLoading(context);
+                      return articalLoading();
                     } else if (state is BookmarkArticleError) {
                       // return savedErrorStateWidget(context);
                       return const Center(
@@ -116,15 +120,16 @@ class _BookmarkPageState extends State<BookmarkPage>
                       current is BookmarkChannelError,
                   builder: (context, state) {
                     if (state is BookmarkChannelSuccess) {
-                      return channelsSuccess(context, state.savedChannels);
+                      if (state.savedChannels.isNotEmpty) {
+                        return channelsSuccess(state.savedChannels);
+                      } else {
+                        return savedEmpty();
+                      }
                     } else if (state is BookmarkInitial ||
                         state is BookmarkChannelLoading) {
-                      return channelLoading(context);
+                      return channelLoading();
                     } else if (state is BookmarkChannelError) {
-                      // return savedErrorStateWidget(context);
-                      return const Center(
-                        child: Text("Error loading channels"),
-                      );
+                      return savedEmpty();
                     } else {
                       return SizedBox.shrink();
                       // return savedErrorStateWidget(context);
@@ -139,7 +144,7 @@ class _BookmarkPageState extends State<BookmarkPage>
     );
   }
 
-  Widget articalsSuccess(BuildContext context, List<Article> savedArticles) {
+  Widget articalsSuccess(List<Article> savedArticles) {
     return SizedBox(
         child: ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
@@ -252,7 +257,6 @@ class _BookmarkPageState extends State<BookmarkPage>
   }
 
   Widget channelsSuccess(
-    BuildContext context,
     List<LiveChannelModel> liveChannelModel,
   ) {
     return SizedBox(
@@ -356,34 +360,34 @@ class _BookmarkPageState extends State<BookmarkPage>
     );
   }
 
-  // Widget savedErrorStateWidget(BuildContext context) {
-  //   return Center(
-  //     child: Column(
-  //       children: [
-  //         SizedBox(
-  //           height: MediaQuery.of(context).size.height * 0.16,
-  //         ),
-  //         Image.asset(
-  //           "lib/assets/images/empty.png",
-  //           scale: 14,
-  //         ),
-  //         sizedBoxH20(context),
-  //         Text(
-  //           "Empty",
-  //           style: Theme.of(context).textTheme.headlineMedium,
-  //         ),
-  //         sizedBoxH10(context),
-  //         const Text(
-  //           "You have not saved anything to the collection!",
-  //           style: TextStyle(fontStyle: FontStyle.italic),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget savedEmpty() {
+    return Center(
+      child: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.16,
+          ),
+          Image.asset(
+            "lib/assets/images/empty.png",
+            scale: 14,
+          ),
+          sizedBoxH20(context),
+          Text(
+            "Empty",
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          sizedBoxH10(context),
+          const Text(
+            "You have not saved anything to the collection!",
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ],
+      ),
+    );
+  }
 
   // Widget savedLoadingStateWidget(BuildContext context,
-  Widget articalLoading(BuildContext context) {
+  Widget articalLoading() {
     return SizedBox(
       child: ListView.builder(
         shrinkWrap: true,
@@ -422,9 +426,7 @@ class _BookmarkPageState extends State<BookmarkPage>
     );
   }
 
-  Widget channelLoading(
-    BuildContext context,
-  ) {
+  Widget channelLoading() {
     return SizedBox(
       child: GridView.count(
         physics: const NeverScrollableScrollPhysics(),

@@ -96,6 +96,18 @@ class SharedPrefService {
   String? getDefaultHomePage() {
     return _storage?.getString(LocalStorageKeys.defaultHomePage);
   }
+
+  Future<void> setLastNewsIndex(int value) async {
+    await _storage?.setInt(LocalStorageKeys.lastNewReadIndex, value);
+  } //"Home", "Live TV", "Articles"
+
+  int? getLastNewsIndex() {
+    return _storage?.getInt(LocalStorageKeys.lastNewReadIndex);
+  }
+
+  void clearLastNewsIndex() {
+    _storage?.remove(LocalStorageKeys.lastNewReadIndex);
+  }
 }
 
 class LocalStorageKeys {
@@ -106,4 +118,5 @@ class LocalStorageKeys {
   static const language = 'language_key';
   static const profilePhoto = 'profile_photo_key';
   static const defaultHomePage = 'default_home_page';
+  static const lastNewReadIndex = 'last_read_news_index';
 }

@@ -49,24 +49,20 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .doc('6Kc57CnXtYzg85cD0FXS')
           .collection('all_channels')
           .where("region", isEqualTo: event.region)
-          .where("language", isEqualTo: "hi")
+          .where("language", isEqualTo: event.lang)
+          .orderBy("viewCount", descending: true)
+          .limit(20)
           .get();
 
       List<LiveChannelModel> allChannels = snapshot.docs
           .map((doc) => LiveChannelModel.fromFirestore(doc))
           .toList();
-      // Filter by region
-      List<LiveChannelModel> regionChannels = allChannels
-          .where((channel) => channel.region == event.region)
-          .take(9)
-          .toList();
-      // Sort by viewCount (highest first)
-      // regionChannels.sort((a, b) => b.viewCount.compareTo(a.viewCount));
+
       log('Category region Fetch Channel Countory Code: ${event.region}');
       log('Category region Fetch Channel: ${event.region}');
       log('Category lang Fetch Channel: ${event.lang}');
-      log('Channels loaded: ${regionChannels.length}');
-      emit(HomepageLiveChannelSuccess(liveChannelModel: regionChannels));
+      log('Channels loaded: ${allChannels.length}');
+      emit(HomepageLiveChannelSuccess(liveChannelModel: allChannels));
     } catch (e) {
       emit(HomepageLiveChannelError());
       throw Exception(e);
@@ -85,16 +81,18 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .collection('news')
           .where('country', arrayContains: event.region)
           .where('language', isEqualTo: event.lang)
+          .orderBy("views", descending: true)
+          .limit(20)
           .get();
 
-      List<Article> allNews =
+      List<Article> trendingNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
 
-      // Sort by views (highest first)
-      allNews.sort((a, b) => (b.views ?? 0).compareTo(a.views ?? 0));
+      // // Sort by views (highest first)
+      // allNews.sort((a, b) => (b.views ?? 0).compareTo(a.views ?? 0));
 
-      // Take top 50
-      List<Article> trendingNews = allNews.take(50).toList();
+      // // Take top 50
+      // List<Article> trendingNews = allNews.take(50).toList();
 
       log('Trending news loaded: ${trendingNews.length}');
       emit(HomepageTrendingNewsSuccess(trendingNews));
@@ -118,16 +116,18 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .collection('news')
           .where('country', arrayContains: event.region)
           .where('language', isEqualTo: event.lang)
+          .orderBy("views", descending: true)
+          .limit(20)
           .get();
 
-      List<Article> allNews =
+      List<Article> recommendedNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
 
-      // Sort by views (highest first)
-      allNews.sort((a, b) => (b.views ?? 0).compareTo(a.views ?? 0));
+      // // Sort by views (highest first)
+      // allNews.sort((a, b) => (b.views ?? 0).compareTo(a.views ?? 0));
 
-      // Take top 50
-      List<Article> recommendedNews = allNews.take(50).toList();
+      // // Take top 50
+      // List<Article> recommendedNews = allNews.take(50).toList();
 
       log('Trending news loaded: ${recommendedNews.length}');
       log('Recommended news loaded: ${recommendedNews.length}');
@@ -140,7 +140,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
 
   void _loadSavedData(
       HomepageLoadSavedDataEvent event, Emitter<HomepageState> emit) async {
-    String userId;
+    // String userId;
     try {
       emit(HomepageSavedDataLoading());
 
@@ -159,6 +159,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           // .doc(userId)
           .doc(testUserID)
           .collection('saved_channels')
+          .limit(10)
           .get();
 
       List<LiveChannelModel> savedChannels = [];
@@ -184,6 +185,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .collection('user')
           .doc(testUserID)
           .collection('saved_articles')
+          .limit(10)
           .get();
       List<Article> savedArticles = [];
       for (var doc in savedArticlesSnapshot.docs) {

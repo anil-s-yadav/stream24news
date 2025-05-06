@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
     final homepageBloc = BlocProvider.of<HomepageBloc>(context);
     homepageBloc.add(
       HomepageLoadChannelsEvent(
-          region: region[2].toLowerCase(), lang: lang[0].toLowerCase()),
+          region: region[2].toLowerCase(), lang: lang[1].toLowerCase()),
     );
 
     homepageBloc.add(

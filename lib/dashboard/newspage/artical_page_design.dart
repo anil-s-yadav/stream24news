@@ -79,13 +79,13 @@ class ArticlePageDesign extends StatelessWidget {
                   Icon(
                     MyTabIcons.bookmark,
                     size: 20,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   Spacer(),
                   Icon(
                     Icons.more_vert,
                     size: 20,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ],
               ),
