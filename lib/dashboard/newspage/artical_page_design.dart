@@ -8,68 +8,87 @@ import 'animated_link_box.dart';
 
 class ArticlePageDesign extends StatelessWidget {
   final Article article;
-  const ArticlePageDesign({super.key, required this.article});
+  final bool isTransitioning;
+
+  const ArticlePageDesign({
+    super.key,
+    required this.article,
+    this.isTransitioning = false,
+  });
+
   @override
   Widget build(BuildContext context) {
     String date = getTimeAgo(article.pubDate);
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: CachedNetworkImage(
-                imageUrl: article.imageUrl ?? defaultImageUrl,
-                height: MediaQuery.of(context).size.height * 0.35,
-                width: double.infinity,
-                fit: BoxFit.cover,
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      margin: EdgeInsets.all(isTransitioning ? 10 : 0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(isTransitioning ? 30 : 0),
+      ),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  imageUrl: article.imageUrl ?? defaultImageUrl,
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            // sizedBoxH20(context),
-            Padding(
-              padding: const EdgeInsets.only(left: 8, right: 8, top: 22),
-              child: Text(
-                article.title ?? "No Title",
-                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                      fontSize: 20,
-                      color: Theme.of(context).hintColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                // textAlign: TextAlign.center,
+              Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8, top: 20),
+                child: Text(
+                  article.title ?? "No Title",
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                        fontSize: 20,
+                        color: Theme.of(context).hintColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
-              child: Text(
-                article.description ?? "No description",
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall!
-                    .copyWith(color: Theme.of(context).hintColor, fontSize: 20),
-                textAlign: TextAlign.left,
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
+                child: Text(
+                  article.description ?? "No description",
+                  maxLines: 12,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                        color: Theme.of(context).hintColor,
+                        fontSize: 20,
+                      ),
+                  textAlign: TextAlign.left,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-              child: Text(
-                "${article.source?.sourceName ?? 'Source'}  |   $date",
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontSize: 11, color: Theme.of(context).disabledColor),
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-          ],
-        ),
-        Positioned(
-            top: 320,
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                child: Text(
+                  "${article.source?.sourceName ?? 'Source'}  |   $date",
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 11,
+                        color: Theme.of(context).disabledColor,
+                      ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
+            ],
+          ),
+          Positioned(
+            top: 215,
             right: 10,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               height: 32,
               width: 90,
-              // margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
               decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
                 borderRadius: BorderRadius.circular(16),
@@ -81,7 +100,7 @@ class ArticlePageDesign extends StatelessWidget {
                     size: 20,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Icon(
                     Icons.more_vert,
                     size: 20,
@@ -89,12 +108,14 @@ class ArticlePageDesign extends StatelessWidget {
                   ),
                 ],
               ),
-            )),
-        AnimatedLogoLinkBox(
-          link: article.link ?? "No link",
-          logoUrl: article.source?.sourceIcon ?? defaultImageUrl,
-        ),
-      ],
+            ),
+          ),
+          AnimatedLogoLinkBox(
+            link: article.link ?? "No link",
+            logoUrl: article.source?.sourceIcon ?? defaultImageUrl,
+          ),
+        ],
+      ),
     );
   }
 }

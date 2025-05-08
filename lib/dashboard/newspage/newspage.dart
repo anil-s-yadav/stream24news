@@ -34,86 +34,90 @@ class _NewspageState extends State<Newspage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: BlocBuilder<NewspageBloc, NewspageState>(
-          builder: (context, state) {
-            if (state is NewspageInitial || state is NewspageLoading) {
-              return shimmer();
-            } else if (state is NewspageSuccess) {
-              final articles = state.articles;
-              if (articles.isEmpty) {
-                return noDataWidget(context);
-              } else {
-                return Stack(alignment: Alignment.topCenter, children: [
-                  PageView.builder(
-                    controller: _pageController,
-                    scrollDirection: Axis.vertical,
-                    itemCount: articles.length,
-                    itemBuilder: (context, index) {
-                      // final test_article =
-                      //     articles[index % articles.length]; // Looping
-                      return AnimatedBuilder(
-                        animation: _pageController,
-                        builder: (context, child) {
-                          double value = 1.0;
-                          if (_pageController.position.haveDimensions) {
-                            value = _pageController.page! - index;
-                            value = (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
-                          }
-
-                          return Opacity(
-                            opacity: value,
-                            child: Transform.scale(
-                              scale: value,
-                              child:
-                                  ArticlePageDesign(article: articles[index]),
-                              // ArticlePageDesign(article: test_article),
+    return Scaffold(
+      backgroundColor: Colors.black87,
+      body: BlocBuilder<NewspageBloc, NewspageState>(
+        builder: (context, state) {
+          if (state is NewspageInitial || state is NewspageLoading) {
+            return shimmer();
+          } else if (state is NewspageSuccess) {
+            final articles = state.articles;
+            if (articles.isEmpty) {
+              return noDataWidget(context);
+            } else {
+              return Stack(alignment: Alignment.topCenter, children: [
+                PageView.builder(
+                  controller: _pageController,
+                  scrollDirection: Axis.vertical,
+                  itemCount: articles.length,
+                  itemBuilder: (context, index) {
+                    // final test_article =
+                    //     articles[index % articles.length]; // Looping
+                    return AnimatedBuilder(
+                      animation: _pageController,
+                      builder: (context, child) {
+                        double value = 1.0;
+                        if (_pageController.position.haveDimensions) {
+                          value = _pageController.page! - index;
+                          value = (1 - (value.abs() * 0.3)).clamp(0.0, 10.0);
+                        }
+                        final isTransitioning = value < 1.0;
+                        return Opacity(
+                          opacity: value,
+                          child: Transform.scale(
+                            scale: value,
+                            child: ArticlePageDesign(
+                              article: articles[index],
+                              isTransitioning: isTransitioning,
                             ),
-                          );
-                        },
-                      );
-                    },
-                    onPageChanged: (index) async {
-                      SharedPrefService().setLastNewsIndex(index);
+                            // ArticlePageDesign(article: test_article),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  onPageChanged: (index) async {
+                    SharedPrefService().setLastNewsIndex(index);
 
-                      if (index == articles.length - 1) {
-                        SharedPrefService().clearLastNewsIndex();
-                      }
-                    },
-                  ),
-                  Positioned(
-                    top: 5,
-                    left: MediaQuery.of(context).size.width * 0.25,
-                    right: MediaQuery.of(context).size.width * 0.25,
-                    child: Container(
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerLow
-                            .withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("Trending",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          Icon(Icons.arrow_drop_down_rounded,
-                              size: 24,
-                              color: Theme.of(context).colorScheme.primary),
-                        ],
-                      ),
+                    if (index == articles.length - 1) {
+                      SharedPrefService().clearLastNewsIndex();
+                    }
+                  },
+                ),
+                /*    Positioned(
+                  top: 215,
+                  left: 12,
+                  // left: MediaQuery.of(context).size.width * 0.25,
+                  // right: MediaQuery.of(context).size.width * 0.25,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor,
+                      // color: Theme.of(context)
+                      //     .colorScheme
+                      //     .surfaceContainerLow
+                      //     .withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Trending",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Icon(Icons.arrow_drop_down_rounded,
+                            size: 24,
+                            color: Theme.of(context).colorScheme.primary),
+                      ],
                     ),
                   ),
-                ]);
-              }
-            } else {
-              return shimmer();
+                ),*/
+              ]);
             }
-          },
-        ),
+          } else {
+            return shimmer();
+          }
+        },
       ),
     );
   }

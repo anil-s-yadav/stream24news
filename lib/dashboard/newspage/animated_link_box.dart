@@ -57,6 +57,7 @@ class _AnimatedLogoLinkBoxState extends State<AnimatedLogoLinkBox> {
         color: theme.colorScheme.shadow,
         borderRadius: BorderRadius.circular(20),
       ),
+      margin: EdgeInsets.only(bottom: 5),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
