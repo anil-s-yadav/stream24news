@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/models/new_model.dart';
+import 'package:stream24news/utils/componants/sizedbox.dart';
 
-import '../../utils/services/my_methods.dart';
-import '../../utils/theme/my_tab_icons_icons.dart';
+import '../../utils/componants/my_methods.dart';
 import 'animated_link_box.dart';
 
 class ArticlePageDesign extends StatelessWidget {
@@ -20,13 +21,19 @@ class ArticlePageDesign extends StatelessWidget {
   Widget build(BuildContext context) {
     String date = getTimeAgo(article.pubDate);
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      margin: EdgeInsets.all(isTransitioning ? 10 : 0),
+    return Container(
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.043),
+      padding: EdgeInsets.only(top: 5),
+      // height: MediaQuery.of(context).size.height * 0.8029,
+      // duration: const Duration(milliseconds: 300),
+      // curve: Curves.easeInOut,
+      // margin: EdgeInsets.all(isTransitioning ? 10 : 0),
+      // margin: EdgeInsets.all(isTransitioning ? 10 : 0),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(isTransitioning ? 30 : 0),
+        color: Colors.black87,
+        // borderRadius: BorderRadius.only(
+        //     topLeft: Radius.circular(30), topRight: Radius.circular(30))
+        // borderRadius: BorderRadius.circular(isTransitioning ? 30 : 0),
       ),
       child: Stack(
         alignment: Alignment.bottomCenter,
@@ -34,85 +41,190 @@ class ArticlePageDesign extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // sizedBoxH30(context),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text("For You",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                          fontSize: 12)),
+                  Text("Trending",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white54,
+                          fontSize: 12)),
+                  Text("Recomanded",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white54,
+                          fontSize: 12)),
+                  Text("Select category",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white54,
+                          fontSize: 12)),
+                  // Icon(Icons.arrow_drop_down_rounded,
+                  //     size: 24,
+                  //     color: Theme.of(context).colorScheme.onPrimary),
+                ],
+              ),
+              sizedBoxH5(context),
               ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                // borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12)),
                 child: CachedNetworkImage(
                   imageUrl: article.imageUrl ?? defaultImageUrl,
-                  height: MediaQuery.of(context).size.height * 0.25,
+                  height: MediaQuery.of(context).size.height * 0.27,
+                  // color: Colors.black,
                   width: double.infinity,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fitHeight,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8, top: 20),
-                child: Text(
-                  article.title ?? "No Title",
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        fontSize: 20,
-                        color: Theme.of(context).hintColor,
-                        fontWeight: FontWeight.bold,
+
+              ////////////////////////////////////
+              Container(
+                color: Theme.of(context).canvasColor,
+                height: MediaQuery.of(context).size.height * 0.49,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        article.title ?? "No Title",
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 18,
+                          // color: Theme.of(context).hintColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      // const SizedBox(height: 8),
+                      sizedBoxH5(context),
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final span = TextSpan(
+                              text: article.description ?? "No description",
+                              style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontSize: 18,
+                              ),
+                            );
+                            final tp = TextPainter(
+                              text: span,
+                              maxLines: 13,
+                              textDirection: TextDirection.ltr,
+                            )..layout(maxWidth: constraints.maxWidth);
+
+                            if (tp.didExceedMaxLines) {
+                              return Column(
+                                children: [
+                                  Text(
+                                    article.description ?? "No description",
+                                    maxLines: 13,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall!
+                                        .copyWith(
+                                          color: Theme.of(context).hintColor,
+                                          fontSize: 18,
+                                        ),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomLeft,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        EasyLoading.showToast("soon!");
+                                      },
+                                      child: Text(
+                                        'Read More',
+                                        style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              );
+                            } else {
+                              return Text(
+                                article.description ?? "No description",
+                                maxLines: 13,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                      color: Theme.of(context).hintColor,
+                                      fontSize: 18,
+                                    ),
+                                textAlign: TextAlign.left,
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      Text(
+                        "${article.source?.sourceName ?? 'Source'}  |   $date",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 11,
+                              color: Theme.of(context).hintColor,
+                            ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
-                child: Text(
-                  article.description ?? "No description",
-                  maxLines: 12,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        color: Theme.of(context).hintColor,
-                        fontSize: 20,
-                      ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                child: Text(
-                  "${article.source?.sourceName ?? 'Source'}  |   $date",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 11,
-                        color: Theme.of(context).disabledColor,
-                      ),
-                  overflow: TextOverflow.ellipsis,
+
+              //////////////////////////////////////////////
+              Container(
+                height: MediaQuery.of(context).size.height * 0.08,
+                width: double.infinity,
+                color: Colors.black87,
+                child: Center(
+                  child: Text(
+                    "Advertisement!",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
                 ),
               )
             ],
           ),
           Positioned(
-            top: 215,
-            right: 10,
+            top: MediaQuery.of(context).size.height * 0.03,
+            right: 8,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              height: 32,
-              width: 90,
+              padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.white38,
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: Row(
-                children: [
-                  Icon(
-                    MyTabIcons.bookmark,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  const Spacer(),
-                  Icon(
-                    Icons.more_vert,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ],
+              child: Icon(
+                Icons.more_vert,
+                size: 18,
+                // color: Theme.of(context).colorScheme.onSurface,
+                color: Colors.black,
               ),
             ),
           ),
-          AnimatedLogoLinkBox(
-            link: article.link ?? "No link",
-            logoUrl: article.source?.sourceIcon ?? defaultImageUrl,
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.26,
+            left: 5,
+            child: AnimatedLogoLinkBox(
+              link: article.link ?? "No link",
+              logoUrl: article.source?.sourceIcon ?? defaultImageUrl,
+            ),
           ),
         ],
       ),

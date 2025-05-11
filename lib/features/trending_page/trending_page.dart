@@ -7,7 +7,7 @@ import 'package:stream24news/dashboard/homepage/bloc/homepage_bloc.dart';
 import 'package:stream24news/models/new_model.dart';
 
 import '../../utils/componants/sizedbox.dart';
-import '../../utils/services/my_methods.dart';
+import '../../utils/componants/my_methods.dart';
 import '../../utils/theme/my_tab_icons_icons.dart';
 
 class TrendingPage extends StatefulWidget {

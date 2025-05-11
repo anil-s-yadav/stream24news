@@ -8,7 +8,7 @@ import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 import '../../dashboard/homepage/bloc/homepage_bloc.dart';
-import '../../utils/services/my_methods.dart';
+import '../../utils/componants/my_methods.dart';
 import '../../utils/services/shared_pref_service.dart';
 
 class SelectedCategoryPage extends StatefulWidget {

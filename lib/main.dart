@@ -55,7 +55,8 @@ void configLoading() {
   EasyLoading.instance
     ..loadingStyle = EasyLoadingStyle.light
     ..indicatorType = EasyLoadingIndicatorType.fadingCircle
-    ..dismissOnTap = false;
+    ..dismissOnTap = false
+    ..maskType = EasyLoadingMaskType.black;
 }
 
 class MyApp extends StatefulWidget {

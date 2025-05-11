@@ -6,7 +6,7 @@ import 'package:stream24news/utils/componants/sizedbox.dart';
 import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 
 const String defaultImageUrl =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s";
+    "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/app_logo.png";
 
 String getTimeAgo(String? pubDate) {
   // Parse the published date as UTC

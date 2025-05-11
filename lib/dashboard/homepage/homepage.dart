@@ -22,7 +22,7 @@ import '../../features/bookmark/bloc/bookmark_bloc.dart';
 import '../../features/bookmark/bookmark_page.dart';
 import '../../features/notification/notification.dart';
 import '../../features/trending_page/trending_page.dart';
-import '../../utils/services/my_methods.dart';
+import '../../utils/componants/my_methods.dart';
 import '../../utils/services/shared_pref_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -46,30 +46,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadUser() async {
-    List<String> region = SharedPrefService().getCounty() ??
-        ["", "india", "in"]; //["flag", "name", "code"]
-    List<String> lang = SharedPrefService().getLanguage() ??
-        ["English", "en"]; //["name", "code"]
     final homepageBloc = BlocProvider.of<HomepageBloc>(context);
     homepageBloc.add(
-      HomepageLoadChannelsEvent(
-          region: region[2].toLowerCase(), lang: lang[1].toLowerCase()),
+      HomepageLoadChannelsEvent(),
     );
-
     homepageBloc.add(
-      HomepageLoadTrendingEvent(
-          region: region[1].toLowerCase(), lang: lang[0].toLowerCase()),
+      HomepageLoadTrendingEvent(),
     );
-
     homepageBloc.add(
-      HomepageLoadRecommendedEvent(
-          region: region[1].toLowerCase(), lang: lang[0].toLowerCase()),
+      HomepageLoadRecommendedEvent(),
     );
     homepageBloc.add(
       HomepageLoadSavedDataEvent(),
     );
-    print("region[1]: ${region[1].toLowerCase()}");
-    print("region[2]: ${region[2].toLowerCase()}");
   }
 
   @override

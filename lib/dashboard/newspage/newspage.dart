@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream24news/dashboard/newspage/artical_page_design.dart';
 import 'package:stream24news/dashboard/newspage/bloc/newspage_bloc.dart';
 
-import '../../utils/services/my_methods.dart';
+import '../../utils/componants/my_methods.dart';
 import '../../utils/services/shared_pref_service.dart';
 
 class Newspage extends StatefulWidget {
@@ -15,7 +15,6 @@ class Newspage extends StatefulWidget {
 
 class _NewspageState extends State<Newspage> {
   final PageController _pageController = PageController();
-
   @override
   void initState() {
     super.initState();
@@ -35,7 +34,7 @@ class _NewspageState extends State<Newspage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black87,
+      // backgroundColor: Colors.white,
       body: BlocBuilder<NewspageBloc, NewspageState>(
         builder: (context, state) {
           if (state is NewspageInitial || state is NewspageLoading) {
@@ -59,7 +58,7 @@ class _NewspageState extends State<Newspage> {
                         double value = 1.0;
                         if (_pageController.position.haveDimensions) {
                           value = _pageController.page! - index;
-                          value = (1 - (value.abs() * 0.3)).clamp(0.0, 10.0);
+                          value = (1 - (value.abs() * 0.3)).clamp(0, 10);
                         }
                         final isTransitioning = value < 1.0;
                         return Opacity(
@@ -123,49 +122,52 @@ class _NewspageState extends State<Newspage> {
   }
 
   Widget shimmer() {
-    return Column(
-      children: [
-        Container(
-          margin: EdgeInsets.all(10),
-          height: MediaQuery.of(context).size.height * 0.35,
-          width: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Theme.of(context).colorScheme.surfaceContainer),
-        ),
-        Container(
-          margin: EdgeInsets.all(10),
-          height: MediaQuery.of(context).size.height * 0.05,
-          width: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Theme.of(context).colorScheme.surfaceContainer),
-        ),
-        Container(
-          margin: EdgeInsets.all(10),
-          height: MediaQuery.of(context).size.height * 0.05,
-          width: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Theme.of(context).colorScheme.surfaceContainer),
-        ),
-        Container(
-          margin: EdgeInsets.all(10),
-          height: MediaQuery.of(context).size.height * 0.05,
-          width: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Theme.of(context).colorScheme.surfaceContainer),
-        ),
-        Container(
-          margin: EdgeInsets.all(10),
-          height: MediaQuery.of(context).size.height * 0.05,
-          width: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Theme.of(context).colorScheme.surfaceContainer),
-        ),
-      ],
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.all(10),
+            height: MediaQuery.of(context).size.height * 0.35,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.surfaceContainer),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            height: MediaQuery.of(context).size.height * 0.05,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.surfaceContainer),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            height: MediaQuery.of(context).size.height * 0.05,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.surfaceContainer),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            height: MediaQuery.of(context).size.height * 0.05,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.surfaceContainer),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            height: MediaQuery.of(context).size.height * 0.05,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.surfaceContainer),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -7,7 +7,7 @@ import 'package:stream24news/models/live_channel_model.dart';
 // import 'package:stream24news/pip/floating_video_manager.dart';
 
 import '../../utils/componants/sizedbox.dart';
-import '../../utils/services/my_methods.dart';
+import '../../utils/componants/my_methods.dart';
 import '../../utils/services/shared_pref_service.dart';
 import '../../utils/theme/my_tab_icons_icons.dart';
 import 'bloc/live_tv_bloc.dart';

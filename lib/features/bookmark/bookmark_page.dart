@@ -10,7 +10,7 @@ import 'package:stream24news/utils/componants/sizedbox.dart';
 import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 import '../../dashboard/livetvpage/video_play_screen.dart';
 import '../../models/live_channel_model.dart';
-import '../../utils/services/my_methods.dart';
+import '../../utils/componants/my_methods.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({super.key});

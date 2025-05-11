@@ -13,8 +13,8 @@ class AnimatedLogoLinkBox extends StatefulWidget {
 }
 
 class _AnimatedLogoLinkBoxState extends State<AnimatedLogoLinkBox> {
-  double _width = 50;
-  double _height = 40;
+  double _width = 40;
+  double _height = 30;
   bool _showLink = false;
 
   @override
@@ -24,8 +24,8 @@ class _AnimatedLogoLinkBoxState extends State<AnimatedLogoLinkBox> {
     // Phase 1: Expand
     Future.delayed(const Duration(milliseconds: 500), () {
       setState(() {
-        _width = 250;
-        _height = 40;
+        _width = 180;
+        _height = 30;
       });
     });
 
@@ -39,7 +39,7 @@ class _AnimatedLogoLinkBoxState extends State<AnimatedLogoLinkBox> {
     // Phase 3: Final compact size
     Future.delayed(const Duration(milliseconds: 2500), () {
       setState(() {
-        _width = 140;
+        _width = 100;
       });
     });
   }
@@ -57,22 +57,22 @@ class _AnimatedLogoLinkBoxState extends State<AnimatedLogoLinkBox> {
         color: theme.colorScheme.shadow,
         borderRadius: BorderRadius.circular(20),
       ),
-      margin: EdgeInsets.only(bottom: 5),
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      // margin: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
-            radius: 12,
+            radius: 11,
             backgroundImage: CachedNetworkImageProvider(widget.logoUrl),
           ),
           if (_showLink) ...[
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 widget.link,
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 12,
                   color: theme.colorScheme.surface,
                 ),
                 overflow: TextOverflow.ellipsis,

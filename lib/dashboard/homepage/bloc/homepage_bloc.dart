@@ -9,11 +9,16 @@ import 'package:stream24news/auth/auth_service.dart';
 import '../../../auth/create_account/list_data/country_data.dart';
 import '../../../models/live_channel_model.dart';
 import '../../../models/new_model.dart';
+import '../../../utils/services/shared_pref_service.dart';
 
 part 'homepage_event.dart';
 part 'homepage_state.dart';
 
 class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
+  List<String> region = SharedPrefService().getCounty() ??
+      ["", "india", "in"]; //["flag", "name", "code"]
+  List<String> lang =
+      SharedPrefService().getLanguage() ?? ["English", "en"]; //["name", "code"]
   HomepageBloc() : super(HomepageInitialState()) {
     on<HomepageLoadChannelsEvent>(_loadHomePageChannels);
     on<HomepageLoadTrendingEvent>(_loadTrendingNews);
@@ -48,8 +53,8 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .collection('live_chennels')
           .doc('6Kc57CnXtYzg85cD0FXS')
           .collection('all_channels')
-          .where("region", isEqualTo: event.region)
-          .where("language", isEqualTo: event.lang)
+          .where("region", isEqualTo: region[2])
+          // .where("language", isEqualTo: lang[1])
           .orderBy("viewCount", descending: true)
           .limit(20)
           .get();
@@ -58,10 +63,10 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .map((doc) => LiveChannelModel.fromFirestore(doc))
           .toList();
 
-      log('Category region Fetch Channel Countory Code: ${event.region}');
-      log('Category region Fetch Channel: ${event.region}');
-      log('Category lang Fetch Channel: ${event.lang}');
-      log('Channels loaded: ${allChannels.length}');
+      // log('Category region Fetch Channel Countory Code: ${region[2]}');
+      // log('Category region Fetch Channel: ${region[2]}');
+      // log('Category lang Fetch Channel: ${region[2]}');
+      // log('Channels loaded: ${allChannels.length}');
       emit(HomepageLiveChannelSuccess(liveChannelModel: allChannels));
     } catch (e) {
       emit(HomepageLiveChannelError());
@@ -73,26 +78,18 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       HomepageLoadTrendingEvent event, Emitter<HomepageState> emit) async {
     try {
       emit(HomepageTrendingNewsLoading());
-      // String? countryName = countries.firstWhere(
-      //     (country) => country['code'] == event.region,
-      //     orElse: () => {})['name'];
-      // Only fetch documents where 'country' array contains the target region
+      String country = region[1];
+      String language = lang[0].toLowerCase();
       final snapshot = await FirebaseFirestore.instance
           .collection('news')
-          .where('country', arrayContains: event.region)
-          .where('language', isEqualTo: event.lang)
+          .where('country', arrayContains: country)
+          .where('language', isEqualTo: language)
           .orderBy("views", descending: true)
           .limit(20)
           .get();
 
       List<Article> trendingNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
-
-      // // Sort by views (highest first)
-      // allNews.sort((a, b) => (b.views ?? 0).compareTo(a.views ?? 0));
-
-      // // Take top 50
-      // List<Article> trendingNews = allNews.take(50).toList();
 
       log('Trending news loaded: ${trendingNews.length}');
       emit(HomepageTrendingNewsSuccess(trendingNews));
@@ -112,10 +109,12 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       //     orElse: () => {})['name'];
 
       // Only fetch documents where 'country' array contains the target region
+      String country = region[1];
+      String language = lang[0].toLowerCase();
       final snapshot = await FirebaseFirestore.instance
           .collection('news')
-          .where('country', arrayContains: event.region)
-          .where('language', isEqualTo: event.lang)
+          .where('country', arrayContains: country)
+          .where('language', isEqualTo: language)
           .orderBy("views", descending: true)
           .limit(20)
           .get();
