@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
+import '../../features/web_view/article_webview.dart';
 import '../../utils/componants/my_methods.dart';
 import 'animated_link_box.dart';
 
@@ -81,7 +82,7 @@ class ArticlePageDesign extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.27,
                   // color: Colors.black,
                   width: double.infinity,
-                  fit: BoxFit.fitHeight,
+                  fit: BoxFit.fill,
                 ),
               ),
 
@@ -221,9 +222,18 @@ class ArticlePageDesign extends StatelessWidget {
           Positioned(
             top: MediaQuery.of(context).size.height * 0.26,
             left: 5,
-            child: AnimatedLogoLinkBox(
-              link: article.link ?? "No link",
-              logoUrl: article.source?.sourceIcon ?? defaultImageUrl,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ArticleWebview(link: article.link ?? "")));
+              },
+              child: AnimatedLogoLinkBox(
+                link: article.link ?? "No link",
+                logoUrl: article.source?.sourceIcon ?? defaultImageUrl,
+              ),
             ),
           ),
         ],

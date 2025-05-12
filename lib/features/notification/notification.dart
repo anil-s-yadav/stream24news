@@ -36,7 +36,8 @@ class NotificationPage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            generalNotification(context),
+            // generalNotification(context),
+            systemNotification(context),
             systemNotification(context),
           ],
         ),

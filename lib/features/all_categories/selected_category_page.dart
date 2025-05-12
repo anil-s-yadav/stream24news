@@ -10,6 +10,7 @@ import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 import '../../utils/componants/my_methods.dart';
 import '../../utils/services/shared_pref_service.dart';
+import '../search_page.dart';
 
 class SelectedCategoryPage extends StatefulWidget {
   final Map<String, dynamic> selectedCategory;
@@ -45,7 +46,15 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.selectedCategory['title']),
-        actions: [Icon(MyTabIcons.searchh), sizedBoxW20(context)],
+        actions: [
+          GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SearchPage()));
+              },
+              child: Icon(MyTabIcons.searchh)),
+          sizedBoxW20(context)
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

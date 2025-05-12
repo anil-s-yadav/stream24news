@@ -34,7 +34,7 @@ class _NewspageState extends State<Newspage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
+      backgroundColor: Colors.black87,
       body: BlocBuilder<NewspageBloc, NewspageState>(
         builder: (context, state) {
           if (state is NewspageInitial || state is NewspageLoading) {

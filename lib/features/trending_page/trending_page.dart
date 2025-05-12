@@ -9,6 +9,8 @@ import 'package:stream24news/models/new_model.dart';
 import '../../utils/componants/sizedbox.dart';
 import '../../utils/componants/my_methods.dart';
 import '../../utils/theme/my_tab_icons_icons.dart';
+import '../search_page.dart';
+import '../web_view/article_webview.dart';
 
 class TrendingPage extends StatefulWidget {
   final String previousWidget;
@@ -21,9 +23,6 @@ class TrendingPage extends StatefulWidget {
 }
 
 class _TrendingPageState extends State<TrendingPage> {
-  String errorInageUrl =
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNNLEL-qmmLeFR1nxJuepFOgPYfnwHR56vcw&s";
-
   @override
   Widget build(BuildContext context) {
     log("${widget.model.length}");
@@ -31,7 +30,15 @@ class _TrendingPageState extends State<TrendingPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.previousWidget),
-        actions: [const Icon(MyTabIcons.searchh), sizedBoxW20(context)],
+        actions: [
+          GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SearchPage()));
+              },
+              child: const Icon(MyTabIcons.searchh)),
+          sizedBoxW20(context)
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -74,7 +81,7 @@ class _TrendingPageState extends State<TrendingPage> {
                                   child: CachedNetworkImage(
                                     imageUrl: widget
                                             .model[index].source?.sourceIcon ??
-                                        errorInageUrl,
+                                        defaultImageUrl,
                                     height: 30,
                                     width: 30,
                                     // height: MediaQuery.of(context).size.height * 0.18,
@@ -98,19 +105,34 @@ class _TrendingPageState extends State<TrendingPage> {
                                 //   scale: 6,
                                 // ),
                                 sizedBoxW5(context),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.25,
-                                  child: Text(
-                                    widget.model[index].source?.sourceName ??
-                                        "Unknown",
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ArticleWebview(
+                                                    link: widget
+                                                            .model[index]
+                                                            .source
+                                                            ?.sourceUrl ??
+                                                        "")));
+                                  },
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.25,
+                                    child: Text(
+                                      widget.model[index].source?.sourceName ??
+                                          "Unknown",
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                      softWrap: true,
                                     ),
-                                    softWrap: true,
                                   ),
                                 ),
                                 // const Spacer(),
@@ -137,7 +159,7 @@ class _TrendingPageState extends State<TrendingPage> {
                         borderRadius: BorderRadius.circular(20),
                         child: CachedNetworkImage(
                           imageUrl:
-                              widget.model[index].imageUrl ?? errorInageUrl,
+                              widget.model[index].imageUrl ?? defaultImageUrl,
                           height: MediaQuery.of(context).size.height * 0.18,
                           width: MediaQuery.of(context).size.width * 0.38,
                           fit: BoxFit.cover,

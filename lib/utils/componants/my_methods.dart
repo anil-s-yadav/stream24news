@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:stream24news/features/web_view/article_webview.dart';
 import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
 import '../../dashboard/homepage/bloc/homepage_bloc.dart';
+import '../../features/article_view/article_view.dart';
 
 const String defaultImageUrl =
-    "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/app_logo.png";
+    "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/dark_app_logo.png";
+// "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/app_logo.png";
 
 String getTimeAgo(String? pubDate) {
   // Parse the published date as UTC
@@ -38,28 +42,46 @@ Widget newsMenuOptions(BuildContext context, Article articleModel) {
     ),
     itemBuilder: (context) => [
       const PopupMenuItem<int>(
-        value: 1,
-        child: Text("Read summary"),
-      ),
-      const PopupMenuItem<int>(
-        value: 2,
+        value: 0,
         child: Text("Open in Browser"),
       ),
       const PopupMenuItem<int>(
-        value: 3,
+        value: 1,
         child: Text("Save"),
       ),
       const PopupMenuItem<int>(
-        value: 4,
+        value: 2,
         child: Text("Report"),
       ),
     ],
     onSelected: (value) {
-      if (value == 3) {
+      if (value == 0) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ArticleWebview(link: articleModel.link ?? "")));
+      } else if (value == 1) {
         // Save article
         context
             .read<HomepageBloc>()
             .add(HomepageSaveArticleEvent(articleModel: articleModel));
+      } else if (value == 2) {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text("What wrong?"),
+                  content: TextFormField(),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text("Cancel")),
+                    TextButton(
+                        onPressed: () =>
+                            EasyLoading.showSuccess("Article reported!"),
+                        child: Text("Report"))
+                  ],
+                ));
       }
     },
   );

@@ -27,7 +27,6 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
   late VideoPlayerController _videoController;
   ChewieController? _chewieController;
   // LiveTvBloc? _liveTvBloc;
-  bool isReported = false;
   bool isSelected = false;
 
   @override
@@ -152,7 +151,8 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                           )
                         ],
                       ),
-                      sizedBoxH20(context),
+                      Divider(),
+                      sizedBoxH10(context),
                       BlocBuilder<LiveTvBloc, LiveTvState>(
                         // bloc: _liveTvBloc,
                         buildWhen: (previous, current) =>

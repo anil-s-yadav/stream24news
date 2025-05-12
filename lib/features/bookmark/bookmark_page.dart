@@ -11,6 +11,7 @@ import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 import '../../dashboard/livetvpage/video_play_screen.dart';
 import '../../models/live_channel_model.dart';
 import '../../utils/componants/my_methods.dart';
+import '../web_view/article_webview.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({super.key});
@@ -188,63 +189,78 @@ class _BookmarkPageState extends State<BookmarkPage>
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        if (savedArticles[index].source?.sourceIcon != null)
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              savedArticles[index].source!.sourceIcon!,
-                              height: 18,
-                              width: 18,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  const SizedBox(),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ArticleWebview(
+                                    link: savedArticles[index]
+                                            .source
+                                            ?.sourceUrl ??
+                                        "")));
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          if (savedArticles[index].source?.sourceIcon != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                savedArticles[index].source!.sourceIcon!,
+                                height: 18,
+                                width: 18,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const SizedBox(),
+                              ),
+                            ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Text(
+                              savedArticles[index].source?.sourceName ??
+                                  "Source",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    fontSize: 10,
+                                  ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        const SizedBox(width: 5),
-                        Expanded(
-                          child: Text(
-                            savedArticles[index].source?.sourceName ?? "Source",
+                          Text(
+                            date,
                             style:
                                 Theme.of(context).textTheme.bodySmall?.copyWith(
                                       fontSize: 10,
                                     ),
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        Text(
-                          date,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontSize: 10,
-                                  ),
-                        ),
-                        const SizedBox(width: 8),
-                        PopupMenuButton<int>(
-                          icon: Icon(
-                            Icons.more_vert_outlined,
-                            size: 24,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          itemBuilder: (context) => [
-                            const PopupMenuItem<int>(
-                              value: 1,
-                              child: Text("Delete"),
+                          const SizedBox(width: 8),
+                          PopupMenuButton<int>(
+                            icon: Icon(
+                              Icons.more_vert_outlined,
+                              size: 24,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
-                          ],
-                          onSelected: (value) {
-                            if (value == 1) {
-                              context.read<BookmarkBloc>().add(
-                                  DeleteSavedArticleEvent(
-                                      articleId:
-                                          savedArticles[index].articleId ??
-                                              ""));
-                              BookmarkBloc().add(LoadSavedArticlesEvent());
-                            }
-                          },
-                        ),
-                      ],
+                            itemBuilder: (context) => [
+                              const PopupMenuItem<int>(
+                                value: 1,
+                                child: Text("Delete"),
+                              ),
+                            ],
+                            onSelected: (value) {
+                              if (value == 1) {
+                                context.read<BookmarkBloc>().add(
+                                    DeleteSavedArticleEvent(
+                                        articleId:
+                                            savedArticles[index].articleId ??
+                                                ""));
+                                BookmarkBloc().add(LoadSavedArticlesEvent());
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

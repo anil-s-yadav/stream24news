@@ -18,10 +18,13 @@ import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import '../../features/all_categories/all_categories.dart';
 import '../../features/all_categories/category_list/categories_list.dart';
 import '../../features/all_categories/selected_category_page.dart';
+import '../../features/article_view/article_view.dart';
 import '../../features/bookmark/bloc/bookmark_bloc.dart';
 import '../../features/bookmark/bookmark_page.dart';
 import '../../features/notification/notification.dart';
+import '../../features/search_page.dart';
 import '../../features/trending_page/trending_page.dart';
+import '../../features/web_view/article_webview.dart';
 import '../../utils/componants/my_methods.dart';
 import '../../utils/services/shared_pref_service.dart';
 
@@ -387,77 +390,96 @@ class _HomePageState extends State<HomePage> {
           itemCount: min(artical.length, 10),
           itemBuilder: (context, index) {
             // String trendingPostedDate = getTimeAgo(artical[index].pubDate);
-            return Container(
-              margin: const EdgeInsets.only(right: 10),
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: Column(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
-                      imageUrl: artical[index].imageUrl ?? defaultImageUrl,
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      fit: BoxFit.fitHeight,
-                      placeholder: (context, url) => Container(
+            return GestureDetector(
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ArticleView(artical: artical, index: index))),
+              child: Container(
+                margin: const EdgeInsets.only(right: 10),
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: artical[index].imageUrl ?? defaultImageUrl,
                         height: MediaQuery.of(context).size.height * 0.3,
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceContainer,
-                          borderRadius: BorderRadius.circular(10),
+                        fit: BoxFit.fitHeight,
+                        placeholder: (context, url) => Container(
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).colorScheme.surfaceContainer,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
-                  ),
-                  sizedBoxH5(context),
-                  Text(
-                    artical[index].title ?? "",
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: true,
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                  // sizedBoxH10(context),
-                  // Text(
-                  //   trendingPostedDate,
-                  //   softWrap: true,
-                  //   style: TextStyle(fontSize: 10),
-                  // ),
-                  // sizedBoxH5(context),
-                  // Spacer(),
-                  Row(
-                    children: [
-                      // sizedBoxW5(context),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          artical[index].source?.sourceIcon ?? defaultImageUrl,
-                          height: 20,
-                          width: 20,
-                          errorBuilder: (context, error, stackTrace) {
-                            return SizedBox();
-                          },
-                        ),
+                    sizedBoxH5(context),
+                    Text(
+                      artical[index].title ?? "",
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    // sizedBoxH10(context),
+                    // Text(
+                    //   trendingPostedDate,
+                    //   softWrap: true,
+                    //   style: TextStyle(fontSize: 10),
+                    // ),
+                    // sizedBoxH5(context),
+                    // Spacer(),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ArticleWebview(
+                                    link: artical[index].source?.sourceUrl ??
+                                        "")));
+                      },
+                      child: Row(
+                        children: [
+                          // sizedBoxW5(context),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              artical[index].source?.sourceIcon ??
+                                  defaultImageUrl,
+                              height: 20,
+                              width: 20,
+                              errorBuilder: (context, error, stackTrace) {
+                                return SizedBox();
+                              },
+                            ),
+                          ),
+                          sizedBoxW5(context),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            child: Text(
+                              artical[index].source?.sourceName ?? "Source",
+                              style: TextStyle(fontSize: 10),
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                          // sizedBoxW5(context),
+                          const Spacer(),
+                          newsMenuOptions(context, artical[index]),
+                        ],
                       ),
-                      sizedBoxW5(context),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        child: Text(
-                          artical[index].source?.sourceName ?? "Source",
-                          style: TextStyle(fontSize: 10),
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ),
-                      // sizedBoxW5(context),
-                      const Spacer(),
-                      newsMenuOptions(context, artical[index]),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -532,43 +554,55 @@ class _HomePageState extends State<HomePage> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 8),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          if (artical[index].source?.sourceIcon != null)
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                artical[index].source!.sourceIcon!,
-                                height: 18,
-                                width: 18,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const SizedBox(),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ArticleWebview(
+                                      link: artical[index].source?.sourceUrl ??
+                                          "")));
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (artical[index].source?.sourceIcon != null)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  artical[index].source!.sourceIcon!,
+                                  height: 18,
+                                  width: 18,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const SizedBox(),
+                                ),
+                              ),
+                            const SizedBox(width: 5),
+                            Expanded(
+                              child: Text(
+                                artical[index].source?.sourceName ?? "Source",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      fontSize: 10,
+                                    ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          const SizedBox(width: 5),
-                          Expanded(
-                            child: Text(
-                              artical[index].source?.sourceName ?? "Source",
+                            Text(
+                              date,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
                                   ?.copyWith(
                                     fontSize: 10,
                                   ),
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          Text(
-                            date,
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontSize: 10,
-                                    ),
-                          ),
-                          const SizedBox(width: 8),
-                          newsMenuOptions(context, artical[index]),
-                        ],
+                            const SizedBox(width: 8),
+                            newsMenuOptions(context, artical[index]),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -801,34 +835,35 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16, top: 5),
-          child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const NotificationPage()));
-              },
-              child: const Icon(MyTabIcons.notification)),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-            right: 20,
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => SearchPage()));
+          },
+          icon: const Icon(
+            MyTabIcons.searchh,
+            size: 21,
           ),
-          child: GestureDetector(
-            onTap: () {
+        ),
+        IconButton(
+            onPressed: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const BookmarkPage()));
+                      builder: (context) => const NotificationPage()));
             },
-            child: const Icon(
-              MyTabIcons.bookmark,
-              size: 21,
-            ),
+            icon: const Icon(MyTabIcons.notification)),
+        IconButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const BookmarkPage()));
+          },
+          icon: const Icon(
+            MyTabIcons.bookmark,
+            size: 21,
           ),
         ),
+        sizedBoxW10(context)
       ],
     );
   }

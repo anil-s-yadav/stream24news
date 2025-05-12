@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream24news/dashboard/livetvpage/bloc/live_tv_bloc.dart';
@@ -7,8 +5,6 @@ import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/componants/my_methods.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
-
-import '../../auth/create_account/list_data/country_data.dart';
 import '../../auth/create_account/list_data/language_data.dart';
 import 'video_play_screen.dart';
 import '../../utils/componants/my_widgets.dart';
@@ -39,13 +35,12 @@ class _LiveTvPageState extends State<LiveTvPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(context),
+      appBar: _buildAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: Column(
           children: [
             buildFilterOptions(
-              context: context,
               isAllSelected: isAllSelected,
               selectedLanguage: _selectedLanguage,
               onAllSelected: (selected) {
@@ -66,7 +61,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
+  AppBar _buildAppBar() {
     return AppBar(
       title: isSeachVisible ? _buildSearchBar(context) : _buildTitle(context),
       actions: [
@@ -82,7 +77,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
               Icons.swap_vert,
               color: Theme.of(context).colorScheme.primary,
             ),
-            onPressed: () => myBottomSheet(context)),
+            onPressed: () => myBottomSheet()),
         sizedBoxW10(context),
       ],
     );
@@ -122,7 +117,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
   Widget _buildChannelList() {
     return BlocBuilder<LiveTvBloc, LiveTvState>(
       builder: (context, state) {
-        if (state is LiveTvInitialState) return channelsLoading(context);
+        if (state is LiveTvInitialState) return channelsLoading();
         if (state is LiveTvSuccessState) {
           final channels = state.liveChannelModel;
           if (channels.isEmpty) {
@@ -190,7 +185,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
     );
   }
 
-  void myBottomSheet(BuildContext context) {
+  void myBottomSheet() {
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -238,7 +233,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
     );
   }
 
-  Widget channelsLoading(BuildContext context) {
+  Widget channelsLoading() {
     return GridView.count(
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 3,
@@ -256,84 +251,84 @@ class _LiveTvPageState extends State<LiveTvPage> {
       ),
     );
   }
-}
 
-Widget buildFilterOptions({
-  required BuildContext context,
-  required bool isAllSelected,
-  required String? selectedLanguage,
-  required void Function(bool) onAllSelected,
-  required void Function(String) onLanguageSelected,
-  required void Function() onInfoClick,
-}) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: [
-      ChoiceChip(
-        label: Text('All Channels',
-            style: TextStyle(
-              color: isAllSelected
-                  ? Theme.of(context).colorScheme.onPrimaryContainer
-                  : Theme.of(context).colorScheme.onSurface,
-            )),
-        selected: isAllSelected,
-        showCheckmark: false,
-        selectedColor: Theme.of(context).colorScheme.primaryContainer,
-        backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
-        side: BorderSide(
-          color: isAllSelected
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.outline,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        onSelected: (bool selected) {
-          onAllSelected(selected);
-        },
-      ),
-      Container(
-        height: 37,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.onPrimaryContainer,
+  Widget buildFilterOptions({
+    required bool isAllSelected,
+    required String? selectedLanguage,
+    required void Function(bool) onAllSelected,
+    required void Function(String) onLanguageSelected,
+    required void Function() onInfoClick,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        ChoiceChip(
+          label: Text('All Channels',
+              style: TextStyle(
+                color: isAllSelected
+                    ? Theme.of(context).colorScheme.onPrimaryContainer
+                    : Theme.of(context).colorScheme.onSurface,
+              )),
+          selected: isAllSelected,
+          showCheckmark: false,
+          selectedColor: Theme.of(context).colorScheme.primaryContainer,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
+          side: BorderSide(
+            color: isAllSelected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.outline,
           ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          onSelected: (bool selected) {
+            onAllSelected(selected);
+          },
         ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-            value: selectedLanguage,
-            hint: Text(
-              'Select Language',
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        Container(
+          height: 37,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
-            iconEnabledColor: Theme.of(context).colorScheme.primary,
-            items: languages.keys.map((key) {
-              return DropdownMenuItem(
-                value: key,
-                child: Text(
-                  key,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: selectedLanguage,
+              hint: Text(
+                'Select Language',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.onSurface),
+              ),
+              iconEnabledColor: Theme.of(context).colorScheme.primary,
+              items: languages.keys.map((key) {
+                return DropdownMenuItem(
+                  value: key,
+                  child: Text(
+                    key,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                onLanguageSelected(newValue);
-              }
-            },
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  onLanguageSelected(newValue);
+                }
+              },
+            ),
           ),
         ),
-      ),
-      Icon(
-        Icons.info_outline,
-        color: Theme.of(context).colorScheme.onPrimaryContainer,
-        size: 30,
-      )
-    ],
-  );
+        Icon(
+          Icons.info_outline,
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          size: 30,
+        )
+      ],
+    );
+  }
 }
