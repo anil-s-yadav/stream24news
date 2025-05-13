@@ -49,6 +49,7 @@ class _AnimatedLogoLinkBoxState extends State<AnimatedLogoLinkBox> {
     final theme = Theme.of(context);
 
     return AnimatedContainer(
+      margin: EdgeInsets.all(5),
       duration: const Duration(milliseconds: 600),
       curve: Curves.easeInOut,
       width: _width,

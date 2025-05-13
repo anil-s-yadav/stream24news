@@ -1,4 +1,4 @@
-final List<Map<String, dynamic>> categories = [
+final List<Map<String, String>> categories = [
   {
     "title": "business",
     "image": "lib/assets/images/business.jpg",
