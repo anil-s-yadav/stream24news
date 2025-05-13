@@ -517,97 +517,106 @@ class _HomePageState extends State<HomePage> {
         itemCount: min(artical.length, 10),
         itemBuilder: (BuildContext context, int index) {
           String date = getTimeAgo(artical[index].pubDate);
-          return Container(
-            margin: const EdgeInsets.all(5),
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).colorScheme.surfaceContainer,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Image
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: CachedNetworkImage(
-                    imageUrl: artical[index].imageUrl ?? defaultImageUrl,
-                    height: 80,
-                    width: 100,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: Theme.of(context).colorScheme.surfaceContainer,
-                    ),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        artical[index].title ?? "",
-                        style: Theme.of(context).textTheme.titleSmall,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+          return GestureDetector(
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ArticleView(artical: artical, index: index))),
+            child: Container(
+              margin: const EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.surfaceContainer,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Image
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: CachedNetworkImage(
+                      imageUrl: artical[index].imageUrl ?? defaultImageUrl,
+                      height: 80,
+                      width: 100,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        color: Theme.of(context).colorScheme.surfaceContainer,
                       ),
-                      const SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ArticleWebview(
-                                      link: artical[index].source?.sourceUrl ??
-                                          "")));
-                        },
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            if (artical[index].source?.sourceIcon != null)
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  artical[index].source!.sourceIcon!,
-                                  height: 18,
-                                  width: 18,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const SizedBox(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          artical[index].title ?? "",
+                          style: Theme.of(context).textTheme.titleSmall,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ArticleWebview(
+                                        link:
+                                            artical[index].source?.sourceUrl ??
+                                                "")));
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              if (artical[index].source?.sourceIcon != null)
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    artical[index].source!.sourceIcon!,
+                                    height: 18,
+                                    width: 18,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            const SizedBox(),
+                                  ),
+                                ),
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: Text(
+                                  artical[index].source?.sourceName ?? "Source",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        fontSize: 10,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                            const SizedBox(width: 5),
-                            Expanded(
-                              child: Text(
-                                artical[index].source?.sourceName ?? "Source",
+                              Text(
+                                date,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall
                                     ?.copyWith(
                                       fontSize: 10,
                                     ),
-                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            Text(
-                              date,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                    fontSize: 10,
-                                  ),
-                            ),
-                            const SizedBox(width: 8),
-                            newsMenuOptions(context, artical[index]),
-                          ],
+                              const SizedBox(width: 8),
+                              newsMenuOptions(context, artical[index]),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
@@ -748,42 +757,52 @@ class _HomePageState extends State<HomePage> {
                               itemCount: min(articals.length, 5),
                               itemBuilder: (context, index) {
                                 final article = articals[index];
-                                return Container(
-                                    padding: const EdgeInsets.all(2),
-                                    margin: const EdgeInsets.only(bottom: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                    ),
-                                    child: ListTile(
-                                      leading: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: CachedNetworkImage(
-                                          imageUrl: article.imageUrl ??
-                                              defaultImageUrl,
-                                          height: 60,
-                                          width: 60,
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) =>
-                                              Container(
+                                return GestureDetector(
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ArticleView(
+                                              artical: articals,
+                                              index: index))),
+                                  child: Container(
+                                      padding: const EdgeInsets.all(2),
+                                      margin: const EdgeInsets.only(bottom: 10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryContainer,
+                                      ),
+                                      child: ListTile(
+                                        leading: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: CachedNetworkImage(
+                                            imageUrl: article.imageUrl ??
+                                                defaultImageUrl,
                                             height: 60,
                                             width: 60,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .surfaceContainer,
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) =>
+                                                Container(
+                                              height: 60,
+                                              width: 60,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .surfaceContainer,
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
                                           ),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
                                         ),
-                                      ),
-                                      title: Text(
-                                        article.title ?? "",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ));
+                                        title: Text(
+                                          article.title ?? "",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      )),
+                                );
                               },
                             ),
                       Container(

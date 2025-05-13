@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream24news/dashboard/livetvpage/bloc/live_tv_bloc.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/componants/my_methods.dart';
-import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import '../../auth/create_account/list_data/language_data.dart';
 import 'video_play_screen.dart';
@@ -18,6 +19,8 @@ class LiveTvPage extends StatefulWidget {
 
 class _LiveTvPageState extends State<LiveTvPage> {
   bool isSeachVisible = false;
+  Timer? _debounce;
+
   bool isAllSelected = false;
   String _selectedLanguage = 'Hindi';
 
@@ -28,8 +31,8 @@ class _LiveTvPageState extends State<LiveTvPage> {
   }
 
   void loadData() {
-    final region = SharedPrefService().getCounty()![2];
-    context.read<LiveTvBloc>().add(LiveTvDataLoadEvent(resion: region));
+    // final region = SharedPrefService().getCounty()![2];
+    context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
   }
 
   @override
@@ -45,12 +48,20 @@ class _LiveTvPageState extends State<LiveTvPage> {
               selectedLanguage: _selectedLanguage,
               onAllSelected: (selected) {
                 loadData();
-                setState(() => isAllSelected = selected);
+                setState(() {
+                  isAllSelected = selected;
+                  context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
+                });
               },
-              onLanguageSelected: (lang) => setState(() {
-                _selectedLanguage = lang;
-                isAllSelected = false;
-              }),
+              onLanguageSelected: (lang) {
+                setState(() {
+                  _selectedLanguage = lang;
+                  isAllSelected = false;
+                });
+                context
+                    .read<LiveTvBloc>()
+                    .add(LiveChannelFilterLang(lang: _selectedLanguage));
+              },
               onInfoClick: () {},
             ),
             sizedBoxH10(context),
@@ -70,7 +81,15 @@ class _LiveTvPageState extends State<LiveTvPage> {
             isSeachVisible ? Icons.cancel_outlined : MyTabIcons.searchh,
             color: Theme.of(context).colorScheme.primary,
           ),
-          onPressed: () => setState(() => isSeachVisible = !isSeachVisible),
+          onPressed: () {
+            setState(() {
+              isSeachVisible = !isSeachVisible;
+              if (!isSeachVisible) {
+                // Reset to show all channels again
+                context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
+              }
+            });
+          },
         ),
         IconButton(
             icon: Icon(
@@ -91,6 +110,14 @@ class _LiveTvPageState extends State<LiveTvPage> {
         Icon(MyTabIcons.searchh, color: Theme.of(context).colorScheme.primary),
         sizedBoxW5(context),
       ],
+      onChanged: (value) {
+        if (_debounce?.isActive ?? false) _debounce!.cancel();
+        _debounce = Timer(const Duration(milliseconds: 300), () {
+          context.read<LiveTvBloc>().add(LiveChannelSearch(key: value));
+        });
+      },
+      onSubmitted: (value) =>
+          context.read<LiveTvBloc>().add(LiveChannelSearch(key: value)),
     );
   }
 
@@ -117,7 +144,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
   Widget _buildChannelList() {
     return BlocBuilder<LiveTvBloc, LiveTvState>(
       builder: (context, state) {
-        if (state is LiveTvInitialState) return channelsLoading();
+        if (state is LiveTvLoadingState) return channelsLoading();
         if (state is LiveTvSuccessState) {
           final channels = state.liveChannelModel;
           if (channels.isEmpty) {
@@ -221,7 +248,13 @@ class _LiveTvPageState extends State<LiveTvPage> {
                       "Most Popular"
                     ]
                         .map((text) => SecondaryButton(
-                            textWidget: Text(text), onPressed: () {}))
+                            textWidget: Text(text),
+                            onPressed: () {
+                              context
+                                  .read<LiveTvBloc>()
+                                  .add(LiveChannelFilter(filterValue: text));
+                              Navigator.pop(context);
+                            }))
                         .toList(),
                   ),
                 ],

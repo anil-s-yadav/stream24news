@@ -3,10 +3,8 @@ part of 'live_tv_bloc.dart';
 abstract class LiveTvEvent extends Equatable {}
 
 final class LiveTvDataLoadEvent extends LiveTvEvent {
-  final String resion;
-  LiveTvDataLoadEvent({required this.resion});
   @override
-  List<Object?> get props => [resion];
+  List<Object?> get props => [];
 }
 
 final class LiveChannelSaveEvent extends LiveTvEvent {
@@ -21,4 +19,25 @@ final class LoadRelatedChannelEvent extends LiveTvEvent {
   LoadRelatedChannelEvent({required this.language});
   @override
   List<Object?> get props => [language];
+}
+
+final class LiveChannelFilter extends LiveTvEvent {
+  final String filterValue;
+  LiveChannelFilter({required this.filterValue});
+  @override
+  List<Object?> get props => [filterValue];
+}
+
+final class LiveChannelFilterLang extends LiveTvEvent {
+  final String lang;
+  LiveChannelFilterLang({required this.lang});
+  @override
+  List<Object?> get props => [lang];
+}
+
+final class LiveChannelSearch extends LiveTvEvent {
+  final String key;
+  LiveChannelSearch({required this.key});
+  @override
+  List<Object?> get props => [key];
 }

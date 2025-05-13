@@ -73,8 +73,7 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
     FloatingVideoManager().show(rootContext, widget.channel.url);
     FloatingVideoManager().getModel(widget.channel);
     if (widget.comingFrom == "LiveTvPage" && mounted) {
-      final region = SharedPrefService().getCounty()![2];
-      context.read<LiveTvBloc>().add(LiveTvDataLoadEvent(resion: region));
+      context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
     }
     return false; // prevent default pop (already done manually)
   }

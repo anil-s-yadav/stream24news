@@ -7,6 +7,11 @@ final class LiveTvInitialState extends LiveTvState {
   List<Object?> get props => [];
 }
 
+final class LiveTvLoadingState extends LiveTvState {
+  @override
+  List<Object?> get props => [];
+}
+
 final class LiveTvSuccessState extends LiveTvState {
   final List<LiveChannelModel> liveChannelModel;
   LiveTvSuccessState({required this.liveChannelModel});

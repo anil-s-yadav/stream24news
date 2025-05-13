@@ -55,9 +55,9 @@ class _ArticleViewState extends State<ArticleView> {
                 child: Transform.scale(
                   scale: value,
                   child: ArticlePageDesign(
-                    article: widget.artical[index],
-                    isTransitioning: isTransitioning,
-                  ),
+                      article: widget.artical[index],
+                      isTransitioning: isTransitioning,
+                      isArticleView: true),
                   // ArticlePageDesign(article: test_article),
                 ),
               );

@@ -68,6 +68,7 @@ class _NewspageState extends State<Newspage> {
                             child: ArticlePageDesign(
                               article: articles[index],
                               isTransitioning: isTransitioning,
+                              isArticleView: false,
                             ),
                             // ArticlePageDesign(article: test_article),
                           ),

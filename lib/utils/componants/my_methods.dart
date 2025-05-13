@@ -70,7 +70,7 @@ Widget newsMenuOptions(BuildContext context, Article articleModel) {
         showDialog(
             context: context,
             builder: (context) => AlertDialog(
-                  title: Text("What wrong?"),
+                  title: Text("What's wrong?"),
                   content: TextFormField(),
                   actions: [
                     TextButton(

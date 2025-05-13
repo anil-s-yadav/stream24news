@@ -11,6 +11,7 @@ import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 import '../../dashboard/livetvpage/video_play_screen.dart';
 import '../../models/live_channel_model.dart';
 import '../../utils/componants/my_methods.dart';
+import '../article_view/article_view.dart';
 import '../web_view/article_webview.dart';
 
 class BookmarkPage extends StatefulWidget {
@@ -153,119 +154,152 @@ class _BookmarkPageState extends State<BookmarkPage>
       itemCount: min(savedArticles.length, 10),
       itemBuilder: (BuildContext context, int index) {
         String date = getTimeAgo(savedArticles[index].pubDate);
-        return Container(
-          margin: const EdgeInsets.all(5),
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Theme.of(context).colorScheme.surfaceContainer,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Image
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: savedArticles[index].imageUrl ?? defaultImageUrl,
-                  height: 80,
-                  width: 100,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: Theme.of(context).colorScheme.surfaceContainer,
-                  ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      savedArticles[index].title ?? "",
-                      style: Theme.of(context).textTheme.titleSmall,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+        return GestureDetector(
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ArticleView(artical: savedArticles, index: index))),
+          child: Container(
+            margin: const EdgeInsets.all(5),
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).colorScheme.surfaceContainer,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: CachedNetworkImage(
+                    imageUrl: savedArticles[index].imageUrl ?? defaultImageUrl,
+                    height: 80,
+                    width: 100,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Theme.of(context).colorScheme.surfaceContainer,
                     ),
-                    const SizedBox(height: 8),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ArticleWebview(
-                                    link: savedArticles[index]
-                                            .source
-                                            ?.sourceUrl ??
-                                        "")));
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          if (savedArticles[index].source?.sourceIcon != null)
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                savedArticles[index].source!.sourceIcon!,
-                                height: 18,
-                                width: 18,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const SizedBox(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        savedArticles[index].title ?? "",
+                        style: Theme.of(context).textTheme.titleSmall,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ArticleWebview(
+                                      link: savedArticles[index]
+                                              .source
+                                              ?.sourceUrl ??
+                                          "")));
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (savedArticles[index].source?.sourceIcon != null)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  savedArticles[index].source!.sourceIcon!,
+                                  height: 18,
+                                  width: 18,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const SizedBox(),
+                                ),
+                              ),
+                            const SizedBox(width: 5),
+                            Expanded(
+                              child: Text(
+                                savedArticles[index].source?.sourceName ??
+                                    "Source",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      fontSize: 10,
+                                    ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          const SizedBox(width: 5),
-                          Expanded(
-                            child: Text(
-                              savedArticles[index].source?.sourceName ??
-                                  "Source",
+                            Text(
+                              date,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
                                   ?.copyWith(
                                     fontSize: 10,
                                   ),
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          Text(
-                            date,
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontSize: 10,
-                                    ),
-                          ),
-                          const SizedBox(width: 8),
-                          PopupMenuButton<int>(
-                            icon: Icon(
-                              Icons.more_vert_outlined,
-                              size: 24,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            itemBuilder: (context) => [
-                              const PopupMenuItem<int>(
-                                value: 1,
-                                child: Text("Delete"),
+                            const SizedBox(width: 8),
+                            PopupMenuButton<int>(
+                              icon: Icon(
+                                Icons.more_vert_outlined,
+                                size: 24,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
-                            ],
-                            onSelected: (value) {
-                              if (value == 1) {
-                                context.read<BookmarkBloc>().add(
-                                    DeleteSavedArticleEvent(
-                                        articleId:
-                                            savedArticles[index].articleId ??
-                                                ""));
-                                BookmarkBloc().add(LoadSavedArticlesEvent());
-                              }
-                            },
-                          ),
-                        ],
+                              itemBuilder: (context) => [
+                                const PopupMenuItem<int>(
+                                  value: 1,
+                                  child: Text("Delete"),
+                                ),
+                              ],
+                              onSelected: (value) {
+                                if (value == 1) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            title: Text("Delete"),
+                                            content: Text(
+                                                savedArticles[index].title ??
+                                                    ""),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: Text("Cancel")),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    context.read<BookmarkBloc>().add(
+                                                        DeleteSavedArticleEvent(
+                                                            articleId: savedArticles[
+                                                                        index]
+                                                                    .articleId ??
+                                                                ""));
+                                                    context
+                                                        .read<BookmarkBloc>()
+                                                        .add(
+                                                            LoadSavedArticlesEvent());
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("Delete"))
+                                            ],
+                                          ));
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

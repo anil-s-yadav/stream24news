@@ -1,16 +1,16 @@
-import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream24news/features/all_categories/bloc/categories_bloc_bloc.dart';
+import 'package:stream24news/features/article_view/article_view.dart';
 import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
-
 import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 import '../../utils/componants/my_methods.dart';
 import '../../utils/services/shared_pref_service.dart';
 import '../search_page.dart';
+import '../web_view/article_webview.dart';
 
 class SelectedCategoryPage extends StatefulWidget {
   final Map<String, dynamic> selectedCategory;
@@ -22,6 +22,8 @@ class SelectedCategoryPage extends StatefulWidget {
 }
 
 class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
+  late CategoriesBlocBloc categoriesBlocBloc;
+  String filterTitle = "Most Popular";
   @override
   void initState() {
     super.initState();
@@ -29,15 +31,34 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
   }
 
   void loadUser() async {
-    List<String> region = SharedPrefService().getCounty() ?? ["", "", "in"];
+    String category = widget.selectedCategory['title'];
+    List<String> region =
+        SharedPrefService().getCounty() ?? ["", "India", "in"];
     List<String> lang = SharedPrefService().getLanguage() ?? ["English", "en"];
-    final homepageBloc = BlocProvider.of<CategoriesBlocBloc>(context);
-    homepageBloc.add(
+    categoriesBlocBloc = BlocProvider.of<CategoriesBlocBloc>(context);
+    categoriesBlocBloc.add(
       CategoriesDataLoadEvent(
-          region: region[1].toLowerCase(), lang: lang[0].toLowerCase()),
+          region: region[1].toLowerCase(),
+          lang: lang[0].toLowerCase(),
+          category: category),
     );
     // log("Selected region: ${region}");
     // log("Selected lang: ${lang}");
+  }
+
+  void filter() {
+    if (filterTitle == "Most Popular") {
+      categoriesBlocBloc.add(CategoriesAscFilter());
+
+      setState(() {
+        filterTitle = "A-Z";
+      });
+    } else {
+      categoriesBlocBloc.add(CategoriesMostPoFilter());
+      setState(() {
+        filterTitle = "Most Popular";
+      });
+    }
   }
 
   @override
@@ -81,15 +102,17 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
                 ),
                 Spacer(),
                 Text(
-                  "Most Popular",
+                  filterTitle,
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: Theme.of(context).colorScheme.primary,
                       ),
                 ),
-                Icon(
-                  Icons.swap_vert,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                IconButton(
+                    onPressed: () => filter(),
+                    icon: Icon(
+                      Icons.swap_vert,
+                      color: Theme.of(context).colorScheme.primary,
+                    ))
               ],
             ),
             Expanded(
@@ -99,20 +122,19 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
                     state is CategoriesBlocError ||
                     state is CategoriesBlocInitial) {
                   return categoryInitialAndErrrorState();
-                  // const Center(
-                  //   child: CircularProgressIndicator(),
-                  // );
                 } else if (state is CategoriesBlocSuccess) {
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: state.articalModel.length,
-                      itemBuilder: (context, index) {
-                        return categoryWidgetData(state.articalModel[index]);
-                      });
+                  if (state.articalModel.isNotEmpty) {
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.articalModel.length,
+                        itemBuilder: (context, index) {
+                          return categoryWidgetData(state.articalModel, index);
+                        });
+                  } else {
+                    return noDataWidget(context);
+                  }
                 } else {
-                  return const Center(
-                    child: Text("No data available"),
-                  );
+                  return noDataWidget(context);
                 }
               }),
             )
@@ -139,98 +161,129 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
         });
   }
 
-  Widget categoryWidgetData(Article articalModel) {
-    String? pubDate = getTimeAgo(articalModel.pubDate);
+  Widget categoryWidgetData(List<Article> articalModelList, int index) {
+    String? pubDate = getTimeAgo(articalModelList[index].pubDate);
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
-              width: MediaQuery.of(context).size.width * 0.32,
-              child: CachedNetworkImage(
-                  imageUrl: articalModel.imageUrl ?? defaultImageUrl,
-                  fit: BoxFit.fill,
-                  placeholder: (context, url) => Container(
-                        color: Theme.of(context).colorScheme.surfaceContainer,
-                      ))),
-        ),
-        sizedBoxW10(context),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                height: 70,
-                child: Text(articalModel.title ?? "No title",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 4,
-                    softWrap: true,
-                    style: Theme.of(context).textTheme.titleMedium),
-              ),
-              // sizedBoxH10(context),
-              Text(
-                pubDate,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-                softWrap: true,
-              ),
-              sizedBoxH10(context),
-              Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    // radius: 12,
-                    child: CachedNetworkImage(
-                        imageUrl:
-                            articalModel.source?.sourceIcon ?? defaultImageUrl,
-                        fit: BoxFit.fill,
-                        height: 24,
-                        width: 24,
-                        placeholder: (context, url) => Container(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainer,
-                            )),
-                  ),
-                  // Image.asset(
-                  //   "lib/assets/images/profile.png",
-                  //   scale: 6,
-                  // ),
-                  sizedBoxW5(context),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.28,
-                    child: Text(
-                      articalModel.source?.sourceName ?? "No source",
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ArticleView(artical: articalModelList, index: index)));
+        },
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.15,
+                width: MediaQuery.of(context).size.width * 0.32,
+                child: CachedNetworkImage(
+                    imageUrl:
+                        articalModelList[index].imageUrl ?? defaultImageUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                        ))),
+          ),
+          sizedBoxW10(context),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  height: 70,
+                  child: Text(articalModelList[index].title ?? "No title",
                       textAlign: TextAlign.start,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      maxLines: 4,
                       softWrap: true,
-                    ),
-                  ),
-                  // const Spacer(),
-                  // sizedBoxW5(context),
-                  Icon(
-                    MyTabIcons.bookmark,
-                    size: 20,
+                      style: Theme.of(context).textTheme.titleMedium),
+                ),
+                // sizedBoxH10(context),
+                Text(
+                  pubDate,
+                  style: TextStyle(
+                    fontSize: 12,
                     color: Theme.of(context).colorScheme.outline,
                   ),
-                  newsMenuOptions(context, articalModel),
-                  // newsMenuOptions(context),
-                ],
-              ),
-            ],
-          ),
-        )
-      ]),
+                  softWrap: true,
+                ),
+                sizedBoxH10(context),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ArticleWebview(
+                                link:
+                                    articalModelList[index].source?.sourceUrl ??
+                                        "")));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        // radius: 12,
+                        child: CachedNetworkImage(
+                            imageUrl:
+                                articalModelList[index].source?.sourceIcon ??
+                                    defaultImageUrl,
+                            fit: BoxFit.contain,
+                            height: 24,
+                            width: 24,
+                            placeholder: (context, url) => Container(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainer,
+                                )),
+                      ),
+                      // Image.asset(
+                      //   "lib/assets/images/profile.png",
+                      //   scale: 6,
+                      // ),
+                      sizedBoxW5(context),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.28,
+                        child: Text(
+                          articalModelList[index].source?.sourceName ??
+                              "No source",
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          softWrap: true,
+                        ),
+                      ),
+                      // const Spacer(),
+                      // sizedBoxW5(context),
+                      IconButton(
+                          onPressed: () {
+                            context.read<HomepageBloc>().add(
+                                HomepageSaveArticleEvent(
+                                    articleModel: articalModelList[index]));
+                          },
+                          icon: Icon(
+                            MyTabIcons.bookmark,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.outline,
+                          )),
+
+                      newsMenuOptions(context, articalModelList[index]),
+                      // newsMenuOptions(context),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ]),
+      ),
     );
   }
 }

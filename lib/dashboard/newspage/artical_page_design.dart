@@ -11,11 +11,13 @@ import 'animated_link_box.dart';
 class ArticlePageDesign extends StatelessWidget {
   final Article article;
   final bool isTransitioning;
+  final bool isArticleView;
 
   const ArticlePageDesign({
     super.key,
     required this.article,
     this.isTransitioning = false,
+    this.isArticleView = false,
   });
 
   @override
@@ -23,8 +25,8 @@ class ArticlePageDesign extends StatelessWidget {
     String date = getTimeAgo(article.pubDate);
 
     return Container(
-      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.043),
-      padding: EdgeInsets.only(top: 5),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
+      padding: EdgeInsets.only(top: 10),
       // height: MediaQuery.of(context).size.height * 0.8029,
       // duration: const Duration(milliseconds: 300),
       // curve: Curves.easeInOut,
@@ -71,7 +73,7 @@ class ArticlePageDesign extends StatelessWidget {
                   //     color: Theme.of(context).colorScheme.onPrimary),
                 ],
               ),
-              sizedBoxH5(context),
+              sizedBoxH10(context),
               ClipRRect(
                 // borderRadius: BorderRadius.circular(12),
                 borderRadius: BorderRadius.only(
@@ -89,7 +91,9 @@ class ArticlePageDesign extends StatelessWidget {
               ////////////////////////////////////
               Container(
                 color: Theme.of(context).canvasColor,
-                height: MediaQuery.of(context).size.height * 0.49,
+                height: isArticleView
+                    ? MediaQuery.of(context).size.height * 0.53
+                    : MediaQuery.of(context).size.height * 0.46,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -199,12 +203,25 @@ class ArticlePageDesign extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
                 ),
-              )
+              ),
+              // isArticleView
+              //     ? Container(
+              //         height: MediaQuery.of(context).size.height * 0.08,
+              //         width: double.infinity,
+              //         color: Colors.black87,
+              //         child: Center(
+              //           child: Text(
+              //             "Advertisement!",
+              //             style: TextStyle(color: Colors.white, fontSize: 20),
+              //           ),
+              //         ),
+              //       )
+              //     : SizedBox.shrink()
             ],
           ),
           Positioned(
-            top: MediaQuery.of(context).size.height * 0.03,
-            right: 8,
+            top: MediaQuery.of(context).size.height * 0.04,
+            right: 10,
             child: Container(
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
@@ -220,7 +237,7 @@ class ArticlePageDesign extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: MediaQuery.of(context).size.height * 0.26,
+            top: MediaQuery.of(context).size.height * 0.265,
             left: 5,
             child: GestureDetector(
               onTap: () {

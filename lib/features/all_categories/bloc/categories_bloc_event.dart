@@ -5,7 +5,19 @@ abstract class CategoriesBlocEvent extends Equatable {}
 class CategoriesDataLoadEvent extends CategoriesBlocEvent {
   final String region;
   final String lang;
-  CategoriesDataLoadEvent({required this.region, required this.lang});
+  final String category;
+  CategoriesDataLoadEvent(
+      {required this.region, required this.lang, required this.category});
   @override
-  List<Object?> get props => [region, lang];
+  List<Object?> get props => [region, lang, category];
+}
+
+class CategoriesAscFilter extends CategoriesBlocEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class CategoriesMostPoFilter extends CategoriesBlocEvent {
+  @override
+  List<Object?> get props => [];
 }
