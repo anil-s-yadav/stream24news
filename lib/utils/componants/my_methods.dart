@@ -37,7 +37,7 @@ Widget newsMenuOptions(BuildContext context, Article articleModel) {
   return PopupMenuButton<int>(
     icon: Icon(
       Icons.more_vert_outlined,
-      size: 24,
+      size: 20,
       color: Theme.of(context).colorScheme.primary,
     ),
     itemBuilder: (context) => [

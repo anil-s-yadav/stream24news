@@ -1,6 +1,4 @@
-import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -37,13 +35,14 @@ Future<void> main() async {
   );
   // runApp(
   //   ChangeNotifierProvider(
-  //   create: (_) => ThemeProvider(),
-  //    child: DevicePreview(
-  //     enabled: true,
-  //     builder: (context) => ChangeNotifierProvider(
-  //       create: (_) => ThemeProvider(),
-  //       child: const MyApp(),
-  //     ),),
+  //     create: (_) => ThemeProvider(),
+  //     child: DevicePreview(
+  //       enabled: true,
+  //       builder: (context) => ChangeNotifierProvider(
+  //         create: (_) => ThemeProvider(),
+  //         child: const MyApp(),
+  //       ),
+  //     ),
   //   ),
   // );
   configLoading();

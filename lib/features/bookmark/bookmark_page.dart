@@ -158,8 +158,8 @@ class _BookmarkPageState extends State<BookmarkPage>
           onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      ArticleView(artical: savedArticles, index: index))),
+                  builder: (context) => ArticleView(
+                      artical: savedArticles, index: index, comeFrom: "F"))),
           child: Container(
             margin: const EdgeInsets.all(5),
             padding: const EdgeInsets.all(5),
@@ -317,7 +317,7 @@ class _BookmarkPageState extends State<BookmarkPage>
         mainAxisSpacing: 10.0,
         shrinkWrap: true,
         children: List.generate(
-          min(liveChannelModel.length, 9),
+          liveChannelModel.length,
           (index) {
             final liveChannel = liveChannelModel[index];
             return GestureDetector(
@@ -345,7 +345,7 @@ class _BookmarkPageState extends State<BookmarkPage>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CircleAvatar(
-                          radius: 40,
+                          radius: MediaQuery.of(context).size.width * 0.09,
                           backgroundColor: Theme.of(context)
                               .colorScheme
                               .surfaceContainerHighest,

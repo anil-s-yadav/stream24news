@@ -292,76 +292,75 @@ class _LiveTvPageState extends State<LiveTvPage> {
     required void Function(String) onLanguageSelected,
     required void Function() onInfoClick,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        ChoiceChip(
-          label: Text('All Channels',
-              style: TextStyle(
-                color: isAllSelected
-                    ? Theme.of(context).colorScheme.onPrimaryContainer
-                    : Theme.of(context).colorScheme.onSurface,
-              )),
-          selected: isAllSelected,
-          showCheckmark: false,
-          selectedColor: Theme.of(context).colorScheme.primaryContainer,
-          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
-          side: BorderSide(
-            color: isAllSelected
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.outline,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          onSelected: (bool selected) {
-            onAllSelected(selected);
-          },
-        ),
-        Container(
-          height: 37,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          ChoiceChip(
+            label: Text('All Channels',
+                style: TextStyle(
+                  color: isAllSelected
+                      ? Theme.of(context).colorScheme.onPrimaryContainer
+                      : Theme.of(context).colorScheme.onSurface,
+                )),
+            selected: isAllSelected,
+            showCheckmark: false,
+            selectedColor: Theme.of(context).colorScheme.primaryContainer,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
+            side: BorderSide(
+              color: isAllSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.outline,
             ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            onSelected: (bool selected) {
+              onAllSelected(selected);
+            },
           ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: selectedLanguage,
-              hint: Text(
-                'Select Language',
-                style:
-                    TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          sizedBoxW10(context),
+          Container(
+            height: 37,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
               ),
-              iconEnabledColor: Theme.of(context).colorScheme.primary,
-              items: languages.keys.map((key) {
-                return DropdownMenuItem(
-                  value: key,
-                  child: Text(
-                    key,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: selectedLanguage,
+                hint: Text(
+                  'Select Language',
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                ),
+                iconEnabledColor: Theme.of(context).colorScheme.primary,
+                items: languages.keys.map((key) {
+                  return DropdownMenuItem(
+                    value: key,
+                    child: Text(
+                      key,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  onLanguageSelected(newValue);
-                }
-              },
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    onLanguageSelected(newValue);
+                  }
+                },
+              ),
             ),
           ),
-        ),
-        Icon(
-          Icons.info_outline,
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
-          size: 30,
-        )
-      ],
+        ],
+      ),
     );
   }
 }

@@ -170,119 +170,160 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      ArticleView(artical: articalModelList, index: index)));
+                  builder: (context) => ArticleView(
+                      artical: articalModelList, index: index, comeFrom: "C")));
         },
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
-                width: MediaQuery.of(context).size.width * 0.32,
-                child: CachedNetworkImage(
-                    imageUrl:
-                        articalModelList[index].imageUrl ?? defaultImageUrl,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                          color: Theme.of(context).colorScheme.surfaceContainer,
-                        ))),
-          ),
-          sizedBoxW10(context),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  height: 70,
-                  child: Text(articalModelList[index].title ?? "No title",
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 4,
-                      softWrap: true,
-                      style: Theme.of(context).textTheme.titleMedium),
-                ),
-                // sizedBoxH10(context),
-                Text(
-                  pubDate,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.outline,
+        child: Container(
+          padding: EdgeInsets.all(3),
+          decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(14)),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  width: MediaQuery.of(context).size.width * 0.32,
+                  child: CachedNetworkImage(
+                      imageUrl:
+                          articalModelList[index].imageUrl ?? defaultImageUrl,
+                      fit: BoxFit.fitHeight,
+                      placeholder: (context, url) => Container(
+                            color:
+                                Theme.of(context).colorScheme.surfaceContainer,
+                          ))),
+            ),
+            sizedBoxW10(context),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    child: Text(articalModelList[index].title ?? "No title",
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
+                        softWrap: true,
+                        style: Theme.of(context).textTheme.titleSmall),
                   ),
-                  softWrap: true,
-                ),
-                sizedBoxH10(context),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ArticleWebview(
-                                link:
-                                    articalModelList[index].source?.sourceUrl ??
-                                        "")));
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        // radius: 12,
-                        child: CachedNetworkImage(
-                            imageUrl:
-                                articalModelList[index].source?.sourceIcon ??
-                                    defaultImageUrl,
-                            fit: BoxFit.contain,
-                            height: 24,
-                            width: 24,
-                            placeholder: (context, url) => Container(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .surfaceContainer,
-                                )),
-                      ),
-                      // Image.asset(
-                      //   "lib/assets/images/profile.png",
-                      //   scale: 6,
-                      // ),
-                      sizedBoxW5(context),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.28,
-                        child: Text(
+                  // sizedBoxH10(context),
+                  Text(
+                    pubDate,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                    softWrap: true,
+                  ),
+                  // sizedBoxH10(context),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ArticleWebview(
+                                  link: articalModelList[index]
+                                          .source
+                                          ?.sourceUrl ??
+                                      "")));
+                    },
+                    child:
+                        /* ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          // radius: 12,
+                          child: CachedNetworkImage(
+                              imageUrl:
+                                  articalModelList[index].source?.sourceIcon ??
+                                      defaultImageUrl,
+                              fit: BoxFit.contain,
+                              height: 20,
+                              width: 20,
+                              placeholder: (context, url) => Container(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainer,
+                                  )),
+                        ),
+                        title: Text(
                           articalModelList[index].source?.sourceName ??
                               "No source",
                           textAlign: TextAlign.start,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 12,
                             color: Theme.of(context).colorScheme.primary,
                           ),
                           softWrap: true,
                         ),
-                      ),
-                      // const Spacer(),
-                      // sizedBoxW5(context),
-                      IconButton(
-                          onPressed: () {
-                            context.read<HomepageBloc>().add(
-                                HomepageSaveArticleEvent(
-                                    articleModel: articalModelList[index]));
-                          },
-                          icon: Icon(
-                            MyTabIcons.bookmark,
-                            size: 20,
-                            color: Theme.of(context).colorScheme.outline,
-                          )),
+                        trailing:
+                            newsMenuOptions(context, articalModelList[index]),
+                      )*/
 
-                      newsMenuOptions(context, articalModelList[index]),
-                      // newsMenuOptions(context),
-                    ],
+                        Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          // radius: 12,
+                          child: CachedNetworkImage(
+                              imageUrl:
+                                  articalModelList[index].source?.sourceIcon ??
+                                      defaultImageUrl,
+                              fit: BoxFit.contain,
+                              height: 20,
+                              width: 20,
+                              placeholder: (context, url) => Container(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainer,
+                                  )),
+                        ),
+                        // Image.asset(
+                        //   "lib/assets/images/profile.png",
+                        //   scale: 6,
+                        // ),
+                        sizedBoxW5(context),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          child: Text(
+                            articalModelList[index].source?.sourceName ??
+                                "No source",
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            softWrap: true,
+                          ),
+                        ),
+                        const Spacer(),
+                        // sizedBoxW5(context),
+                        // IconButton(
+                        //     onPressed: () {
+                        //       context.read<HomepageBloc>().add(
+                        //           HomepageSaveArticleEvent(
+                        //               articleModel: articalModelList[index]));
+                        //     },
+                        //     icon: Icon(
+                        //       MyTabIcons.bookmark,
+                        //       size: 18,
+                        //       color: Theme.of(context).colorScheme.outline,
+                        //     )),
+
+                        newsMenuOptions(context, articalModelList[index]),
+                        // newsMenuOptions(context),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          )
-        ]),
+                ],
+              ),
+            )
+          ]),
+        ),
       ),
     );
   }

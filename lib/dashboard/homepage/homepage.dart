@@ -260,19 +260,28 @@ class _HomePageState extends State<HomePage> {
                       radius: 40,
                       backgroundColor:
                           Theme.of(context).colorScheme.surfaceContainer,
-                      child: CachedNetworkImage(
-                        imageUrl: liveChannelModel[index].logo,
-                        fit: BoxFit.fitHeight,
-                        placeholder: (context, url) => Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
-                            borderRadius: BorderRadius.circular(100),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100)),
+                          child: CachedNetworkImage(
+                            imageUrl: liveChannelModel[index].logo,
+                            fit: BoxFit.contain,
+                            placeholder: (context, url) => Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainer,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
                         ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                     ),
                   ),
@@ -322,7 +331,7 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      radius: 40,
+                      radius: MediaQuery.of(context).size.height * 0.045,
                       backgroundColor:
                           Theme.of(context).colorScheme.surfaceContainerHighest,
                       child: isLoadingState == true
@@ -331,8 +340,10 @@ class _HomePageState extends State<HomePage> {
                               imageUrl: liveChannelModel[index].logo,
                               fit: BoxFit.fitHeight,
                               placeholder: (context, url) => Container(
-                                height: 40,
-                                width: 40,
+                                // height: 40,
+                                // height:
+                                //     MediaQuery.of(context).size.height * 0.02,
+                                // width: MediaQuery.of(context).size.width * 0.02,
                                 decoration: BoxDecoration(
                                   color: Theme.of(context)
                                       .colorScheme
@@ -344,7 +355,7 @@ class _HomePageState extends State<HomePage> {
                                   Icon(Icons.error),
                             ),
                     ),
-                    sizedBoxH5(context),
+                    sizedBoxH10(context),
                     Text(
                       !isLoadingState ? liveChannelModel[index].name : "",
                       maxLines: 1,
@@ -384,7 +395,7 @@ class _HomePageState extends State<HomePage> {
       );
     } else {
       return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.45,
+        height: MediaQuery.of(context).size.height * 0.44,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: min(artical.length, 10),
@@ -394,13 +405,17 @@ class _HomePageState extends State<HomePage> {
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          ArticleView(artical: artical, index: index))),
+                      builder: (context) => ArticleView(
+                          artical: artical, index: index, comeFrom: "T"))),
               child: Container(
                 margin: const EdgeInsets.only(right: 10),
+                // padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).hoverColor,
+                    borderRadius: BorderRadius.circular(15)),
                 width: MediaQuery.of(context).size.width * 0.5,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
@@ -422,21 +437,17 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     sizedBoxH5(context),
-                    Text(
-                      artical[index].title ?? "",
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: true,
-                      style: Theme.of(context).textTheme.labelLarge,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Text(
+                        artical[index].title ?? "",
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
                     ),
-                    // sizedBoxH10(context),
-                    // Text(
-                    //   trendingPostedDate,
-                    //   softWrap: true,
-                    //   style: TextStyle(fontSize: 10),
-                    // ),
-                    // sizedBoxH5(context),
-                    // Spacer(),
+                    Spacer(),
                     InkWell(
                       onTap: () {
                         Navigator.push(
@@ -447,8 +458,9 @@ class _HomePageState extends State<HomePage> {
                                         "")));
                       },
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // sizedBoxW5(context),
+                          sizedBoxW5(context),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
@@ -456,12 +468,12 @@ class _HomePageState extends State<HomePage> {
                                   defaultImageUrl,
                               height: 20,
                               width: 20,
+                              fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) {
                                 return SizedBox();
                               },
                             ),
                           ),
-                          sizedBoxW5(context),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.25,
                             child: Text(
@@ -472,8 +484,6 @@ class _HomePageState extends State<HomePage> {
                               maxLines: 1,
                             ),
                           ),
-                          // sizedBoxW5(context),
-                          const Spacer(),
                           newsMenuOptions(context, artical[index]),
                         ],
                       ),
@@ -521,8 +531,8 @@ class _HomePageState extends State<HomePage> {
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        ArticleView(artical: artical, index: index))),
+                    builder: (context) => ArticleView(
+                        artical: artical, index: index, comeFrom: "R"))),
             child: Container(
               margin: const EdgeInsets.all(5),
               padding: const EdgeInsets.all(5),
@@ -763,7 +773,8 @@ class _HomePageState extends State<HomePage> {
                                       MaterialPageRoute(
                                           builder: (context) => ArticleView(
                                               artical: articals,
-                                              index: index))),
+                                              index: index,
+                                              comeFrom: "F"))),
                                   child: Container(
                                       padding: const EdgeInsets.all(2),
                                       margin: const EdgeInsets.only(bottom: 10),
