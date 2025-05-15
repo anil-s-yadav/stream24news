@@ -13,6 +13,9 @@ import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import 'package:stream24news/utils/theme/theme_provider.dart';
 
 import '../../auth/login/login_options_page.dart';
+import '../single_pages/aboutus_page.dart';
+import '../single_pages/contact_page.dart';
+import '../single_pages/personal_info_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -67,10 +70,16 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingTile(
                 icon: Image.asset(
                   "lib/assets/images/user_1.png",
+                  color: Theme.of(context).colorScheme.onSurface,
                   scale: 2.4,
                 ),
                 title: "Personal Info",
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PersonalInfoPage()));
+                },
               ),
               SettingTile(
                 icon: Icon(
@@ -179,7 +188,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   size: 26,
                 ),
                 title: "Contact developer",
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ContactUsPage()));
+                },
               ),
               SettingTile(
                   icon: Icon(
@@ -201,7 +213,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     size: 26,
                   ),
                   title: "About Stream24 News App",
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AboutusPage()));
+                  }),
               GestureDetector(
                 onTap: () {
                   if (isLoggedIn) {

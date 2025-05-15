@@ -19,7 +19,7 @@ import '../../features/all_categories/selected_category_page.dart';
 import '../../features/article_view/article_view.dart';
 import '../../features/bookmark/bookmark_page.dart';
 import '../../features/notification/notification.dart';
-import '../../features/search_page.dart';
+import '../../features/search_articles/search_page.dart';
 import '../../features/trending_page/trending_page.dart';
 import '../../features/web_view/article_webview.dart';
 import '../../utils/componants/my_methods.dart';

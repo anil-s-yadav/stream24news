@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -32,6 +36,7 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
     _videoController =
         VideoPlayerController.networkUrl(Uri.parse(widget.channel.url));
     _initializePlayer();
+    increaseView(widget.channel.channelDocId);
   }
 
   Future<void> _initializePlayer() async {
@@ -254,5 +259,33 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
         );
       }).toList(),
     );
+  }
+
+  void increaseView(String docId) {
+    Timer(const Duration(seconds: 5), () async {
+      final docRef = FirebaseFirestore.instance
+          .collection('live_chennels') // Corrected spelling
+          .doc("6Kc57CnXtYzg85cD0FXS")
+          .collection("all_channels")
+          .doc(docId);
+
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final snapshot = await transaction.get(docRef);
+
+        final data = snapshot.data();
+        final Timestamp? lastViewed = data?['viewAt'];
+        final DateTime now = DateTime.now();
+
+        if (lastViewed == null ||
+            now.difference(lastViewed.toDate()).inMinutes >= 5) {
+          final currentViews = data?['viewCount'] ?? 0;
+          log(currentViews.toString());
+          transaction.update(docRef, {
+            'viewCount': currentViews + 1,
+            'viewAt': FieldValue.serverTimestamp(),
+          });
+        }
+      });
+    });
   }
 }

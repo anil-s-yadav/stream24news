@@ -9,7 +9,7 @@ import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 import '../../utils/componants/my_methods.dart';
 import '../../utils/services/shared_pref_service.dart';
-import '../search_page.dart';
+import '../search_articles/search_page.dart';
 import '../web_view/article_webview.dart';
 
 class SelectedCategoryPage extends StatefulWidget {

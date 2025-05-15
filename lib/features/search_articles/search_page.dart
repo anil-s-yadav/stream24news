@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
-import '../auth/create_account/list_data/language_data.dart';
+import '../../auth/create_account/list_data/language_data.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});

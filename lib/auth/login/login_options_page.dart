@@ -190,7 +190,7 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
           MaterialPageRoute(builder: (context) => const BottomNavbar()),
         );
       } else {
-        // log("Google Sign-In canceled by user.");
+        log("Google Sign-In canceled by user.");
       }
       EasyLoading.dismiss();
     } catch (e) {

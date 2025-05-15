@@ -1,4 +1,9 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/models/new_model.dart';
@@ -25,6 +30,11 @@ class ArticlePageDesign extends StatefulWidget {
 
 class _ArticlePageDesignState extends State<ArticlePageDesign> {
   String? selectedCategoryTitle;
+  @override
+  void initState() {
+    super.initState();
+    increaseView(widget.article.articleId.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,5 +216,18 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
         ],
       ),
     );
+  }
+
+  void increaseView(String articleId) {
+    Timer(Duration(seconds: 5), () async {
+      final docRef =
+          FirebaseFirestore.instance.collection('news').doc(articleId);
+      // Use a transaction to safely increment the view count
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final snapshot = await transaction.get(docRef);
+        final currentViews = snapshot.get('views') ?? 0;
+        transaction.update(docRef, {'views': currentViews + 1});
+      });
+    });
   }
 }
