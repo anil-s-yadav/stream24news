@@ -70,7 +70,8 @@ class _NewspageState extends State<Newspage> {
       rColor = Colors.white60;
       cColor = Colors.blue;
       //to call for selected category news
-      BlocProvider.of<NewspageBloc>(context).add(NewspageSelectCategory());
+      BlocProvider.of<NewspageBloc>(context)
+          .add(NewspageSelectCategory(category: "All"));
     } else {
       // to call all news
       BlocProvider.of<NewspageBloc>(context).add(NewspageLoadEvent());
@@ -88,149 +89,151 @@ class _NewspageState extends State<Newspage> {
               return shimmer();
             } else if (state is NewspageSuccess) {
               final articles = state.articles;
-              if (articles.isEmpty) {
-                return noDataWidget(context);
-              } else {
-                return Stack(alignment: Alignment.topCenter, children: [
-                  PageView.builder(
-                    controller: _pageController,
-                    scrollDirection: Axis.vertical,
-                    itemCount: articles.length,
-                    itemBuilder: (context, index) {
-                      return AnimatedBuilder(
-                        animation: _pageController,
-                        builder: (context, child) {
-                          double value = 1.0;
-                          if (_pageController.position.haveDimensions) {
-                            value = _pageController.page! - index;
-                            value = (1 - (value.abs() * 0.3)).clamp(0, 10);
-                          }
-                          final isTransitioning = value < 1.0;
-                          return Opacity(
-                            opacity: value,
-                            child: Transform.scale(
-                              scale: value,
-                              child: ArticlePageDesign(
-                                article: articles[index],
-                                isTransitioning: isTransitioning,
-                                isArticleView: false,
-                              ),
-                              // ArticlePageDesign(article: test_article),
+              return Stack(alignment: Alignment.topCenter, children: [
+                PageView.builder(
+                  controller: _pageController,
+                  scrollDirection: Axis.vertical,
+                  itemCount: articles.length,
+                  itemBuilder: (context, index) {
+                    return AnimatedBuilder(
+                      animation: _pageController,
+                      builder: (context, child) {
+                        double value = 1.0;
+                        if (_pageController.position.haveDimensions) {
+                          value = _pageController.page! - index;
+                          value = (1 - (value.abs() * 0.3)).clamp(0, 10);
+                        }
+                        final isTransitioning = value < 1.0;
+                        return Opacity(
+                          opacity: value,
+                          child: Transform.scale(
+                            scale: value,
+                            child: ArticlePageDesign(
+                              article: articles[index],
+                              isTransitioning: isTransitioning,
+                              isArticleView: false,
                             ),
-                          );
-                        },
-                      );
-                    },
-                    onPageChanged: (index) async {
-                      // SharedPrefService().setLastNewsIndex(index);
-
-                      // if (index == articles.length - 1) {
-                      //   SharedPrefService().clearLastNewsIndex();
-                      // }
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            comeFrom = "F";
-                          });
-                          _setColor();
-                        },
-                        child: Text("For You",
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  // onPageChanged: (index) async {
+                  //   // SharedPrefService().setLastNewsIndex(index);
+                  //   // if (index == articles.length - 1) {
+                  //   //   SharedPrefService().clearLastNewsIndex();
+                  //   // }
+                  // },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          comeFrom = "F";
+                        });
+                        _setColor();
+                      },
+                      child: Text("For You",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: fColor,
+                              fontSize: 12)),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          comeFrom = "T";
+                        });
+                        _setColor();
+                      },
+                      child: Text("Trending",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: tColor,
+                              fontSize: 12)),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          comeFrom = "R";
+                        });
+                        _setColor();
+                      },
+                      child: Text("Recomanded",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: rColor,
+                              fontSize: 12)),
+                    ),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isDense: true,
+                        hint: Text("Select Category",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: fColor,
+                                color: cColor,
                                 fontSize: 12)),
-                      ),
-                      GestureDetector(
-                        onTap: () {
+                        value: selectedCategoryTitle,
+                        onChanged: (String? newValue) {
                           setState(() {
-                            comeFrom = "T";
+                            selectedCategoryTitle = newValue;
+                            comeFrom = "C";
                           });
                           _setColor();
-                        },
-                        child: Text("Trending",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: tColor,
-                                fontSize: 12)),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            comeFrom = "R";
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (_pageController.hasClients) {
+                              _pageController.jumpToPage(0);
+                            }
                           });
-                          _setColor();
+                          BlocProvider.of<NewspageBloc>(context).add(
+                              NewspageSelectCategory(
+                                  category: selectedCategoryTitle ?? "All"));
                         },
-                        child: Text("Recomanded",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: rColor,
-                                fontSize: 12)),
-                      ),
-                      DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          isDense: true,
-                          hint: Text("Select Category",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: cColor,
-                                  fontSize: 12)),
-                          value: selectedCategoryTitle,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedCategoryTitle = newValue;
-                              comeFrom = "C";
-                            });
-                            _setColor();
-                          },
-                          items: categories.map((category) {
-                            return DropdownMenuItem<String>(
-                              value: category['title'],
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(5),
-                                    child: Image.asset(
-                                      category['image']!,
-                                      width: 30,
-                                      height: 30,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  sizedBoxW5(context),
-                                  Text(
-                                    category['title']!,
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                          selectedItemBuilder: (BuildContext context) {
-                            return categories.map((category) {
-                              return Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  category['title']!,
-                                  style: TextStyle(
-                                    color: cColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
+                        items: categories.map((category) {
+                          return DropdownMenuItem<String>(
+                            value: category['title'],
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: Image.asset(
+                                    category['image']!,
+                                    width: 30,
+                                    height: 30,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                              );
-                            }).toList();
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                ]);
-              }
+                                sizedBoxW5(context),
+                                Text(
+                                  category['title']!,
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        selectedItemBuilder: (BuildContext context) {
+                          return categories.map((category) {
+                            return Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                category['title']!,
+                                style: TextStyle(
+                                  color: cColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            );
+                          }).toList();
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ]);
             } else {
               return shimmer();
             }

@@ -18,6 +18,8 @@ final class NewspageRecomanded extends NewspageEvent {
 }
 
 final class NewspageSelectCategory extends NewspageEvent {
+  final String category;
+  NewspageSelectCategory({required this.category});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [category];
 }
