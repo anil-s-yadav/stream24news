@@ -144,8 +144,9 @@ class _LiveTvPageState extends State<LiveTvPage> {
   Widget _buildChannelList() {
     return BlocBuilder<LiveTvBloc, LiveTvState>(
       builder: (context, state) {
-        if (state is LiveTvLoadingState) return channelsLoading();
-        if (state is LiveTvSuccessState) {
+        if (state is LiveTvInitialState || state is LiveTvLoadingState) {
+          return channelsLoading();
+        } else if (state is LiveTvSuccessState) {
           final channels = state.liveChannelModel;
           if (channels.isEmpty) {
             return noDataWidget(context);
@@ -167,11 +168,10 @@ class _LiveTvPageState extends State<LiveTvPage> {
               return _buildChannelItem(channel, language);
             },
           );
-        }
-        if (state is LiveTvErrorState) {
+        } else if (state is LiveTvErrorState) {
           return noDataWidget(context);
         } else {
-          return noDataWidget(context);
+          return channelsLoading();
         }
       },
     );

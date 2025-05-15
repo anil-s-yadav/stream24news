@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stream24news/auth/login/login_options_page.dart';
-import 'package:stream24news/test_page.dart';
+import 'package:stream24news/features/donation_page.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
@@ -176,7 +176,7 @@ class _ProfilepageState extends State<Profilepage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const TestPage(),
+                  builder: (context) => const DonationPage(),
                 ),
               );
             },

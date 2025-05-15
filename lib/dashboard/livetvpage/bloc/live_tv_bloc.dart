@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../../../auth/auth_service.dart';
 import '../../../auth/create_account/list_data/language_data.dart';
 import '../../../models/live_channel_model.dart';
 import '../../../utils/services/shared_pref_service.dart';
@@ -173,19 +174,19 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
 
   void _saveChannel(
       LiveChannelSaveEvent event, Emitter<LiveTvState> emit) async {
+    String userId;
     try {
+      if (AuthService().isUserLoggedIn()) {
+        userId = AuthService().getUser()!.uid;
+      } else {
+        EasyLoading.showInfo("Please login to save!");
+        return;
+      }
       EasyLoading.show(status: 'Saving channel...');
-      // if (AuthService().isUserLoggedIn()) {
-      //   userId = AuthService().getUser()!.uid;
-      // } else {
-      //   emit(HomepageSavedDataError());
-      //   return;
-      // }
-      String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
 
       await FirebaseFirestore.instance
           .collection('user')
-          .doc(testUserID)
+          .doc(userId)
           .collection('saved_channels')
           .doc(event.channelID)
           .set({}); // You can store additional data if needed, like timestamp

@@ -77,8 +77,10 @@ Widget newsMenuOptions(BuildContext context, Article articleModel) {
                         onPressed: () => Navigator.pop(context),
                         child: Text("Cancel")),
                     TextButton(
-                        onPressed: () =>
-                            EasyLoading.showSuccess("Article reported!"),
+                        onPressed: () {
+                          EasyLoading.showSuccess("Article reported!");
+                          Navigator.pop(context);
+                        },
                         child: Text("Report"))
                   ],
                 ));

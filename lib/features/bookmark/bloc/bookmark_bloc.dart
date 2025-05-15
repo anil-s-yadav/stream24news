@@ -5,6 +5,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/models/live_channel_model.dart';
 import 'package:stream24news/models/new_model.dart';
 
+import '../../../auth/auth_service.dart';
+
 part 'bookmark_event.dart';
 part 'bookmark_state.dart';
 
@@ -20,20 +22,21 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
 void _loadSavedArticalsEvent(
     LoadSavedArticlesEvent event, Emitter<BookmarkState> emit) async {
   emit(BookmarkArticleLoading());
+  String userId;
   try {
-    // if (AuthService().isUserLoggedIn()) {
-    //   userId = AuthService().getUser()!.uid;
-    // } else {
-    //   emit(HomepageSavedDataError());
-    //   return;
-    // }
-    String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
+    if (AuthService().isUserLoggedIn()) {
+      userId = AuthService().getUser()!.uid;
+    } else {
+      emit(BookmarkArticleError());
+      return;
+    }
+    // String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Get all saved article IDs for the user
     final savedArticlesSnapshot = await firestore
         .collection('user')
-        .doc(testUserID)
+        .doc(userId)
         .collection('saved_articles')
         .get();
     List<Article> savedArticles = [];
@@ -57,20 +60,19 @@ void _loadSavedArticalsEvent(
 void _loadSavedChannelsEvent(
     LoadSavedChannelsEvent event, Emitter<BookmarkState> emit) async {
   emit(BookmarkChannelLoading());
+  String userId;
   try {
-    // if (AuthService().isUserLoggedIn()) {
-    //   userId = AuthService().getUser()!.uid;
-    // } else {
-    //   emit(HomepageSavedDataError());
-    //   return;
-    // }
-    String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
+    if (AuthService().isUserLoggedIn()) {
+      userId = AuthService().getUser()!.uid;
+    } else {
+      emit(BookmarkChannelError());
+      return;
+    }
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     // Get all saved channel IDs for the user
     final savedChannelsSnapshot = await firestore
         .collection('user')
-        // .doc(userId)
-        .doc(testUserID)
+        .doc(userId)
         .collection('saved_channels')
         .get();
 
@@ -99,20 +101,21 @@ void _loadSavedChannelsEvent(
 
 void _deleteSavedArticleEvent(
     DeleteSavedArticleEvent event, Emitter<BookmarkState> emit) async {
+  String userId;
   try {
     EasyLoading.show(status: 'Deleting article...');
-    // if (AuthService().isUserLoggedIn()) {
-    //   userId = AuthService().getUser()!.uid;
-    // } else {
-    //   emit(HomepageSavedDataError());
-    //   return;
-    // }
-    String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
+    if (AuthService().isUserLoggedIn()) {
+      userId = AuthService().getUser()!.uid;
+    } else {
+      emit(BookmarkArticleError());
+      return;
+    }
+    // String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";//
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     // Delete the article from saved articles
     await firestore
         .collection('user')
-        .doc(testUserID)
+        .doc(userId)
         .collection('saved_articles')
         .doc(event.articleId)
         .delete();
@@ -124,20 +127,21 @@ void _deleteSavedArticleEvent(
 
 void _deleteSavedChannelEvent(
     DeleteSavedChannelEvent event, Emitter<BookmarkState> emit) async {
+  String userId;
   try {
     EasyLoading.show(status: 'Deleting channel...');
-    // if (AuthService().isUserLoggedIn()) {
-    //   userId = AuthService().getUser()!.uid;
-    // } else {
-    //   emit(HomepageSavedDataError());
-    //   return;
-    // }
-    String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
+    if (AuthService().isUserLoggedIn()) {
+      userId = AuthService().getUser()!.uid;
+    } else {
+      emit(BookmarkChannelError());
+      return;
+    }
+    // String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     // Delete the channel from saved channels
     await firestore
         .collection('user')
-        .doc(testUserID)
+        .doc(userId)
         .collection('saved_channels')
         .doc(event.channelId)
         .delete();

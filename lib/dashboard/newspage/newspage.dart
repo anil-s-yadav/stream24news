@@ -4,13 +4,11 @@ import 'package:stream24news/dashboard/newspage/artical_page_design.dart';
 import 'package:stream24news/dashboard/newspage/bloc/newspage_bloc.dart';
 
 import '../../features/all_categories/category_list/categories_list.dart';
-import '../../utils/componants/my_methods.dart';
 import '../../utils/componants/sizedbox.dart';
-import '../../utils/services/shared_pref_service.dart';
 
 class Newspage extends StatefulWidget {
   final String comeFrom;
-  const Newspage({super.key, this.comeFrom = ""});
+  const Newspage({super.key, this.comeFrom = "F"});
 
   @override
   State<Newspage> createState() => _NewspageState();

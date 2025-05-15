@@ -10,8 +10,6 @@ import 'package:stream24news/dashboard/livetvpage/livetvpage.dart';
 import 'package:stream24news/dashboard/livetvpage/video_play_screen.dart';
 import 'package:stream24news/models/live_channel_model.dart';
 import 'package:stream24news/models/new_model.dart';
-import 'package:stream24news/samplepage.dart';
-import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
@@ -19,14 +17,12 @@ import '../../features/all_categories/all_categories.dart';
 import '../../features/all_categories/category_list/categories_list.dart';
 import '../../features/all_categories/selected_category_page.dart';
 import '../../features/article_view/article_view.dart';
-import '../../features/bookmark/bloc/bookmark_bloc.dart';
 import '../../features/bookmark/bookmark_page.dart';
 import '../../features/notification/notification.dart';
 import '../../features/search_page.dart';
 import '../../features/trending_page/trending_page.dart';
 import '../../features/web_view/article_webview.dart';
 import '../../utils/componants/my_methods.dart';
-import '../../utils/services/shared_pref_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -843,26 +839,20 @@ class _HomePageState extends State<HomePage> {
   AppBar _buldAppBar(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: GestureDetector(
-        onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const Samplepage()));
-        },
-        child: Row(
-          children: [
-            Text(
-              "Stream24 ",
-              style: GoogleFonts.dancingScript(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "News",
-              style: GoogleFonts.dancingScript(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+      title: Row(
+        children: [
+          Text(
+            "Stream24 ",
+            style: GoogleFonts.dancingScript(fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "News",
+            style: GoogleFonts.dancingScript(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: 24,
+                fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
       actions: [
         IconButton(

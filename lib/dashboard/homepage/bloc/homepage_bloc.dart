@@ -6,7 +6,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/auth/auth_service.dart';
 
-import '../../../auth/create_account/list_data/country_data.dart';
 import '../../../models/live_channel_model.dart';
 import '../../../models/new_model.dart';
 import '../../../utils/services/shared_pref_service.dart';
@@ -139,24 +138,23 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
 
   void _loadSavedData(
       HomepageLoadSavedDataEvent event, Emitter<HomepageState> emit) async {
-    // String userId;
+    String userId;
     try {
       emit(HomepageSavedDataLoading());
 
-      // if (AuthService().isUserLoggedIn()) {
-      //   userId = AuthService().getUser()!.uid;
-      // } else {
-      //   emit(HomepageSavedDataError());
-      //   return;
-      // }
-      String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
+      if (AuthService().isUserLoggedIn()) {
+        userId = AuthService().getUser()!.uid;
+      } else {
+        emit(HomepageSavedDataError());
+        return;
+      }
+      // String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       // Step 1: Get all saved channel IDs for the user
       final savedChannelsSnapshot = await firestore
           .collection('user')
-          // .doc(userId)
-          .doc(testUserID)
+          .doc(userId)
           .collection('saved_channels')
           .limit(10)
           .get();
@@ -182,7 +180,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       // Step 3: Get all saved article IDs for the user
       final savedArticlesSnapshot = await firestore
           .collection('user')
-          .doc(testUserID)
+          .doc(userId)
           .collection('saved_articles')
           .limit(10)
           .get();
@@ -208,32 +206,34 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
 
   void _saveArticle(
       HomepageSaveArticleEvent event, Emitter<HomepageState> emit) async {
+    String userId;
     try {
-      EasyLoading.show(status: 'Saving article...');
-      // if (AuthService().isUserLoggedIn()) {
-      //   userId = AuthService().getUser()!.uid;
-      // } else {
-      //   emit(HomepageSavedDataError());
-      //   return;
-      // }
-      String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
+      if (AuthService().isUserLoggedIn()) {
+        userId = AuthService().getUser()!.uid;
+      } else {
+        // EasyLoading.showError('Please login to save!');
+        EasyLoading.showInfo("Please login to save articles!");
+
+        return;
+      }
+      // String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
       final article = event.articleModel;
 
       if (article.articleId == null) {
         EasyLoading.showError('Invalid article ID');
         return;
       }
-
+      EasyLoading.show(status: 'Saving article...');
       await FirebaseFirestore.instance
           .collection('user')
-          .doc(testUserID)
+          .doc(userId)
           .collection('saved_articles')
           .doc(article.articleId)
           .set(article.toMap());
 
       EasyLoading.showSuccess('Article saved successfully!');
 
-      // ✅ Get current state and emit updated success state
+      //  Get current state and emit updated success state
       final currentState = state;
       if (currentState is HomepageSavedDataSuccess) {
         final updatedArticles = List<Article>.from(currentState.articles)

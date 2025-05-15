@@ -103,12 +103,8 @@ class _BookmarkPageState extends State<BookmarkPage>
                         state is BookmarkArticleLoading) {
                       return articalLoading();
                     } else if (state is BookmarkArticleError) {
-                      // return savedErrorStateWidget(context);
-                      return const Center(
-                        child: Text("Error loading articles"),
-                      );
+                      return savedEmpty();
                     } else {
-                      // return savedErrorStateWidget(context);
                       return SizedBox.shrink();
                     }
                   },
