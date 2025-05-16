@@ -30,12 +30,27 @@ class DonationPage extends StatelessWidget {
               "lib/assets/images/qrcode.jpeg",
               height: MediaQuery.of(context).size.height * 0.4,
             ),
-            Text("\nThis app is free to use!"),
-            Center(
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: DefaultTextStyle.of(context).style,
+                children: [
+                  TextSpan(text: '\nThis app is '),
+                  TextSpan(
+                    text: 'free',
+                    style: TextStyle(
+                        color: Colors.green, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(text: ' to use!'),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
               child: Text(
                   textAlign: TextAlign.center,
                   "\nThis donation will be motivate developers for improvement and management of this app. \n We also have to maintain servers."),
-            )
+            ),
           ],
         ),
       ),

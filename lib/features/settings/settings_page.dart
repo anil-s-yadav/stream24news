@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stream24news/auth/create_account/select_cuntory.dart';
@@ -15,7 +12,7 @@ import 'package:stream24news/utils/theme/theme_provider.dart';
 import '../../auth/login/login_options_page.dart';
 import '../single_pages/aboutus_page.dart';
 import '../single_pages/contact_page.dart';
-import '../single_pages/personal_info_page.dart';
+import '../../dashboard/profile/personal_info_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -41,9 +38,6 @@ class _SettingsPageState extends State<SettingsPage> {
     language = SharedPrefService().getLanguage() ?? ["English", "en"];
     countrty = SharedPrefService().getCounty() ??
         ["https://flagcdn.com/36x27/in.png", "india", "In"];
-
-    // log(" language: ${language}");
-    // log(" language: ${countrty}");
   }
 
   @override
@@ -67,7 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 title: const Divider(),
               ),
-              SettingTile(
+              settingTile(
                 icon: Image.asset(
                   "lib/assets/images/user_1.png",
                   color: Theme.of(context).colorScheme.onSurface,
@@ -81,10 +75,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           builder: (context) => const PersonalInfoPage()));
                 },
               ),
-              SettingTile(
+              settingTile(
                 icon: Icon(
                   MyTabIcons.notification,
-                  //size: 30,
                 ),
                 title: "Notification",
                 onTap: () {
@@ -139,10 +132,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     errorBuilder: (context, error, stackTrace) =>
                         const Icon(Icons.flag_outlined),
                   ),
-                  //     Icon(
-                  //   Icons.flag_outlined,
-                  //   size: 26,
-                  // ),
                   title: Text("Country",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   trailing: Wrap(
@@ -182,7 +171,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 title: const Divider(),
               ),
-              SettingTile(
+              settingTile(
                 icon: Icon(
                   Icons.code,
                   size: 26,
@@ -193,21 +182,21 @@ class _SettingsPageState extends State<SettingsPage> {
                       MaterialPageRoute(builder: (context) => ContactUsPage()));
                 },
               ),
-              SettingTile(
+              settingTile(
                   icon: Icon(
                     Icons.help_outline,
                     size: 26,
                   ),
                   title: "Help Center",
                   onTap: () {}),
-              SettingTile(
+              settingTile(
                   icon: Icon(
                     Icons.lock_outlined,
                     size: 26,
                   ),
                   title: "Privacy Policy",
                   onTap: () {}),
-              SettingTile(
+              settingTile(
                   icon: Icon(
                     Icons.info_outline_rounded,
                     size: 26,
@@ -242,7 +231,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       )),
                 ),
               ),
-              sizedBoxH5(context),
+              /*   sizedBoxH5(context),
               Container(
                 margin:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -258,13 +247,13 @@ class _SettingsPageState extends State<SettingsPage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ))),
               ),
-              sizedBoxH15(context),
+              sizedBoxH15(context), */
             ],
           ),
         ));
   }
 
-  Widget SettingTile({
+  Widget settingTile({
     required Widget icon,
     required String title,
     void Function()? onTap,
@@ -303,12 +292,11 @@ class _SettingsPageState extends State<SettingsPage> {
               try {
                 await AuthService().signOut();
               } catch (e) {
-                log("Something went wrong. Please try again.");
+                throw Exception(e);
               }
 
-              Navigator.pop(context);
-
               if (context.mounted) {
+                Navigator.pop(context);
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(

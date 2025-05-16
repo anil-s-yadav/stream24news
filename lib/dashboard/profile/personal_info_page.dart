@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stream24news/auth/login/login_page.dart';
+import 'package:stream24news/utils/componants/sizedbox.dart';
 
 import '../../auth/auth_service.dart';
 import '../../auth/login/login_options_page.dart';
@@ -99,19 +99,26 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   const SizedBox(height: 20),
                   CircleAvatar(
                     radius: 50,
-                    backgroundImage: user!.photoURL != null
-                        ? CachedNetworkImageProvider(user!.photoURL!)
-                        : null,
-                    child: user!.photoURL == null
-                        ? const Icon(Icons.person, size: 50)
-                        : null,
+                    child: ClipOval(
+                        child: CachedNetworkImage(imageUrl: user!.photoURL!)),
                   ),
+
                   const SizedBox(height: 16),
-                  Text(
-                    user!.displayName ?? "No Name",
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        user!.displayName ?? "No Name",
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      sizedBoxW5(context),
+                      user?.emailVerified ?? false
+                          ? Icon(Icons.verified, color: Colors.blue)
+                          : SizedBox.shrink()
+                    ],
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -123,50 +130,17 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   const SizedBox(height: 16),
                   Divider(color: Colors.grey[400]),
                   const SizedBox(height: 16),
-                  _infoTile("UID", user!.uid),
-                  _infoTile(
-                      "Email Verified", user!.emailVerified ? "Yes" : "No"),
-                  if (user!.phoneNumber != null)
-                    _infoTile("Phone", user!.phoneNumber!),
-                  const SizedBox(height: 24),
+                  // ElevatedButton.icon(
+                  //   onPressed: () {},
+                  //   label: const Text("Edit Profile"),
+                  // ),
                   ElevatedButton.icon(
-                    onPressed: () async {
-                      await AuthService().signOut();
-                      if (mounted) {
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    icon: const Icon(Icons.logout),
-                    label: const Text("Log Out"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent,
-                    ),
-                  )
+                    onPressed: () {},
+                    label: const Text("Delete profile"),
+                  ),
                 ],
               ),
             ),
-    );
-  }
-
-  Widget _infoTile(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$label: ",
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(),
-              softWrap: true,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

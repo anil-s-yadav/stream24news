@@ -1,10 +1,11 @@
 import 'dart:developer';
-import 'dart:typed_data';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:stream24news/auth/login/login_options_page.dart';
+import 'package:stream24news/dashboard/profile/edit_profile_page.dart';
 import 'package:stream24news/features/single_pages/donation_page.dart';
+import 'package:stream24news/utils/componants/my_methods.dart';
 import 'package:stream24news/utils/componants/my_widgets.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
@@ -24,10 +25,8 @@ class _ProfilepageState extends State<Profilepage> {
   String _currentSelectedValue = "Home";
 
   User? user;
-  // bool isLogin = false;
-  String photo = '';
-  Uint8List? imageBytes;
   bool isLoggedIn = false;
+  String photo = '';
 
   @override
   void initState() {
@@ -40,18 +39,17 @@ class _ProfilepageState extends State<Profilepage> {
     isLoggedIn = AuthService().isUserLoggedIn();
     _currentSelectedValue = SharedPrefService().getDefaultHomePage() ?? "Home";
 
-    log("anil: ${user?.photoURL}");
     setState(() {
-      photo =
-          user?.photoURL ?? 'https://demofree.sirv.com/nope-not-here.svg?w=150';
-      imageBytes = SharedPrefService().getProfilePhoto();
+      photo = user?.photoURL ?? defaultImageUrl;
     });
-    log("message: $photo");
-    log("message 2: $imageBytes");
+
+    log("User Photo URL: $photo");
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -76,29 +74,31 @@ class _ProfilepageState extends State<Profilepage> {
                 sizedBoxW15(context),
                 CircleAvatar(
                   radius: 50,
-                  child: imageBytes != null
-                      ? SvgPicture.memory(
-                          imageBytes!,
-                          width: 100,
-                          height: 100,
-                        )
-                      : SvgPicture.network(
-                          photo,
-                          width: 100,
-                          height: 100,
-                          placeholderBuilder: (BuildContext context) =>
-                              const CircularProgressIndicator(),
-                        ),
+                  backgroundColor: theme.colorScheme.primaryContainer,
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: photo,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) =>
+                          const CircularProgressIndicator(strokeWidth: 2),
+                      errorWidget: (_, __, ___) =>
+                          const Icon(Icons.person, size: 40),
+                    ),
+                  ),
                 ),
                 sizedBoxW20(context),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(user?.displayName ?? "User",
-                        style: Theme.of(context).textTheme.headlineMedium),
+                    Text(
+                      user?.displayName ?? "User",
+                      style: theme.textTheme.headlineMedium,
+                    ),
                     Text(user?.email ?? ""),
                   ],
-                )
+                ),
               ],
             ),
           if (!isLoggedIn)
@@ -122,10 +122,16 @@ class _ProfilepageState extends State<Profilepage> {
             ),
           sizedBoxH20(context),
           if (isLoggedIn)
-            MyLightContainer(
-              height: MediaQuery.of(context).size.height * 0.05,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: const Text("Edit Profile"),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => EditProfilePage()));
+              },
+              child: MyLightContainer(
+                height: MediaQuery.of(context).size.height * 0.05,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: const Text("Edit Profile"),
+              ),
             ),
           MyLightContainer(
             height: MediaQuery.of(context).size.height * 0.05,
@@ -152,14 +158,14 @@ class _ProfilepageState extends State<Profilepage> {
                       value: value,
                       child: Text(
                         value,
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                            color: Theme.of(context).colorScheme.shadow),
+                        style: theme.textTheme.labelLarge!.copyWith(
+                          color: theme.colorScheme.shadow,
+                        ),
                       ),
                     );
                   }).toList(),
                 ),
-                Icon(Icons.info_outlined,
-                    color: Theme.of(context).colorScheme.outline),
+                Icon(Icons.info_outlined, color: theme.colorScheme.outline),
               ],
             ),
           ),

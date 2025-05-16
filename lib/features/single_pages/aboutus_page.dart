@@ -13,7 +13,9 @@ class AboutusPage extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        // appBar: AppBar(),
+        appBar: AppBar(
+          title: Text("About us"),
+        ),
         body: Column(
           children: [
             Container(

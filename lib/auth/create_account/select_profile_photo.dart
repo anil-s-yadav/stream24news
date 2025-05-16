@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
@@ -15,6 +15,10 @@ class SelectProfilePhoto extends StatefulWidget {
 
 class _SelectProfilePhotoState extends State<SelectProfilePhoto> {
   int? selectedIndex;
+
+  String _getAvatarUrl(int index) {
+    return 'https://api.dicebear.com/7.x/adventurer/png?seed=$index&backgroundColor=transparent';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +74,18 @@ class _SelectProfilePhotoState extends State<SelectProfilePhoto> {
                           backgroundColor: Colors
                               .primaries[index % Colors.primaries.length]
                               .shade200,
-                          child: SvgPicture.network(
-                            'https://api.dicebear.com/7.x/adventurer/svg?seed=$index',
+                          child: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: _getAvatarUrl(index),
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 1.5),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
                           ),
                         ),
                       ),
@@ -83,23 +97,27 @@ class _SelectProfilePhotoState extends State<SelectProfilePhoto> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  selectedIndex != null
-                      ? CircleAvatar(
-                          radius: 40,
-                          backgroundColor: Colors
-                              .primaries[
-                                  selectedIndex! % Colors.primaries.length]
-                              .shade200,
-                          child: SvgPicture.network(
-                            'https://api.dicebear.com/7.x/adventurer/svg?seed=$selectedIndex',
-                          ),
-                        )
-                      : const SizedBox(),
+                  if (selectedIndex != null)
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors
+                          .primaries[selectedIndex! % Colors.primaries.length]
+                          .shade200,
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: _getAvatarUrl(selectedIndex!),
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(strokeWidth: 1.5),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
+                      ),
+                    ),
                   IconButton(
                     onPressed: () async {
                       if (selectedIndex != null) {
-                        String selectedPhotoUrl =
-                            'https://api.dicebear.com/7.x/adventurer/svg?seed=$selectedIndex';
+                        String selectedPhotoUrl = _getAvatarUrl(selectedIndex!);
 
                         bool isLoggedIn = AuthService().isUserLoggedIn();
 
@@ -109,23 +127,19 @@ class _SelectProfilePhotoState extends State<SelectProfilePhoto> {
                               name: null,
                               photoUrl: selectedPhotoUrl,
                             );
-                            SharedPrefService()
-                                .setProfilePhoto(selectedPhotoUrl);
                           } catch (e) {
                             debugPrint("Error updating user profile: $e");
                           }
                         }
-
-                        // await SharedPrefService()
-                        //     .setProfilePhoto(selectedPhotoUrl);
-
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const SelectCuntory(commingFrom: ''),
-                          ),
-                        );
+                        if (context.mounted) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const SelectCuntory(commingFrom: ''),
+                            ),
+                          );
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

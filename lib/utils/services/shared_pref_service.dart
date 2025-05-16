@@ -69,6 +69,7 @@ class SharedPrefService {
     return _storage?.getStringList(LocalStorageKeys.country);
   }
 
+/*
   Future<void> setProfilePhoto(String value) async {
     final response = await http.get(Uri.parse(value));
     if (response.statusCode == 200) {
@@ -87,7 +88,7 @@ class SharedPrefService {
       return base64Decode(base64Str);
     }
     return null;
-  }
+  } */
 
   Future<void> setDefaultHomePage(String value) async {
     await _storage?.setString(LocalStorageKeys.defaultHomePage, value);

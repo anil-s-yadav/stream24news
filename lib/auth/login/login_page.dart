@@ -181,8 +181,8 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final user =
           await AuthService().loginUserWithEmailAndPassword(email, password);
-      SharedPrefService().setProfilePhoto(user?.photoURL ??
-          "https://demofree.sirv.com/nope-not-here.svg?w=150");
+      // SharedPrefService().setProfilePhoto(user?.photoURL ??
+      //     "https://demofree.sirv.com/nope-not-here.svg?w=150");
       if (user != null) {
         showCustomDialog();
       }
