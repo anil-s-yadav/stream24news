@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:stream24news/auth/create_account/select_cuntory.dart';
 import 'package:stream24news/auth/create_account/select_language.dart';
@@ -188,14 +189,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     size: 26,
                   ),
                   title: "Help Center",
-                  onTap: () {}),
+                  onTap: () => EasyLoading.showInfo(
+                      "Will be implemented after uploaded on play store!")),
               settingTile(
                   icon: Icon(
                     Icons.lock_outlined,
                     size: 26,
                   ),
                   title: "Privacy Policy",
-                  onTap: () {}),
+                  onTap: () => EasyLoading.showInfo(
+                      "Will be implemented after uploaded on play store!")),
               settingTile(
                   icon: Icon(
                     Icons.info_outline_rounded,

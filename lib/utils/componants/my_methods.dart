@@ -6,10 +6,9 @@ import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
 import '../../dashboard/homepage/bloc/homepage_bloc.dart';
-import '../../features/article_view/article_view.dart';
 
 const String defaultImageUrl =
-    "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/dark_app_logo.png";
+    "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/dark_app_logo.jpeg";
 // "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/app_logo.png";
 
 String getTimeAgo(String? pubDate) {

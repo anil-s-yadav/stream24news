@@ -6,8 +6,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 class ContactUsPage extends StatelessWidget {
   const ContactUsPage({super.key});
 
-  final String logoUrl =
-      "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/aboutus_logo.png";
+  // final String logoUrl =
+  //     "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/aboutus_logo.png";
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +24,10 @@ class ContactUsPage extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: CachedNetworkImage(
-                imageUrl: logoUrl,
-                height: 120,
-                width: 120,
-                fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                errorWidget: (context, url, error) =>
-                    const Icon(Icons.error, size: 50),
-              ),
+            Image.asset(
+              "lib/assets/images/logo.jpeg",
+              height: 120,
+              width: 120,
             ),
             const SizedBox(height: 24),
             Text(

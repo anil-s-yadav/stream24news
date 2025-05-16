@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:stream24news/utils/componants/my_methods.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
 import '../../auth/auth_service.dart';
@@ -13,31 +15,40 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
+  late TextEditingController _nameController;
   int? selectedIndex;
+  User? user;
+
+  @override
+  initState() {
+    super.initState();
+    loadUser();
+  }
+
+  void loadUser() {
+    user = AuthService().getUser();
+    _nameController = TextEditingController(text: user?.displayName);
+  }
 
   Future<void> updateUserProfile({
     required String displayName,
     required String photoUrl,
   }) async {
     try {
-      User? user = AuthService().getUser();
+      EasyLoading.show(status: "Saving...");
 
       if (user != null) {
         if (_nameController.text.isNotEmpty) {
-          await user.updateDisplayName(displayName);
+          await user?.updateDisplayName(displayName);
         }
-        if (_emailController.text.isNotEmpty) {
-          await user.updatePhotoURL(photoUrl);
+        if (photoUrl.isNotEmpty) {
+          await user?.updatePhotoURL(photoUrl);
         }
-
-        await user.reload();
-      } else {
-        throw Exception("No user is currently signed in.");
+        await user?.reload();
       }
+      EasyLoading.dismiss();
     } catch (e) {
+      EasyLoading.dismiss();
       rethrow;
     }
   }
@@ -59,34 +70,41 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Center(
             child: GestureDetector(
               onTap: _openAvatarSelector,
-              child: CircleAvatar(
-                radius: 50,
-                backgroundColor: selectedIndex != null
-                    ? Colors.primaries[selectedIndex! % Colors.primaries.length]
-                        .shade200
-                    : theme.colorScheme.primaryContainer,
-                child: selectedIndex != null
-                    ? ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              'https://api.dicebear.com/7.x/adventurer/png?seed=$selectedIndex',
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                          placeholder: (_, __) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (_, __, ___) => Icon(
-                            Icons.person,
-                            size: 40,
-                            color: theme.colorScheme.onPrimaryContainer,
-                          ),
-                        ),
-                      )
-                    : Icon(
-                        Icons.person,
-                        size: 40,
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
+              child: Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  CircleAvatar(
+                      radius: 60,
+                      backgroundColor: selectedIndex != null
+                          ? Colors
+                              .primaries[
+                                  selectedIndex! % Colors.primaries.length]
+                              .shade200
+                          : theme.colorScheme.primaryContainer,
+                      child: selectedIndex != null
+                          ? ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    'https://api.dicebear.com/7.x/adventurer/png?seed=$selectedIndex',
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                                placeholder: (_, __) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (_, __, ___) => Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: theme.colorScheme.onPrimaryContainer,
+                                ),
+                              ),
+                            )
+                          : CachedNetworkImage(
+                              imageUrl: user?.photoURL ?? defaultImageUrl)),
+                  Icon(
+                    Icons.camera_alt,
+                    color: theme.dividerColor,
+                  )
+                ],
               ),
             ),
           ),
@@ -127,6 +145,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       photoUrl:
                           'https://api.dicebear.com/7.x/adventurer/png?seed=$selectedIndex',
                     );
+                    if (context.mounted) {
+                      Navigator.pop(context, true);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
@@ -235,8 +256,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void dispose() {
     _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
     super.dispose();
   }
 }

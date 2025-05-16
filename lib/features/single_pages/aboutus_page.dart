@@ -28,18 +28,10 @@ class AboutusPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: CachedNetworkImage(
-                        imageUrl: photo,
-                        height: 180,
-                        width: 180,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                      ),
+                    Image.asset(
+                      "lib/assets/images/logo.jpeg",
+                      height: 120,
+                      width: 120,
                     ),
                     const SizedBox(height: 24),
                     Text(

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/auth/login/login_options_page.dart';
 import 'package:stream24news/dashboard/profile/edit_profile_page.dart';
 import 'package:stream24news/features/single_pages/donation_page.dart';
@@ -42,7 +43,6 @@ class _ProfilepageState extends State<Profilepage> {
     setState(() {
       photo = user?.photoURL ?? defaultImageUrl;
     });
-
     log("User Photo URL: $photo");
   }
 
@@ -54,7 +54,10 @@ class _ProfilepageState extends State<Profilepage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
-          const Icon(Icons.share),
+          IconButton(
+              onPressed: () => EasyLoading.showInfo(
+                  "Will be implemented after uploaded on play store!"),
+              icon: const Icon(Icons.share)),
           sizedBoxW20(context),
           GestureDetector(
             onTap: () => Navigator.push(
@@ -123,9 +126,12 @@ class _ProfilepageState extends State<Profilepage> {
           sizedBoxH20(context),
           if (isLoggedIn)
             GestureDetector(
-              onTap: () {
-                Navigator.push(context,
+              onTap: () async {
+                bool refresh = await Navigator.push(context,
                     MaterialPageRoute(builder: (context) => EditProfilePage()));
+                if (refresh == true) {
+                  _loadUserData();
+                }
               },
               child: MyLightContainer(
                 height: MediaQuery.of(context).size.height * 0.05,
@@ -133,10 +139,14 @@ class _ProfilepageState extends State<Profilepage> {
                 child: const Text("Edit Profile"),
               ),
             ),
-          MyLightContainer(
-            height: MediaQuery.of(context).size.height * 0.05,
-            width: MediaQuery.of(context).size.width * 0.9,
-            child: const Text("Rate Us"),
+          GestureDetector(
+            onTap: () => EasyLoading.showInfo(
+                "Will be implemented after uploaded on play store!"),
+            child: MyLightContainer(
+              height: MediaQuery.of(context).size.height * 0.05,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: const Text("Rate Us"),
+            ),
           ),
           MyLightContainer(
             height: MediaQuery.of(context).size.height * 0.05,
