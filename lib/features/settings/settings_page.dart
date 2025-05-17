@@ -14,6 +14,7 @@ import '../../auth/login/login_options_page.dart';
 import '../single_pages/aboutus_page.dart';
 import '../single_pages/contact_page.dart';
 import '../../dashboard/profile/personal_info_page.dart';
+import '../single_pages/privacy_policy.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -197,8 +198,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     size: 26,
                   ),
                   title: "Privacy Policy",
-                  onTap: () => EasyLoading.showInfo(
-                      "Will be implemented after uploaded on play store!")),
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PrivacyPolicy()))),
               settingTile(
                   icon: Icon(
                     Icons.info_outline_rounded,
