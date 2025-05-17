@@ -68,17 +68,12 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                 top: 10,
                 right: 10,
                 child: Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Colors.white38,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Icon(
-                    Icons.more_vert,
-                    size: 18,
-                    color: Colors.black,
-                  ),
-                ),
+                    padding: const EdgeInsets.all(0),
+                    decoration: BoxDecoration(
+                      color: Colors.white54,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: newsMenuOptions(context, widget.article)),
               ),
               GestureDetector(
                 onTap: () {
@@ -112,19 +107,87 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   sizedBoxH10(context),
-                  Text(
-                    widget.article.title ?? "No Title",
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleLarge,
-                    // style: TextStyle(
-                    //   fontSize: 18,
-                    //   fontWeight: FontWeight.bold,
-                    // ),
+                  // Text(
+                  //   widget.article.title ?? "No Title",
+                  //   maxLines: 4,
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: Theme.of(context).textTheme.titleLarge,
+
+                  // ),
+
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final span = TextSpan(
+                        text: widget.article.title ?? "No Title",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      );
+                      final tp = TextPainter(
+                        text: span,
+                        maxLines: 3,
+                        textDirection: TextDirection.ltr,
+                      )..layout(maxWidth: constraints.maxWidth);
+
+                      if (tp.didExceedMaxLines) {
+                        return Text(
+                          widget.article.title ?? "No Title",
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium,
+                          textAlign: TextAlign.left,
+                        );
+                      } else {
+                        return Text(
+                          widget.article.title ?? "No Title",
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge,
+                          textAlign: TextAlign.left,
+                        );
+                      }
+                    },
                   ),
+
                   sizedBoxH5(context),
                   Expanded(
-                    child: LayoutBuilder(
+                    child: Column(
+                      children: [
+                        Text(
+                          widget.article.description ?? "No description",
+                          maxLines: 12,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(
+                                color: Theme.of(context).hintColor,
+                                fontSize: 16,
+                              ),
+                          textAlign: TextAlign.left,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomLeft,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ArticleWebview(
+                                          link: widget.article.link ?? "")));
+                            },
+                            child: Text(
+                              'Read More',
+                              style: TextStyle(
+                                // color: Theme.of(context).primaryColor,
+                                fontSize: 12,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    /* LayoutBuilder(
                       builder: (context, constraints) {
                         final span = TextSpan(
                           text: widget.article.description ?? "No description",
@@ -132,7 +195,7 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                         );
                         final tp = TextPainter(
                           text: span,
-                          maxLines: 13,
+                          maxLines: 12,
                           textDirection: TextDirection.ltr,
                         )..layout(maxWidth: constraints.maxWidth);
 
@@ -141,7 +204,7 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                             children: [
                               Text(
                                 widget.article.description ?? "No description",
-                                maxLines: 13,
+                                maxLines: 12,
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context)
                                     .textTheme
@@ -156,12 +219,19 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                                 alignment: Alignment.bottomLeft,
                                 child: GestureDetector(
                                   onTap: () {
-                                    EasyLoading.showToast("soon!");
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ArticleWebview(
+                                                    link: widget.article.link ??
+                                                        "")));
                                   },
                                   child: Text(
                                     'Read More',
                                     style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
+                                      color: Colors.blue,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -170,31 +240,48 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                             ],
                           );
                         } else {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ArticleWebview(
-                                          link: widget.article.link ?? "")));
-                            },
-                            child: Text(
-                              widget.article.description ?? "No description",
-                              maxLines: 13,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall!
-                                  .copyWith(
-                                    color: Theme.of(context).hintColor,
-                                    fontSize: 18,
+                          return Column(
+                            children: [
+                              Text(
+                                widget.article.description ?? "No description",
+                                maxLines: 12,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                      color: Theme.of(context).hintColor,
+                                      fontSize: 16,
+                                    ),
+                                textAlign: TextAlign.left,
+                              ),
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ArticleWebview(
+                                                    link: widget.article.link ??
+                                                        "")));
+                                  },
+                                  child: Text(
+                                    'Read More',
+                                    style: TextStyle(
+                                      // color: Theme.of(context).primaryColor,
+                                      fontSize: 12,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                              textAlign: TextAlign.left,
-                            ),
+                                ),
+                              )
+                            ],
                           );
                         }
-                      },
-                    ),
+                      },*/
                   ),
                 ],
               ),
@@ -203,7 +290,7 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
 
           //////////////////////////////////////////////
           Container(
-            height: MediaQuery.of(context).size.height * 0.1,
+            height: MediaQuery.of(context).size.height * 0.08,
             width: double.infinity,
             color: Theme.of(context).hintColor,
             child: Center(

@@ -116,12 +116,6 @@ class _NewspageState extends State<Newspage> {
                       },
                     );
                   },
-                  // onPageChanged: (index) async {
-                  //   // SharedPrefService().setLastNewsIndex(index);
-                  //   // if (index == articles.length - 1) {
-                  //   //   SharedPrefService().clearLastNewsIndex();
-                  //   // }
-                  // },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -130,6 +124,7 @@ class _NewspageState extends State<Newspage> {
                       onTap: () {
                         setState(() {
                           comeFrom = "F";
+                          _pageController.jumpToPage(0);
                         });
                         _setColor();
                       },
@@ -143,6 +138,7 @@ class _NewspageState extends State<Newspage> {
                       onTap: () {
                         setState(() {
                           comeFrom = "T";
+                          _pageController.jumpToPage(0);
                         });
                         _setColor();
                       },
@@ -156,6 +152,7 @@ class _NewspageState extends State<Newspage> {
                       onTap: () {
                         setState(() {
                           comeFrom = "R";
+                          _pageController.jumpToPage(0);
                         });
                         _setColor();
                       },
@@ -178,6 +175,7 @@ class _NewspageState extends State<Newspage> {
                           setState(() {
                             selectedCategoryTitle = newValue;
                             comeFrom = "C";
+                            _pageController.jumpToPage(0);
                           });
                           _setColor();
                           WidgetsBinding.instance.addPostFrameCallback((_) {

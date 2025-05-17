@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:stream24news/auth/auth_service.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
-import 'package:stream24news/utils/services/shared_pref_service.dart';
 
 import 'select_cuntory.dart';
 

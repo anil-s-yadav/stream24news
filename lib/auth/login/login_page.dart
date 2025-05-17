@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -10,7 +8,6 @@ import 'package:stream24news/utils/componants/sizedbox.dart';
 import '../../utils/componants/bottom_navbar.dart';
 import '../../utils/componants/login_success_dialog.dart';
 import '../../utils/componants/my_widgets.dart';
-import '../../utils/services/shared_pref_service.dart';
 import '../create_account/create_account.dart';
 
 class LoginPage extends StatefulWidget {

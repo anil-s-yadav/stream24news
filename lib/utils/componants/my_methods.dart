@@ -9,7 +9,6 @@ import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 
 const String defaultImageUrl =
     "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/dark_app_logo.jpeg";
-// "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/app_logo.png";
 
 String getTimeAgo(String? pubDate) {
   // Parse the published date as UTC
@@ -90,18 +89,66 @@ Widget newsMenuOptions(BuildContext context, Article articleModel) {
 
 Widget noDataWidget(BuildContext context) {
   return Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        children: [
+          sizedBoxH10(context),
+          Image.asset(
+            "lib/assets/images/no_data.png",
+            height: MediaQuery.of(context).size.height * 0.25,
+            fit: BoxFit.contain,
+          ),
+          // SizedBox(height: 24),
+          Text(
+            "No Data Available",
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          sizedBoxH5(context),
+          Text(
+            "We couldn’t find any data for your selected country or language.",
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          sizedBoxH10(context),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              infoBullet("Try changing your selected country.", context),
+              infoBullet("Try changing your preferred language.", context),
+              infoBullet(
+                  "Ensure you have a stable internet connection.", context),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget infoBullet(String text, BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 6.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Image.asset(
-          "lib/assets/images/no_data.png",
-          scale: 6,
-        ),
-        sizedBoxH20(context),
-        Text(
-          "No Data Available for you countory or language. \n Please try to change your country or language.",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontStyle: FontStyle.italic),
+        Text("• ",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+            )),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
         ),
       ],
     ),

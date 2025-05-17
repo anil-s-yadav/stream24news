@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stream24news/dashboard/homepage/bloc/homepage_bloc.dart';
 import 'package:stream24news/dashboard/livetvpage/livetvpage.dart';
@@ -42,6 +43,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     loadUser();
+    checkForUpdate();
   }
 
   void loadUser() async {
@@ -58,6 +60,22 @@ class _HomePageState extends State<HomePage> {
     homepageBloc.add(
       HomepageLoadSavedDataEvent(),
     );
+  }
+
+  Future<void> checkForUpdate() async {
+    try {
+      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+
+      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+        if (updateInfo.immediateUpdateAllowed) {
+          await InAppUpdate.performImmediateUpdate();
+        } else if (updateInfo.flexibleUpdateAllowed) {
+          await InAppUpdate.performImmediateUpdate();
+        }
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   @override

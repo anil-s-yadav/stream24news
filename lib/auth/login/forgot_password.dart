@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/auth/auth_service.dart';
-import 'package:stream24news/auth/login/login_options_page.dart';
 import '../../utils/componants/login_success_dialog.dart';
 import '../../utils/componants/my_widgets.dart';
 

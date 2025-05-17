@@ -24,13 +24,13 @@ class SignupDonePage extends StatelessWidget {
                     repeat: false, height: 220),
                 sizedBoxH30(context),
                 Text(
-                  "You\'re All Set!",
+                  "You're All Set!",
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 sizedBoxH10(context),
                 Text(
                   textAlign: TextAlign.center,
-                  "Start exploring, discovering, and engagingwith the news.\nAlways stay updated!",
+                  "Start exploring, discovering, and engaging with the news.\nAlways stay updated!",
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
                 SizedBox(
@@ -41,7 +41,7 @@ class SignupDonePage extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.06,
                   child: PrimaryButton(
                       textWidget: const Text(
-                        "Let\'s Go",
+                        "Let's Go",
                         style: TextStyle(fontSize: 17),
                       ),
                       onPressed: () {
