@@ -31,59 +31,52 @@ String getTimeAgo(String? pubDate) {
   }
 }
 
-Widget newsMenuOptions(BuildContext context, Article articleModel) {
+Widget newsMenuOptions(BuildContext context, Article article) {
   return PopupMenuButton<int>(
-    icon: Icon(
-      Icons.more_vert_outlined,
-      size: 20,
-      color: Theme.of(context).colorScheme.primary,
-    ),
-    itemBuilder: (context) => [
-      const PopupMenuItem<int>(
-        value: 0,
-        child: Text("Open in Browser"),
-      ),
-      const PopupMenuItem<int>(
-        value: 1,
-        child: Text("Save"),
-      ),
-      const PopupMenuItem<int>(
-        value: 2,
-        child: Text("Report"),
-      ),
-    ],
     onSelected: (value) {
-      if (value == 0) {
-        Navigator.push(
+      switch (value) {
+        case 0:
+          Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    ArticleWebview(link: articleModel.link ?? "")));
-      } else if (value == 1) {
-        // Save article
-        context
-            .read<HomepageBloc>()
-            .add(HomepageSaveArticleEvent(articleModel: articleModel));
-      } else if (value == 2) {
-        showDialog(
+              builder: (_) => ArticleWebview(link: article.link ?? ''),
+            ),
+          );
+          break;
+        case 1:
+          context.read<HomepageBloc>().add(
+                HomepageSaveArticleEvent(articleModel: article),
+              );
+          break;
+        case 2:
+          showDialog(
             context: context,
-            builder: (context) => AlertDialog(
-                  title: Text("What's wrong?"),
-                  content: TextFormField(),
-                  actions: [
-                    TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text("Cancel")),
-                    TextButton(
-                        onPressed: () {
-                          EasyLoading.showSuccess("Article reported!");
-                          Navigator.pop(context);
-                        },
-                        child: Text("Report"))
-                  ],
-                ));
+            builder: (_) => AlertDialog(
+              title: Text("What's wrong?"),
+              content: TextFormField(),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    EasyLoading.showSuccess("Article reported!");
+                    Navigator.pop(context);
+                  },
+                  child: Text("Report"),
+                ),
+              ],
+            ),
+          );
+          break;
       }
     },
+    itemBuilder: (_) => [
+      const PopupMenuItem(value: 0, child: Text("Open in Browser")),
+      const PopupMenuItem(value: 1, child: Text("Save")),
+      const PopupMenuItem(value: 2, child: Text("Report")),
+    ],
   );
 }
 

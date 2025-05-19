@@ -218,7 +218,6 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
               ),
-
               sizedBoxH30(context),
             ],
           ),
@@ -756,7 +755,6 @@ class _HomePageState extends State<HomePage> {
                                     child: CircleAvatar(
                                       radius: 35,
                                       backgroundColor: Colors.white,
-                                      // backgroundImage: AssetImage(channelLogos[index]),
                                       backgroundImage:
                                           CachedNetworkImageProvider(
                                         liveChannelModel[index].logo,

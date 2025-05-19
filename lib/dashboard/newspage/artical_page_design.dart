@@ -68,7 +68,6 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                 top: 10,
                 right: 10,
                 child: Container(
-                    // padding: const EdgeInsets.all(0),
                     height: 30,
                     width: 30,
                     decoration: BoxDecoration(
@@ -169,7 +168,7 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                         ),
                         Align(
                           alignment: Alignment.bottomLeft,
-                          child: GestureDetector(
+                          child: InkWell(
                             onTap: () {
                               Navigator.push(
                                   context,

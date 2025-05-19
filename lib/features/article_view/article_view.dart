@@ -52,29 +52,31 @@ class _ArticleViewState extends State<ArticleView> {
                 scrollDirection: Axis.vertical,
                 itemCount: widget.artical.length,
                 itemBuilder: (context, index) {
-                  // final test_article =
-                  //     articles[index % articles.length]; // Looping
-                  return AnimatedBuilder(
-                    animation: _pageController,
-                    builder: (context, child) {
-                      double value = 1.0;
-                      if (_pageController.position.haveDimensions) {
-                        value = _pageController.page! - index;
-                        value = (1 - (value.abs() * 0.3)).clamp(0, 10);
-                      }
-                      final isTransitioning = value < 1.0;
-                      return Opacity(
-                        opacity: value,
-                        child: Transform.scale(
-                          scale: value,
-                          child: ArticlePageDesign(
-                              article: widget.artical[index],
-                              isTransitioning: isTransitioning,
-                              isArticleView: true),
-                          // ArticlePageDesign(article: test_article),
-                        ),
-                      );
-                    },
+                  return RepaintBoundary(
+                    child: AnimatedBuilder(
+                      animation: _pageController,
+                      builder: (context, child) {
+                        double value = 1.0;
+                        if (_pageController.position.haveDimensions) {
+                          value = _pageController.page! - index;
+                          value = (1 - (value.abs() * 0.3)).clamp(0, 10);
+                        }
+                        final isTransitioning = value < 1.0;
+                        return Opacity(
+                          opacity: value,
+                          child: Transform.scale(
+                            scale: value,
+                            child: RepaintBoundary(
+                              child: ArticlePageDesign(
+                                  article: widget.artical[index],
+                                  isTransitioning: isTransitioning,
+                                  isArticleView: true),
+                            ),
+                            // ArticlePageDesign(article: test_article),
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
                 // onPageChanged: (index) async {},
