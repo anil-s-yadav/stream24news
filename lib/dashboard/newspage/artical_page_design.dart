@@ -68,12 +68,15 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                 top: 10,
                 right: 10,
                 child: Container(
-                    padding: const EdgeInsets.all(0),
+                    // padding: const EdgeInsets.all(0),
+                    height: 30,
+                    width: 30,
                     decoration: BoxDecoration(
                       color: Colors.white54,
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: newsMenuOptions(context, widget.article)),
+                    child: FittedBox(
+                        child: newsMenuOptions(context, widget.article))),
               ),
               GestureDetector(
                 onTap: () {
@@ -187,101 +190,6 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                         )
                       ],
                     ),
-                    /* LayoutBuilder(
-                      builder: (context, constraints) {
-                        final span = TextSpan(
-                          text: widget.article.description ?? "No description",
-                          style: Theme.of(context).textTheme.titleSmall,
-                        );
-                        final tp = TextPainter(
-                          text: span,
-                          maxLines: 12,
-                          textDirection: TextDirection.ltr,
-                        )..layout(maxWidth: constraints.maxWidth);
-
-                        if (tp.didExceedMaxLines) {
-                          return Column(
-                            children: [
-                              Text(
-                                widget.article.description ?? "No description",
-                                maxLines: 12,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(
-                                      color: Theme.of(context).hintColor,
-                                      fontSize: 16,
-                                    ),
-                                textAlign: TextAlign.left,
-                              ),
-                              Align(
-                                alignment: Alignment.bottomLeft,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ArticleWebview(
-                                                    link: widget.article.link ??
-                                                        "")));
-                                  },
-                                  child: Text(
-                                    'Read More',
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          );
-                        } else {
-                          return Column(
-                            children: [
-                              Text(
-                                widget.article.description ?? "No description",
-                                maxLines: 12,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(
-                                      color: Theme.of(context).hintColor,
-                                      fontSize: 16,
-                                    ),
-                                textAlign: TextAlign.left,
-                              ),
-                              Align(
-                                alignment: Alignment.bottomLeft,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ArticleWebview(
-                                                    link: widget.article.link ??
-                                                        "")));
-                                  },
-                                  child: Text(
-                                    'Read More',
-                                    style: TextStyle(
-                                      // color: Theme.of(context).primaryColor,
-                                      fontSize: 12,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          );
-                        }
-                      },*/
                   ),
                 ],
               ),

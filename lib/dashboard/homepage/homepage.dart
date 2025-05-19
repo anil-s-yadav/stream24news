@@ -174,12 +174,7 @@ class _HomePageState extends State<HomePage> {
                         }
                       })),
               sizedBoxH20(context),
-              // titleheading(
-              //   "Saved",
-              //   "See All ",
-              //   () => BookmarkPage(),
-              // ),
-              sizedBoxH5(context),
+              // sizedBoxH5(context),
               BlocBuilder<HomepageBloc, HomepageState>(
                 bloc: _homepageBloc,
                 buildWhen: (previous, current) =>

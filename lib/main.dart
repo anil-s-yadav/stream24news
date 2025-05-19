@@ -13,6 +13,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'auth/auth_service.dart';
 import 'dashboard/newspage/bloc/newspage_bloc.dart';
 import 'features/all_categories/bloc/categories_bloc_bloc.dart';
+import 'features/search_articles/bloc/search_article_bloc.dart';
 import 'firebase_options.dart';
 import 'auth/login/login_options_page.dart';
 import 'onboarding_screen/onboarding.dart';
@@ -118,6 +119,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => CategoriesBlocBloc()),
         BlocProvider(create: (context) => BookmarkBloc()),
         BlocProvider(create: (context) => NewspageBloc()),
+        BlocProvider(create: (context) => SearchArticleBloc()),
       ],
       child: MaterialApp(
           navigatorKey: navigatorKey,
