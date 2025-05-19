@@ -179,7 +179,6 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                             child: Text(
                               'Read More',
                               style: TextStyle(
-                                // color: Theme.of(context).primaryColor,
                                 fontSize: 12,
                                 color: Colors.blue,
                                 fontWeight: FontWeight.bold,

@@ -9,6 +9,7 @@ import 'package:stream24news/models/new_model.dart';
 import '../../utils/componants/sizedbox.dart';
 import '../../utils/componants/my_methods.dart';
 import '../../utils/theme/my_tab_icons_icons.dart';
+import '../article_view/article_view.dart';
 import '../search_articles/search_page.dart';
 import '../web_view/article_webview.dart';
 
@@ -50,130 +51,143 @@ class _TrendingPageState extends State<TrendingPage> {
                   getTimeAgo(widget.model[index].pubDate);
               return Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(widget.model[index].title ?? "",
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 4,
+                child: GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ArticleView(
+                              artical: widget.model,
+                              index: index,
+                              comeFrom: "F"))),
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(widget.model[index].title ?? "",
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 4,
+                                  softWrap: true,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium),
+                              sizedBoxH5(context),
+                              Text(
+                                trendingPostedDate,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
                                 softWrap: true,
-                                style: Theme.of(context).textTheme.titleMedium),
-                            sizedBoxH5(context),
-                            Text(
-                              trendingPostedDate,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Theme.of(context).colorScheme.outline,
                               ),
-                              softWrap: true,
-                            ),
-                            sizedBoxH5(context),
-                            Row(
-                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: CachedNetworkImage(
-                                    imageUrl: widget
-                                            .model[index].source?.sourceIcon ??
-                                        defaultImageUrl,
-                                    height: 30,
-                                    width: 30,
-                                    // height: MediaQuery.of(context).size.height * 0.18,
-                                    // width: MediaQuery.of(context).size.width * 0.38,
-                                    // fit: BoxFit.fitHeight,
-                                    placeholder: (context, url) => Container(
-                                      // height: MediaQuery.of(context).size.height * 0.18,
-                                      // width: MediaQuery.of(context).size.width * 0.38,
+                              sizedBoxH5(context),
+                              Row(
+                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.model[index].source
+                                              ?.sourceIcon ??
+                                          defaultImageUrl,
                                       height: 30,
                                       width: 30,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .surfaceContainer,
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  ),
-                                ),
-                                // Image.asset(
-                                //   "lib/assets/images/profile.png",
-                                //   scale: 6,
-                                // ),
-                                sizedBoxW5(context),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ArticleWebview(
-                                                    link: widget
-                                                            .model[index]
-                                                            .source
-                                                            ?.sourceUrl ??
-                                                        "")));
-                                  },
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.25,
-                                    child: Text(
-                                      widget.model[index].source?.sourceName ??
-                                          "Unknown",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 13,
+                                      // height: MediaQuery.of(context).size.height * 0.18,
+                                      // width: MediaQuery.of(context).size.width * 0.38,
+                                      // fit: BoxFit.fitHeight,
+                                      placeholder: (context, url) => Container(
+                                        // height: MediaQuery.of(context).size.height * 0.18,
+                                        // width: MediaQuery.of(context).size.width * 0.38,
+                                        height: 30,
+                                        width: 30,
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .primary,
+                                            .surfaceContainer,
                                       ),
-                                      softWrap: true,
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
                                     ),
                                   ),
-                                ),
-                                // const Spacer(),
-                                sizedBoxW5(context),
-                                GestureDetector(
-                                  onTap: () => context.read<HomepageBloc>().add(
-                                      HomepageSaveArticleEvent(
-                                          articleModel: widget.model[index])),
-                                  child: Icon(
-                                    MyTabIcons.bookmark,
-                                    size: 20,
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
+                                  // Image.asset(
+                                  //   "lib/assets/images/profile.png",
+                                  //   scale: 6,
+                                  // ),
+                                  sizedBoxW5(context),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ArticleWebview(
+                                                      link: widget
+                                                              .model[index]
+                                                              .source
+                                                              ?.sourceUrl ??
+                                                          "")));
+                                    },
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      child: Text(
+                                        widget.model[index].source
+                                                ?.sourceName ??
+                                            "Unknown",
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                        softWrap: true,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                newsMenuOptions(context, widget.model[index]),
-                              ],
-                            ),
-                          ],
+                                  // const Spacer(),
+                                  sizedBoxW5(context),
+                                  GestureDetector(
+                                    onTap: () => context
+                                        .read<HomepageBloc>()
+                                        .add(HomepageSaveArticleEvent(
+                                            articleModel: widget.model[index])),
+                                    child: Icon(
+                                      MyTabIcons.bookmark,
+                                      size: 20,
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                    ),
+                                  ),
+                                  newsMenuOptions(context, widget.model[index]),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      sizedBoxW10(context),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              widget.model[index].imageUrl ?? defaultImageUrl,
-                          height: MediaQuery.of(context).size.height * 0.18,
-                          width: MediaQuery.of(context).size.width * 0.38,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
+                        sizedBoxW10(context),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                widget.model[index].imageUrl ?? defaultImageUrl,
                             height: MediaQuery.of(context).size.height * 0.18,
                             width: MediaQuery.of(context).size.width * 0.38,
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              height: MediaQuery.of(context).size.height * 0.18,
+                              width: MediaQuery.of(context).size.width * 0.38,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainer,
+                            ),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
                           ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
                         ),
-                      ),
-                    ]),
+                      ]),
+                ),
               );
             }),
       ),
