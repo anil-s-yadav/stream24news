@@ -24,36 +24,18 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
     on<HomepageLoadRecommendedEvent>(_loadRecommendedNews);
     on<HomepageLoadSavedDataEvent>(_loadSavedData);
     on<HomepageSaveArticleEvent>(_saveArticle);
-    // on<HomepageUpdateSavedDataEvent>(_updateSavedData);
   }
-
-  // void _updateSavedData(
-  //     HomepageUpdateSavedDataEvent event, Emitter<HomepageState> emit) async {
-  //   try {
-  //     emit(HomepageSavedDataSuccess(
-  //       articles: event.articles,
-  //       channels: event.channels,
-  //     ));
-  //   } catch (e) {
-  //     emit(HomepageLiveChannelError());
-  //     throw Exception(e);
-  //   }
-  // }
 
   void _loadHomePageChannels(
       HomepageLoadChannelsEvent event, Emitter<HomepageState> emit) async {
     try {
       emit(HomepageLiveChannelLoading());
-      // String? countryCode = countries.firstWhere(
-      //     (country) => country['name'] == event.region,
-      //     orElse: () => {})['code'];
-      // log('Loading channels for region: ${event.region}');
+
       final snapshot = await FirebaseFirestore.instance
           .collection('live_chennels')
           .doc('6Kc57CnXtYzg85cD0FXS')
           .collection('all_channels')
           .where("region", isEqualTo: region[2])
-          // .where("language", isEqualTo: lang[1])
           .orderBy("viewCount", descending: true)
           .limit(20)
           .get();
@@ -62,10 +44,6 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .map((doc) => LiveChannelModel.fromFirestore(doc))
           .toList();
 
-      // log('Category region Fetch Channel Countory Code: ${region[2]}');
-      // log('Category region Fetch Channel: ${region[2]}');
-      // log('Category lang Fetch Channel: ${region[2]}');
-      // log('Channels loaded: ${allChannels.length}');
       emit(HomepageLiveChannelSuccess(liveChannelModel: allChannels));
     } catch (e) {
       emit(HomepageLiveChannelError());
@@ -90,7 +68,6 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       List<Article> trendingNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
 
-      log('Trending news loaded: ${trendingNews.length}');
       emit(HomepageTrendingNewsSuccess(trendingNews));
     } catch (e) {
       emit(HomepageTrendingNewsError());
@@ -103,11 +80,6 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
     try {
       emit(HomepageRecommendedNewsLoading());
 
-      // String? countryName = countries.firstWhere(
-      //     (country) => country['code'] == event.region,
-      //     orElse: () => {})['name'];
-
-      // Only fetch documents where 'country' array contains the target region
       String country = region[1];
       String language = lang[0].toLowerCase();
       final snapshot = await FirebaseFirestore.instance
@@ -121,14 +93,6 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       List<Article> recommendedNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
 
-      // // Sort by views (highest first)
-      // allNews.sort((a, b) => (b.views ?? 0).compareTo(a.views ?? 0));
-
-      // // Take top 50
-      // List<Article> recommendedNews = allNews.take(50).toList();
-
-      log('Trending news loaded: ${recommendedNews.length}');
-      log('Recommended news loaded: ${recommendedNews.length}');
       emit(HomepageRecommendedNewsSuccess(recommendedNews));
     } catch (e) {
       emit(HomepageRecommendedNewsError());
@@ -148,7 +112,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
         emit(HomepageSavedDataError());
         return;
       }
-      // String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
+
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       // Step 1: Get all saved channel IDs for the user
@@ -167,7 +131,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
         // Step 2: Fetch channel details from all_channels using the ID
         final channelDoc = await firestore
             .collection('live_chennels')
-            .doc('6Kc57CnXtYzg85cD0FXS') // your hardcoded or known document ID
+            .doc('6Kc57CnXtYzg85cD0FXS')
             .collection('all_channels')
             .doc(channelId)
             .get();
@@ -211,12 +175,11 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       if (AuthService().isUserLoggedIn()) {
         userId = AuthService().getUser()!.uid;
       } else {
-        // EasyLoading.showError('Please login to save!');
         EasyLoading.showInfo("Please login to save articles!");
 
         return;
       }
-      // String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
+
       final article = event.articleModel;
 
       if (article.articleId == null) {
@@ -233,7 +196,6 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
 
       EasyLoading.showSuccess('Article saved successfully!');
 
-      //  Get current state and emit updated success state
       final currentState = state;
       if (currentState is HomepageSavedDataSuccess) {
         final updatedArticles = List<Article>.from(currentState.articles)

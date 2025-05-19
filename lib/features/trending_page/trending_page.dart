@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,8 +24,6 @@ class TrendingPage extends StatefulWidget {
 class _TrendingPageState extends State<TrendingPage> {
   @override
   Widget build(BuildContext context) {
-    log("${widget.model.length}");
-    log(widget.previousWidget, name: "Previous Widget");
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.previousWidget),
@@ -58,7 +54,7 @@ class _TrendingPageState extends State<TrendingPage> {
                           builder: (context) => ArticleView(
                               artical: widget.model,
                               index: index,
-                              comeFrom: "F"))),
+                              comeFrom: "T"))),
                   child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -84,7 +80,6 @@ class _TrendingPageState extends State<TrendingPage> {
                               ),
                               sizedBoxH5(context),
                               Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(50),
@@ -94,12 +89,7 @@ class _TrendingPageState extends State<TrendingPage> {
                                           defaultImageUrl,
                                       height: 30,
                                       width: 30,
-                                      // height: MediaQuery.of(context).size.height * 0.18,
-                                      // width: MediaQuery.of(context).size.width * 0.38,
-                                      // fit: BoxFit.fitHeight,
                                       placeholder: (context, url) => Container(
-                                        // height: MediaQuery.of(context).size.height * 0.18,
-                                        // width: MediaQuery.of(context).size.width * 0.38,
                                         height: 30,
                                         width: 30,
                                         color: Theme.of(context)
@@ -110,10 +100,7 @@ class _TrendingPageState extends State<TrendingPage> {
                                           const Icon(Icons.error),
                                     ),
                                   ),
-                                  // Image.asset(
-                                  //   "lib/assets/images/profile.png",
-                                  //   scale: 6,
-                                  // ),
+
                                   sizedBoxW5(context),
                                   GestureDetector(
                                     onTap: () {

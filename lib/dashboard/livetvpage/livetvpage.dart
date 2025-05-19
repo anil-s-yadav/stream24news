@@ -31,7 +31,6 @@ class _LiveTvPageState extends State<LiveTvPage> {
   }
 
   void loadData() {
-    // final region = SharedPrefService().getCounty()![2];
     context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
   }
 

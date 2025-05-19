@@ -42,8 +42,6 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
           lang: lang[0].toLowerCase(),
           category: category),
     );
-    // log("Selected region: ${region}");
-    // log("Selected lang: ${lang}");
   }
 
   void filter() {
@@ -63,7 +61,6 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    // log(widget.selectedCategory['image']);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.selectedCategory['title']),

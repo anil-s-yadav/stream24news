@@ -9,7 +9,7 @@ import 'select_language.dart';
 
 class SelectCuntory extends StatefulWidget {
   final String commingFrom;
-  const SelectCuntory({super.key, required this.commingFrom});
+  const SelectCuntory({super.key, this.commingFrom = ""});
 
   @override
   State<SelectCuntory> createState() => _SelectCuntoryState();
@@ -111,7 +111,6 @@ class _SelectCuntoryState extends State<SelectCuntory> {
                               title: Text(country['name']!),
                               subtitle: Text("Code: ${country['code']}"),
                               onTap: () {
-                                // log('comming from: $widget.commingFrom');
                                 List<String> nameAndCode = [
                                   country['flag']!,
                                   country['name']!,

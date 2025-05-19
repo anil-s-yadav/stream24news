@@ -1,0 +1,2 @@
+C:/FlutterProjects/stream24news/android/app/.cxx/RelWithDebInfo/5o2u1w60/x86/CMakeFiles/edit_cache.dir
+C:/FlutterProjects/stream24news/android/app/.cxx/RelWithDebInfo/5o2u1w60/x86/CMakeFiles/rebuild_cache.dir

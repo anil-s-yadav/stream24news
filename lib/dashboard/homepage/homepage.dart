@@ -70,11 +70,12 @@ class _HomePageState extends State<HomePage> {
         if (updateInfo.immediateUpdateAllowed) {
           await InAppUpdate.performImmediateUpdate();
         } else if (updateInfo.flexibleUpdateAllowed) {
-          await InAppUpdate.performImmediateUpdate();
+          await InAppUpdate.startFlexibleUpdate();
+          await InAppUpdate.completeFlexibleUpdate();
         }
       }
     } catch (e) {
-      throw Exception(e);
+      debugPrint('In-app update failed: $e');
     }
   }
 

@@ -84,11 +84,6 @@ class _MyAppState extends State<MyApp> {
     isLoginSkipped = SharedPrefService().getLoginSkippedBool() ?? false;
     defaultHomePage = SharedPrefService().getDefaultHomePage() ?? "Home";
 
-    // log('Main.dart: onBoading  $isBoadingScreenDone');
-    // log('Main.dart: user login or not $isLogin');
-    // log('Main.dart: login is skipped $isLoginSkipped');
-    // log('Main.dart: defaultHomePage $defaultHomePage');
-
     setState(() {
       isDataReady = true;
     });

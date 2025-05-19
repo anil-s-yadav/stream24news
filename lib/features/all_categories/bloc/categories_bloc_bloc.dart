@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -21,10 +19,6 @@ class CategoriesBlocBloc
       CategoriesDataLoadEvent event, Emitter<CategoriesBlocState> emit) async {
     try {
       emit(CategoriesBlocLoading());
-      // String? countryName = countries.firstWhere(
-      //     (country) => country['code'] == event.region,
-      //     orElse: () => {})['name'];
-      // Only fetch documents where 'country' array contains the target region
       final snapshot = await FirebaseFirestore.instance
           .collection('news')
           .where('country', arrayContains: event.region)
@@ -32,7 +26,6 @@ class CategoriesBlocBloc
           .orderBy("views", descending: true)
           .get();
 
-      // Map to Article and filter by category manually
       categorywiseNews = snapshot.docs
           .map((doc) => Article.fromMap(doc.data()))
           .where((article) =>
@@ -41,7 +34,6 @@ class CategoriesBlocBloc
           // .take(50)
           .toList();
 
-      log('Category news loaded: ${categorywiseNews.length}');
       emit(CategoriesBlocSuccess(articalModel: categorywiseNews));
     } catch (e) {
       emit(CategoriesBlocError());
@@ -53,10 +45,9 @@ class CategoriesBlocBloc
     try {
       EasyLoading.show();
       emit(CategoriesBlocLoading());
-      // Sort by title (ascending)
+
       categorywiseNews.sort((a, b) => (a.title ?? '').compareTo(b.title ?? ''));
 
-      log('Category news loaded: ${categorywiseNews.length}');
       EasyLoading.dismiss();
       emit(CategoriesBlocSuccess(articalModel: categorywiseNews));
     } catch (e) {
@@ -70,10 +61,9 @@ class CategoriesBlocBloc
     try {
       EasyLoading.show();
       emit(CategoriesBlocLoading());
-      // Sort by title (ascending)
+
       categorywiseNews.sort((a, b) => (a.views ?? 0).compareTo(b.views ?? 0));
 
-      log('Category news loaded: ${categorywiseNews.length}');
       EasyLoading.dismiss();
       emit(CategoriesBlocSuccess(articalModel: categorywiseNews));
     } catch (e) {

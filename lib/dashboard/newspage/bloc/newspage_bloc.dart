@@ -35,7 +35,6 @@ class NewspageBloc extends Bloc<NewspageEvent, NewspageState> {
 
       articles =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
-      log("region: ${region[1]}, lang: ${lang[1]}");
       emit(NewspageSuccess(articles: articles));
     } catch (e) {
       emit(NewspageError());

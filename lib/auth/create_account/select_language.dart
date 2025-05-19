@@ -117,7 +117,6 @@ class _SelectLanguage extends State<SelectLanguage> {
                               subtitle: Text("Code: $languageCode"),
                               trailing: const Icon(Icons.arrow_forward_ios),
                               onTap: () {
-                                // log('comming from: $widget.commingFrom');
                                 SharedPrefService()
                                     .setLanguage([languageName, languageCode]);
                                 if (widget.commingFrom == 'settings') {

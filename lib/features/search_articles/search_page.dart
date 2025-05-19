@@ -4,9 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream24news/features/search_articles/bloc/search_article_bloc.dart';
-import 'package:stream24news/utils/componants/sizedbox.dart';
 
-import '../../auth/create_account/list_data/language_data.dart';
 import '../../utils/componants/my_methods.dart';
 import '../article_view/article_view.dart';
 import '../web_view/article_webview.dart';
@@ -63,7 +61,7 @@ class _SearchPageState extends State<SearchPage> {
                                       builder: (context) => ArticleView(
                                           artical: state.articleList,
                                           index: index,
-                                          comeFrom: "R"))),
+                                          comeFrom: "F"))),
                               child: Container(
                                 margin: const EdgeInsets.all(5),
                                 padding: const EdgeInsets.all(5),

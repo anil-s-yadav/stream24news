@@ -43,7 +43,6 @@ class _ProfilepageState extends State<Profilepage> {
     setState(() {
       photo = user?.photoURL ?? defaultImageUrl;
     });
-    log("User Photo URL: $photo");
   }
 
   @override

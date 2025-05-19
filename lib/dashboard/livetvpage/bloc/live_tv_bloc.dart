@@ -111,7 +111,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
       LiveChannelFilterLang event, Emitter<LiveTvState> emit) async {
     emit(LiveTvLoadingState());
     String langCode = languages[event.lang] ?? "hi";
-    log(langCode);
+
     try {
       EasyLoading.show();
 
@@ -148,7 +148,6 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
 
     try {
       if (finalList.isEmpty) {
-        // Fallback if no data is cached
         final snapshot = await FirebaseFirestore.instance
             .collection('live_chennels')
             .doc('6Kc57CnXtYzg85cD0FXS')

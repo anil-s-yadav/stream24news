@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
@@ -89,18 +87,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         elevation: 2,
                         backgroundColor: Colors.black12.withAlpha(10)),
                     onPressed: () async {
-                      // bool? isLogin = await onBoadingDone() ?? false;
-                      // if (isLogin == true) {
-                      // } else {
                       SharedPrefService().setOnboadingDoneBool(true);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const LoginOptionsPage()));
-                      // }
-                      bool? testOnBoadingSkipped =
-                          SharedPrefService().getOnboadingDoneBool();
-                      log('onBoading Skipped $testOnBoadingSkipped.toString()');
                     },
                     child: const Text("Skip")),
               ),
@@ -175,18 +166,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             const LoginOptionsPage()));
-                                // }
-                                bool? testOnBoadingSkipped =
-                                    SharedPrefService().getOnboadingDoneBool();
-                                log('onBoading Skipped $testOnBoadingSkipped.toString()');
                               } else {
                                 _pageController.nextPage(
                                     duration: Duration(milliseconds: 300),
                                     curve: Curves.easeInOut);
                               }
-                              bool? testOnBoadingSkipped =
-                                  SharedPrefService().getOnboadingDoneBool();
-                              log('onBoading Skipped $testOnBoadingSkipped');
                             }),
                       )
                     ],

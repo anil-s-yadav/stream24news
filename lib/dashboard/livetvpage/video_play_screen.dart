@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -137,7 +136,6 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                           ),
                           TextButton.icon(
                             onPressed: () {
-                              // setState(() => isReported = !isReported);
                               showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
@@ -169,7 +167,6 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                       Divider(),
                       sizedBoxH10(context),
                       BlocBuilder<LiveTvBloc, LiveTvState>(
-                        // bloc: _liveTvBloc,
                         buildWhen: (previous, current) =>
                             current is LoadRelatedChannelLoading ||
                             current is LoadRelatedChannelSuccess ||
@@ -279,7 +276,6 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
         if (lastViewed == null ||
             now.difference(lastViewed.toDate()).inMinutes >= 5) {
           final currentViews = data?['viewCount'] ?? 0;
-          log(currentViews.toString());
           transaction.update(docRef, {
             'viewCount': currentViews + 1,
             'viewAt': FieldValue.serverTimestamp(),
