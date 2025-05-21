@@ -31,19 +31,11 @@ class _BottomNavbarState extends State<BottomNavbar>
   }
 
   void changeTab(int index) {
-    // if (index == selectedIndex || !_pageController.hasClients) return;
-
-    // _pageController.animateToPage(
-    //   index,
-    //   duration: const Duration(milliseconds: 300),
-    //   curve: Curves.easeInOut,
-    // );
     setState(() => selectedIndex = index);
   }
 
   @override
   void dispose() {
-    // _pageController.dispose();
     super.dispose();
   }
 
@@ -70,10 +62,9 @@ class _BottomNavbarState extends State<BottomNavbar>
           showSelectedLabels: false,
           showUnselectedLabels: false,
           items: [
-            _buildNavItem(
-                0, MyTabIcons.home_button, MyTabIcons.home_button_fill),
-            _buildNavItem(1, MyTabIcons.video, MyTabIcons.video_fill),
-            _buildNavItem(2, MyTabIcons.newspaper, MyTabIcons.newspaper_fill),
+            _buildNavItem(0, MyTabIcons.homeButton, MyTabIcons.homeButtonFill),
+            _buildNavItem(1, MyTabIcons.video, MyTabIcons.videoFill),
+            _buildNavItem(2, MyTabIcons.newspaper, MyTabIcons.newspaperFill),
             BottomNavigationBarItem(
               icon: Image.asset("lib/assets/images/profile.png", scale: 5),
               label: "",

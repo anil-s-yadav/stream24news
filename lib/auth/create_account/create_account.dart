@@ -247,15 +247,8 @@ class _CreateAccountState extends State<CreateAccount> {
       if (user != null) {
         await AuthService().updateUserProfile(name: name, photoUrl: null);
 
-        EasyLoading.dismiss(); // Hide loading
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Account created! Verify your email."),
-            backgroundColor: Colors.greenAccent,
-          ),
-        );
-
+        EasyLoading.dismiss();
+        EasyLoading.showToast("Account created! Verify your email.");
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(

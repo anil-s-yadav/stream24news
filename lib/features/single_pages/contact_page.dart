@@ -1,13 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class ContactUsPage extends StatelessWidget {
   const ContactUsPage({super.key});
-
-  // final String logoUrl =
-  //     "https://raw.githubusercontent.com/anil-s-yadav/stream24news_crm/refs/heads/main/lib/assets/news_app_logos/aboutus_logo.png";
 
   @override
   Widget build(BuildContext context) {

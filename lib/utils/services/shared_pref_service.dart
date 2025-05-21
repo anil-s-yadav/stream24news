@@ -1,8 +1,4 @@
-import 'dart:typed_data';
-
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert'; // For base64 encoding
 
 class SharedPrefService {
   static final SharedPrefService _instance = SharedPrefService._internal();
@@ -28,14 +24,6 @@ class SharedPrefService {
       await _storage?.setBool(LocalStorageKeys.isOnboading, isOnboardingDone);
     }
   }
-
-  // Future<void> setLoginDoneBool(bool value) async {
-  //   await _storage?.setBool(LocalStorageKeys.isLoggedIn, value);
-  // }
-
-  // bool? getLoginDoneBool() {
-  //   return _storage?.getBool(LocalStorageKeys.isLoggedIn);
-  // }
 
   Future<void> setLoginSkippedBool(bool value) async {
     await _storage?.setBool(LocalStorageKeys.skippedDone, value);
@@ -69,27 +57,6 @@ class SharedPrefService {
     return _storage?.getStringList(LocalStorageKeys.country);
   }
 
-/*
-  Future<void> setProfilePhoto(String value) async {
-    final response = await http.get(Uri.parse(value));
-    if (response.statusCode == 200) {
-      // Convert bytes to base64 string
-      String base64Image = base64Encode(response.bodyBytes);
-      // Save to SharedPreferences
-      await _storage?.setString(LocalStorageKeys.profilePhoto, base64Image);
-    } else {
-      throw Exception('Failed to load image');
-    }
-  }
-
-  Uint8List? getProfilePhoto() {
-    final base64Str = _storage?.getString(LocalStorageKeys.profilePhoto);
-    if (base64Str != null) {
-      return base64Decode(base64Str);
-    }
-    return null;
-  } */
-
   Future<void> setDefaultHomePage(String value) async {
     await _storage?.setString(LocalStorageKeys.defaultHomePage, value);
   } //"Home", "Live TV", "Articles"
@@ -112,7 +79,6 @@ class SharedPrefService {
 }
 
 class LocalStorageKeys {
-  // static const isLoggedIn = 'isLoggedIn_key';
   static const skippedDone = 'skippedDone_key';
   static const isOnboading = 'isOnboading_key';
   static const country = 'country_key';

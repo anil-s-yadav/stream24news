@@ -2,10 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import '../../features/web_view/article_webview.dart';
@@ -92,8 +89,6 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
               ),
             ],
           ),
-
-          ////////////////////////////////////
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -109,14 +104,6 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   sizedBoxH10(context),
-                  // Text(
-                  //   widget.article.title ?? "No Title",
-                  //   maxLines: 4,
-                  //   overflow: TextOverflow.ellipsis,
-                  //   style: Theme.of(context).textTheme.titleLarge,
-
-                  // ),
-
                   LayoutBuilder(
                     builder: (context, constraints) {
                       final span = TextSpan(
@@ -148,7 +135,6 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                       }
                     },
                   ),
-
                   sizedBoxH5(context),
                   Expanded(
                     child: Column(
@@ -193,8 +179,6 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
               ),
             ),
           ),
-
-          //////////////////////////////////////////////
           Container(
             height: MediaQuery.of(context).size.height * 0.08,
             width: double.infinity,

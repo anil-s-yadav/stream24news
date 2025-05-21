@@ -128,7 +128,7 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                             },
                             icon: Icon(
                               isSelected
-                                  ? MyTabIcons.bookmark_fill
+                                  ? MyTabIcons.bookmarkFill
                                   : MyTabIcons.bookmark,
                               size: 20,
                             ),

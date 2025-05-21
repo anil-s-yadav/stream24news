@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class AboutusPage extends StatelessWidget {
@@ -49,8 +48,6 @@ class AboutusPage extends StatelessWidget {
                             theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                       ),
                     ),
-                    // const SizedBox(height: 30),
-                    // Divider(color: theme.dividerColor),
                   ],
                 ),
               ),

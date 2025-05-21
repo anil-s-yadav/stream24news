@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 
 import '../../auth/auth_service.dart';
@@ -135,7 +136,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   //   label: const Text("Edit Profile"),
                   // ),
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      EasyLoading.showToast(
+                          "Profile delete request submmited.");
+                    },
                     label: const Text("Delete profile"),
                   ),
                 ],
