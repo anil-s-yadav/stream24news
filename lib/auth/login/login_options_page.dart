@@ -177,10 +177,9 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
   Widget loginOption(String icon, String title) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.2)),
-      ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+              color: Theme.of(context).colorScheme.outline.withAlpha(51))),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       child: Row(
         children: [
@@ -196,15 +195,18 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
     List<String>? region = SharedPrefService().getCounty() ?? [];
 
     EasyLoading.show(status: 'Logging...');
+
     try {
       UserCredential? userCredential = await AuthService().loginWithGoogle();
       if (userCredential != null) {
         if (region.isNotEmpty) {
+          if (!mounted) return;
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const BottomNavbar()),
           );
         } else {
+          if (!mounted) return;
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const SelectCuntory()),
@@ -214,6 +216,7 @@ class _LoginOptionsPage extends State<LoginOptionsPage> {
       EasyLoading.dismiss();
     } catch (e) {
       EasyLoading.dismiss();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text("Google Sign-In failed. Please try again.")),

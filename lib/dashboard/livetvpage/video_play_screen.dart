@@ -65,7 +65,7 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
     Navigator.of(context).pop(); // pop current screen
     // Wait for pop animation to complete
     await Future.delayed(const Duration(milliseconds: 100));
-
+    // ignore: use_build_context_synchronously
     FloatingVideoManager().show(rootContext, widget.channel.url);
     FloatingVideoManager().getModel(widget.channel);
     if (widget.comingFrom == "LiveTvPage" && mounted) {
@@ -76,16 +76,14 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) => _onWillPop,
       child: SafeArea(
         child: Scaffold(
-          // appBar: AppBar(title: Text(widget.channel.name)),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 Container(
-                  // aspectRatio: 16 / 9,
                   height: MediaQuery.of(context).size.height * 0.3,
                   width: MediaQuery.of(context).size.width,
                   color: Colors.black,

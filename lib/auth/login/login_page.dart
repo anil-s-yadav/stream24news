@@ -1,7 +1,3 @@
-// import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
-
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';

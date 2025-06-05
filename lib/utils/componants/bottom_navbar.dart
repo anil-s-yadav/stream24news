@@ -44,7 +44,7 @@ class _BottomNavbarState extends State<BottomNavbar>
     super.build(context);
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
         if (await _onWillPop()) {
           if (Platform.isAndroid) {
             SystemNavigator.pop();

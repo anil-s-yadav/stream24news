@@ -43,11 +43,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         errorMessage = "Something went wrong. Try again later.";
       }
       EasyLoading.dismiss();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
       );
     } catch (e) {
       EasyLoading.dismiss();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("An unexpected error occurred.")),
       );

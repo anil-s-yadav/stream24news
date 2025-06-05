@@ -40,8 +40,8 @@ class FloatingVideoManager {
         right: 10,
         child: Draggable(
           feedback: _buildPlayer(),
-          child: _buildPlayer(),
           childWhenDragging: const SizedBox(),
+          child: _buildPlayer(),
         ),
       ),
     );

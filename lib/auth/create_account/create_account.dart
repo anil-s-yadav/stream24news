@@ -249,6 +249,7 @@ class _CreateAccountState extends State<CreateAccount> {
 
         EasyLoading.dismiss();
         EasyLoading.showToast("Account created! Verify your email.");
+        if (!mounted) return;
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -270,6 +271,7 @@ class _CreateAccountState extends State<CreateAccount> {
       } else {
         errorMessage = "Firebase Error: ${e.message}";
       }
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(errorMessage),
@@ -278,6 +280,7 @@ class _CreateAccountState extends State<CreateAccount> {
       );
     } catch (e) {
       EasyLoading.dismiss();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Something went wrong. Try again.\nError: $e"),

@@ -59,10 +59,9 @@ class _BookmarkPageState extends State<BookmarkPage>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) async {
         context.read<HomepageBloc>().add(HomepageLoadSavedDataEvent());
-        return true;
       },
       child: DefaultTabController(
         initialIndex: 0,
