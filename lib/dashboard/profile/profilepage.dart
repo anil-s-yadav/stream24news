@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:stream24news/auth/login/login_options_page.dart';
 import 'package:stream24news/dashboard/profile/edit_profile_page.dart';
 import 'package:stream24news/features/single_pages/donation_page.dart';
@@ -44,6 +46,34 @@ class _ProfilepageState extends State<Profilepage> {
     });
   }
 
+  void handleRateUs() async {
+    try {
+      const url =
+          'https://play.google.com/store/apps/details?id=com.legendarysoftware.stream24news';
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        EasyLoading.showInfo('Could not launch $url');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  void shareApp() {
+    const url =
+        'https://play.google.com/store/apps/details?id=com.legendarysoftware.stream24news';
+    try {
+      Share.share(
+          '$url\n\nExperience live news, trending articles, and more — all in one app!'
+          // subject: 'Check out this app for Live news and Quick updates!',
+          );
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -52,10 +82,7 @@ class _ProfilepageState extends State<Profilepage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-              onPressed: () => EasyLoading.showInfo(
-                  "Will be implemented after uploaded on play store!"),
-              icon: const Icon(Icons.share)),
+          IconButton(onPressed: shareApp, icon: const Icon(Icons.share)),
           sizedBoxW20(context),
           GestureDetector(
             onTap: () => Navigator.push(
@@ -138,12 +165,16 @@ class _ProfilepageState extends State<Profilepage> {
               ),
             ),
           GestureDetector(
-            onTap: () => EasyLoading.showInfo(
-                "Will be implemented after uploaded on play store!"),
+            onTap: handleRateUs,
+            // onTap: () => EasyLoading.showInfo("status"),
             child: MyLightContainer(
               height: MediaQuery.of(context).size.height * 0.05,
               width: MediaQuery.of(context).size.width * 0.9,
-              child: const Text("Rate Us"),
+              child: const Center(
+                child: Text(
+                  "⭐ Rate Us",
+                ),
+              ),
             ),
           ),
           MyLightContainer(
@@ -173,7 +204,79 @@ class _ProfilepageState extends State<Profilepage> {
                     );
                   }).toList(),
                 ),
-                Icon(Icons.info_outlined, color: theme.colorScheme.outline),
+                IconButton(
+                  onPressed: () {
+                    showAboutDialog(
+                      context: context,
+                      children: [
+                        const SizedBox(height: 10),
+                        Text(
+                          "This app has three main entry points to suit your preferences:",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                  text: "• ",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                  text: "Home Page\n",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                text:
+                                    "Access everything in one place — Live Channels, News Articles, Saved Stories, Trending, and Recommendations.",
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                  text: "• ",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                  text: "Live TV\n",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                text:
+                                    "Instantly start watching live channels upon opening the app. No setup, just tap and stream.",
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                  text: "• ",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                  text: "Articles\n",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                text:
+                                    "For a clean reading experience, directly enter the article section. Swipe up to explore the latest news updates.",
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                  icon: Icon(Icons.info_outline,
+                      color: theme.colorScheme.outline),
+                )
               ],
             ),
           ),

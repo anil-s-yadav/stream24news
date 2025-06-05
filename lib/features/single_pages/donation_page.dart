@@ -155,16 +155,17 @@ class DonationPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Container(
-                              padding: const EdgeInsets.all(10),
+                              padding: EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: Colors.orange.shade50,
+                                color:
+                                    Theme.of(context).colorScheme.tertiaryFixed,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
                                 supporter['message']!,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                ),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    color: Theme.of(context).colorScheme.scrim),
                               ),
                             ),
                             sizedBoxH10(context),

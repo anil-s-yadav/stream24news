@@ -73,6 +73,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
 
   AppBar _buildAppBar() {
     return AppBar(
+      automaticallyImplyLeading: false,
       title: isSeachVisible ? _buildSearchBar(context) : _buildTitle(context),
       actions: [
         IconButton(

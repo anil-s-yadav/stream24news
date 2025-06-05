@@ -1,3 +1,7 @@
+// import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
+
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -8,7 +12,9 @@ import 'package:stream24news/utils/componants/sizedbox.dart';
 import '../../utils/componants/bottom_navbar.dart';
 import '../../utils/componants/login_success_dialog.dart';
 import '../../utils/componants/my_widgets.dart';
+import '../../utils/services/shared_pref_service.dart';
 import '../create_account/create_account.dart';
+import '../create_account/select_cuntory.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -207,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         builder: (context) => AlertDialog(
               content: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
+                height: MediaQuery.of(context).size.height * 0.20,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -227,9 +233,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> showCustomDialog() async {
+    String? region = SharedPrefService().getCounty()?[1];
+    String? lang = SharedPrefService().getLanguage()?[0].toLowerCase();
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent closing before navigation
+      barrierDismissible: false,
       builder: (context) => const AlertDialog(
         scrollable: true,
         content: LoginSuccessDialog(
@@ -239,13 +247,20 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 2));
 
-    if (context.mounted) {
-      Navigator.pop(context);
+    if (!mounted) return;
+    Navigator.pop(context);
+
+    if (lang != null && region != null) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const BottomNavbar()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => SelectCuntory()),
       );
     }
   }
