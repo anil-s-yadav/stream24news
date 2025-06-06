@@ -38,7 +38,7 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
     String date = getTimeAgo(widget.article.pubDate);
 
     return Container(
-      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.04),
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.only(

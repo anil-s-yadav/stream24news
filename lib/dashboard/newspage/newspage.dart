@@ -27,18 +27,8 @@ class _NewspageState extends State<Newspage> {
   void initState() {
     super.initState();
     comeFrom = widget.comeFrom;
-    // _loadLastReadIndex();
     _setColor();
   }
-
-  // Future<void> _loadLastReadIndex() async {
-  //   int initialPageIndex = SharedPrefService().getLastNewsIndex() ?? 0;
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (_pageController.hasClients) {
-  //       _pageController.jumpToPage(initialPageIndex);
-  //     }
-  //   });
-  // }
 
   _setColor() {
     if (comeFrom == "F") {
@@ -117,117 +107,120 @@ class _NewspageState extends State<Newspage> {
                     );
                   },
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          comeFrom = "F";
-                          _pageController.jumpToPage(0);
-                        });
-                        _setColor();
-                      },
-                      child: Text("For You",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: fColor,
-                              fontSize: 12)),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          comeFrom = "T";
-                          _pageController.jumpToPage(0);
-                        });
-                        _setColor();
-                      },
-                      child: Text("Trending",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: tColor,
-                              fontSize: 12)),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          comeFrom = "R";
-                          _pageController.jumpToPage(0);
-                        });
-                        _setColor();
-                      },
-                      child: Text("Recomanded",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: rColor,
-                              fontSize: 12)),
-                    ),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        isDense: true,
-                        hint: Text("Select Category",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: cColor,
-                                fontSize: 12)),
-                        value: selectedCategoryTitle,
-                        onChanged: (String? newValue) {
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
                           setState(() {
-                            selectedCategoryTitle = newValue;
-                            comeFrom = "C";
+                            comeFrom = "F";
                             _pageController.jumpToPage(0);
                           });
                           _setColor();
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (_pageController.hasClients) {
-                              _pageController.jumpToPage(0);
-                            }
-                          });
-                          BlocProvider.of<NewspageBloc>(context).add(
-                              NewspageSelectCategory(
-                                  category: selectedCategoryTitle ?? "All"));
                         },
-                        items: categories.map((category) {
-                          return DropdownMenuItem<String>(
-                            value: category['title'],
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(5),
-                                  child: Image.asset(
-                                    category['image']!,
-                                    width: 30,
-                                    height: 30,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                sizedBoxW5(context),
-                                Text(
-                                  category['title']!,
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                        selectedItemBuilder: (BuildContext context) {
-                          return categories.map((category) {
-                            return Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                category['title']!,
-                                style: TextStyle(
-                                  color: cColor,
+                        child: Text("For You",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: fColor,
+                                fontSize: 12)),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            comeFrom = "T";
+                            _pageController.jumpToPage(0);
+                          });
+                          _setColor();
+                        },
+                        child: Text("Trending",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: tColor,
+                                fontSize: 12)),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            comeFrom = "R";
+                            _pageController.jumpToPage(0);
+                          });
+                          _setColor();
+                        },
+                        child: Text("Recomanded",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: rColor,
+                                fontSize: 12)),
+                      ),
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          isDense: true,
+                          hint: Text("Select Category",
+                              style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                ),
+                                  color: cColor,
+                                  fontSize: 12)),
+                          value: selectedCategoryTitle,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedCategoryTitle = newValue;
+                              comeFrom = "C";
+                              _pageController.jumpToPage(0);
+                            });
+                            _setColor();
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (_pageController.hasClients) {
+                                _pageController.jumpToPage(0);
+                              }
+                            });
+                            BlocProvider.of<NewspageBloc>(context).add(
+                                NewspageSelectCategory(
+                                    category: selectedCategoryTitle ?? "All"));
+                          },
+                          items: categories.map((category) {
+                            return DropdownMenuItem<String>(
+                              value: category['title'],
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(5),
+                                    child: Image.asset(
+                                      category['image']!,
+                                      width: 30,
+                                      height: 30,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  sizedBoxW5(context),
+                                  Text(
+                                    category['title']!,
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
                               ),
                             );
-                          }).toList();
-                        },
-                      ),
-                    )
-                  ],
+                          }).toList(),
+                          selectedItemBuilder: (BuildContext context) {
+                            return categories.map((category) {
+                              return Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  category['title']!,
+                                  style: TextStyle(
+                                    color: cColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              );
+                            }).toList();
+                          },
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ]);
             } else {

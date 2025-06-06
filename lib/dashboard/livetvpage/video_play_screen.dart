@@ -59,25 +59,37 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
     super.dispose();
   }
 
-  Future<bool> _onWillPop() async {
-    final rootContext = Navigator.of(context).context; // root overlay context
-    // Show PiP AFTER popping
-    Navigator.of(context).pop(); // pop current screen
-    // Wait for pop animation to complete
-    await Future.delayed(const Duration(milliseconds: 100));
-    // ignore: use_build_context_synchronously
-    FloatingVideoManager().show(rootContext, widget.channel.url);
-    FloatingVideoManager().getModel(widget.channel);
-    if (widget.comingFrom == "LiveTvPage" && mounted) {
-      context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
-    }
-    return false; // prevent default pop (already done manually)
-  }
+  // Future<bool> _onWillPop() async {
+  //   final rootContext = Navigator.of(context).context; // root overlay context
+  //   // Show PiP AFTER popping
+  //   Navigator.of(context).pop(); // pop current screen
+  //   // Wait for pop animation to complete
+  //   await Future.delayed(const Duration(milliseconds: 100));
+  //   // ignore: use_build_context_synchronously
+  //   FloatingVideoManager().show(rootContext, widget.channel.url);
+  //   FloatingVideoManager().getModel(widget.channel);
+  //   if (widget.comingFrom == "LiveTvPage" && mounted) {
+  //     context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
+  //   }
+  //   return false; // prevent default pop (already done manually)
+  // }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvokedWithResult: (didPop, result) => _onWillPop,
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) {
+          final rootContext = Navigator.of(context).context;
+          await Future.delayed(const Duration(milliseconds: 100));
+          FloatingVideoManager().show(rootContext, widget.channel.url);
+          FloatingVideoManager().getModel(widget.channel);
+          if (widget.comingFrom == "LiveTvPage" && mounted) {
+            context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
+          }
+          Navigator.of(context).pop();
+        }
+      },
       child: SafeArea(
         child: Scaffold(
           body: SingleChildScrollView(
@@ -112,12 +124,12 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                             height: 50,
                           ),
                           sizedBoxW10(context),
-                          Text(widget.channel.name),
-                          Spacer(),
-                          TextButton.icon(
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.55,
+                              child: Text(widget.channel.name)),
+                          IconButton(
                             onPressed: () {
                               setState(() {
-                                // isSelected = !isSelected;
                                 context.read<LiveTvBloc>().add(
                                     LiveChannelSaveEvent(
                                         channelID:
@@ -125,14 +137,12 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                               });
                             },
                             icon: Icon(
-                              isSelected
-                                  ? MyTabIcons.bookmarkFill
-                                  : MyTabIcons.bookmark,
+                              MyTabIcons.bookmark,
                               size: 20,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
-                            label: const Text('Save'),
                           ),
-                          TextButton.icon(
+                          IconButton(
                             onPressed: () {
                               showDialog(
                                   context: context,
@@ -157,8 +167,8 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                             icon: Icon(
                               Icons.flag_outlined,
                               size: 24,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
-                            label: const Text('Report'),
                           )
                         ],
                       ),

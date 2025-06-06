@@ -42,7 +42,7 @@ class _SearchPageState extends State<SearchPage> {
                     if (state is SearchArticleInitial) {
                       return SizedBox.shrink();
                     } else if (state is SearchArticleLoading) {
-                      return CircularProgressIndicator();
+                      return Center(child: CircularProgressIndicator());
                     } else if (state is SearchArticleError) {
                       return noDataWidget(context);
                     } else if (state is SearchArticleSuccess) {
@@ -211,7 +211,7 @@ class _SearchPageState extends State<SearchPage> {
                 prefixIcon: Icon(Icons.search,
                     color: Theme.of(context).colorScheme.primary),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Theme.of(context).colorScheme.surface,
                 contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),

@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "185360620575-766760ja0p4sj30holvt9jqklu5embo2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.legendarysoftware.stream24news",
+            "certificate_hash": "26f3bd903aa210ff1244b56ccc0ce0bd48182780"
+          }
+        },
+        {
           "client_id": "185360620575-mm1m91abp8p7n2gl42rmrmdbsa0ing4g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
