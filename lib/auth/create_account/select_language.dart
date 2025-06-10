@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:stream24news/features/settings/settings_page.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 
@@ -120,11 +121,20 @@ class _SelectLanguage extends State<SelectLanguage> {
                                 SharedPrefService()
                                     .setLanguage([languageName, languageCode]);
                                 if (widget.commingFrom == 'settings') {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              SettingsPage()));
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            title: Text("Restart App!"),
+                                            content: Text(
+                                                "For reflact changes restart the App!"),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () =>
+                                                      Restart.restartApp(),
+                                                  child: Text("Resart"))
+                                            ],
+                                          ));
                                 } else {
                                   Navigator.push(
                                       context,
