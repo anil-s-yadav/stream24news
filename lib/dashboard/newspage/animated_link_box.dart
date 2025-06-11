@@ -37,7 +37,7 @@ class _AnimatedLogoLinkBoxState extends State<AnimatedLogoLinkBox>
     ]).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     // Delay for 10 seconds to avoid performance issues during scroll
-    Future.delayed(const Duration(seconds: 10), () {
+    Future.delayed(const Duration(seconds: 5), () {
       if (!mounted) return;
       setState(() {
         _showBox = true;
@@ -46,7 +46,7 @@ class _AnimatedLogoLinkBoxState extends State<AnimatedLogoLinkBox>
     });
 
     // Show link midway
-    Future.delayed(const Duration(seconds: 8, milliseconds: 800), () {
+    Future.delayed(const Duration(seconds: 5, milliseconds: 800), () {
       if (!mounted) return;
       setState(() {
         _showLink = true;

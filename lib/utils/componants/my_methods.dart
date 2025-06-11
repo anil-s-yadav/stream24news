@@ -33,6 +33,7 @@ String getTimeAgo(String? pubDate) {
 
 Widget newsMenuOptions(BuildContext context, Article article) {
   return PopupMenuButton<int>(
+    iconColor: Colors.black,
     onSelected: (value) {
       switch (value) {
         case 0:

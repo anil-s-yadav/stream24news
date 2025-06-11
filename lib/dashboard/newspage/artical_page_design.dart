@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:stream24news/features/single_pages/donation_page.dart';
 import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import '../../features/web_view/article_webview.dart';
@@ -179,16 +180,15 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
               ),
             ),
           ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.08,
-            width: double.infinity,
-            color: Theme.of(context).hintColor,
-            child: Center(
-              child: Text(
-                "Advertisement!",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
+          GestureDetector(
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => DonationPage())),
+            child: Container(
+                height: MediaQuery.of(context).size.height * 0.08,
+                width: double.infinity,
+                // color: Theme.of(context).hintColor,
+                color: Colors.amberAccent,
+                child: Image.asset("lib/assets/images/buymeacopy.png")),
           ),
         ],
       ),
