@@ -7,7 +7,7 @@ final class HomepageLoadChannelsEvent extends HomepageEvent {
   List<Object?> get props => [];
 }
 
-final class HomepageLoadTrendingEvent extends HomepageEvent {
+final class HomepageLoadLatestEvent extends HomepageEvent {
   @override
   List<Object?> get props => [];
 }

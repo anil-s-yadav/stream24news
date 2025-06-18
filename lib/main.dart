@@ -33,18 +33,7 @@ Future<void> main() async {
       child: const MyApp(),
     ),
   );
-  // runApp(
-  //   ChangeNotifierProvider(
-  //     create: (_) => ThemeProvider(),
-  //     child: DevicePreview(
-  //       enabled: true,
-  //       builder: (context) => ChangeNotifierProvider(
-  //         create: (_) => ThemeProvider(),
-  //         child: const MyApp(),
-  //       ),
-  //     ),
-  //   ),
-  // );
+
   configLoading();
 }
 

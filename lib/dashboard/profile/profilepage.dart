@@ -66,7 +66,7 @@ class _ProfilepageState extends State<Profilepage> {
         'https://play.google.com/store/apps/details?id=com.legendarysoftware.stream24news';
     try {
       Share.share(
-          '$url\n\nExperience live news, trending articles, and more — all in one app!'
+          '$url\n\nExperience live news, Latest articles, and more — all in one app!'
           // subject: 'Check out this app for Live news and Quick updates!',
           );
     } catch (e) {
@@ -228,7 +228,7 @@ class _ProfilepageState extends State<Profilepage> {
                                       TextStyle(fontWeight: FontWeight.bold)),
                               TextSpan(
                                 text:
-                                    "Access everything in one place — Live Channels, News Articles, Saved Stories, Trending, and Recommendations.",
+                                    "Access everything in one place — Live Channels, News Articles, Saved Stories, Latest, and Recommendations.",
                               ),
                             ],
                           ),

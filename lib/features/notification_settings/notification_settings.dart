@@ -11,7 +11,7 @@ class NotificationSettings extends StatefulWidget {
 class _NotificationSettingsState extends State<NotificationSettings> {
   bool allNotificationSwitch = true;
   bool breakingNewsSwitch = true;
-  bool trendingNewsSwitch = true;
+  bool LatestNewsSwitch = true;
   bool dailyNewsSwitch = true;
   bool weeklyNewsSwitch = true;
   @override
@@ -35,7 +35,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                   setState(() {
                     allNotificationSwitch = value;
                     breakingNewsSwitch = value;
-                    trendingNewsSwitch = value;
+                    LatestNewsSwitch = value;
                     dailyNewsSwitch = value;
                     weeklyNewsSwitch = value;
                   });
@@ -58,11 +58,11 @@ class _NotificationSettingsState extends State<NotificationSettings> {
               },
             ),
             switchUi(
-              "Trending news notifications",
-              trendingNewsSwitch,
+              "Latest news notifications",
+              LatestNewsSwitch,
               (value) {
                 setState(() {
-                  trendingNewsSwitch = value;
+                  LatestNewsSwitch = value;
                   allNotificationSwitch == true
                       ? allNotificationSwitch = false
                       : null;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:restart_app/restart_app.dart';
-import 'package:stream24news/features/settings/settings_page.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 
 import '../../utils/componants/my_widgets.dart';

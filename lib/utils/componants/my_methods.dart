@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:stream24news/features/web_view/article_webview.dart';
 import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
+import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 
@@ -33,7 +34,7 @@ String getTimeAgo(String? pubDate) {
 
 Widget newsMenuOptions(BuildContext context, Article article) {
   return PopupMenuButton<int>(
-    iconColor: Colors.black,
+    color: Theme.of(context).scaffoldBackgroundColor,
     onSelected: (value) {
       switch (value) {
         case 0:
@@ -74,9 +75,66 @@ Widget newsMenuOptions(BuildContext context, Article article) {
       }
     },
     itemBuilder: (_) => [
-      const PopupMenuItem(value: 0, child: Text("Open in Browser")),
-      const PopupMenuItem(value: 1, child: Text("Save")),
-      const PopupMenuItem(value: 2, child: Text("Report")),
+      const PopupMenuItem(
+          value: 0,
+          child: Row(
+            children: [
+              Icon(
+                Icons.language,
+                color: Colors.green,
+                size: 22,
+                weight: 14,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                "Open in Browser",
+                style:
+                    TextStyle(fontWeight: FontWeight.w300, color: Colors.green),
+              ),
+            ],
+          )),
+      const PopupMenuItem(
+          value: 1,
+          child: Row(
+            children: [
+              Icon(
+                MyTabIcons.bookmark,
+                color: Colors.blue,
+                size: 22,
+                weight: 14,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                "Save",
+                style:
+                    TextStyle(fontWeight: FontWeight.w300, color: Colors.blue),
+              ),
+            ],
+          )),
+      const PopupMenuItem(
+          value: 2,
+          child: Row(
+            children: [
+              Icon(
+                Icons.flag_outlined,
+                color: Colors.green,
+                size: 22,
+                weight: 14,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                "Report",
+                style:
+                    TextStyle(fontWeight: FontWeight.w300, color: Colors.red),
+              ),
+            ],
+          )),
     ],
   );
 }

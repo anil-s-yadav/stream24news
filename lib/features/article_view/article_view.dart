@@ -7,7 +7,7 @@ import '../../dashboard/newspage/artical_page_design.dart';
 class ArticleView extends StatefulWidget {
   final List<Article> artical;
   final int index;
-  final String comeFrom; // T - trending, R - recomanded, C -  category
+  final String comeFrom; // T - Latest, R - recomanded, C -  category
   const ArticleView(
       {super.key,
       required this.artical,
@@ -102,7 +102,7 @@ class _ArticleViewState extends State<ArticleView> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => Newspage(comeFrom: "T"))),
-                    child: Text("Trending",
+                    child: Text("Latest",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: widget.comeFrom == "T"

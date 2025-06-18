@@ -7,7 +7,7 @@ final class NewspageLoadEvent extends NewspageEvent {
   List<Object?> get props => [];
 }
 
-final class NewspageTrending extends NewspageEvent {
+final class NewspageLatest extends NewspageEvent {
   @override
   List<Object?> get props => [];
 }

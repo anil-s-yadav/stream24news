@@ -27,20 +27,20 @@ final class HomepageLiveChannelError extends HomepageState {
   List<Object?> get props => [];
 }
 
-// For Trending News
-final class HomepageTrendingNewsLoading extends HomepageState {
+// For Latest News
+final class HomepageLatestNewsLoading extends HomepageState {
   @override
   List<Object?> get props => [];
 }
 
-final class HomepageTrendingNewsSuccess extends HomepageState {
+final class HomepageLatestNewsSuccess extends HomepageState {
   final List<Article> articles;
-  HomepageTrendingNewsSuccess(this.articles);
+  HomepageLatestNewsSuccess(this.articles);
   @override
   List<Object?> get props => [articles];
 }
 
-final class HomepageTrendingNewsError extends HomepageState {
+final class HomepageLatestNewsError extends HomepageState {
   @override
   List<Object?> get props => [];
 }

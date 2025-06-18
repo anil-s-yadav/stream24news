@@ -11,17 +11,17 @@ import '../article_view/article_view.dart';
 import '../search_articles/search_page.dart';
 import '../web_view/article_webview.dart';
 
-class TrendingPage extends StatefulWidget {
+class RecomenLatestPage extends StatefulWidget {
   final String previousWidget;
   final List<Article> model;
-  const TrendingPage(
+  const RecomenLatestPage(
       {super.key, required this.previousWidget, required this.model});
 
   @override
-  State<TrendingPage> createState() => _TrendingPageState();
+  State<RecomenLatestPage> createState() => _RecomenLatestPageState();
 }
 
-class _TrendingPageState extends State<TrendingPage> {
+class _RecomenLatestPageState extends State<RecomenLatestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,8 +43,7 @@ class _TrendingPageState extends State<TrendingPage> {
             shrinkWrap: true,
             itemCount: widget.model.length,
             itemBuilder: (context, index) {
-              String trendingPostedDate =
-                  getTimeAgo(widget.model[index].pubDate);
+              String LatestPostedDate = getTimeAgo(widget.model[index].pubDate);
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
@@ -71,7 +70,7 @@ class _TrendingPageState extends State<TrendingPage> {
                                       Theme.of(context).textTheme.titleMedium),
                               sizedBoxH5(context),
                               Text(
-                                trendingPostedDate,
+                                LatestPostedDate,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Theme.of(context).colorScheme.outline,

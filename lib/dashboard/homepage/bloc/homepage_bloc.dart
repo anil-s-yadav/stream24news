@@ -18,7 +18,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       SharedPrefService().getLanguage() ?? ["English", "en"]; //["name", "code"]
   HomepageBloc() : super(HomepageInitialState()) {
     on<HomepageLoadChannelsEvent>(_loadHomePageChannels);
-    on<HomepageLoadTrendingEvent>(_loadTrendingNews);
+    on<HomepageLoadLatestEvent>(_loadLatestNews);
     on<HomepageLoadRecommendedEvent>(_loadRecommendedNews);
     on<HomepageLoadSavedDataEvent>(_loadSavedData);
     on<HomepageSaveArticleEvent>(_saveArticle);
@@ -49,26 +49,26 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
     }
   }
 
-  void _loadTrendingNews(
-      HomepageLoadTrendingEvent event, Emitter<HomepageState> emit) async {
+  void _loadLatestNews(
+      HomepageLoadLatestEvent event, Emitter<HomepageState> emit) async {
     try {
-      emit(HomepageTrendingNewsLoading());
-      String country = region[1];
-      String language = lang[0].toLowerCase();
+      emit(HomepageLatestNewsLoading());
+      final country = region[1];
+      final language = lang[0].toLowerCase();
+
       final snapshot = await FirebaseFirestore.instance
           .collection('news')
           .where('country', arrayContains: country)
           .where('language', isEqualTo: language)
-          .orderBy("views", descending: true)
-          .limit(20)
+          .orderBy('pubDate', descending: true)
+          // .limit(20)
           .get();
 
-      List<Article> trendingNews =
+      final latestNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
-
-      emit(HomepageTrendingNewsSuccess(trendingNews));
+      emit(HomepageLatestNewsSuccess(latestNews));
     } catch (e) {
-      emit(HomepageTrendingNewsError());
+      emit(HomepageLatestNewsError());
       throw Exception(e);
     }
   }

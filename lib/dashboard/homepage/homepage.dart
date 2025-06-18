@@ -21,7 +21,7 @@ import '../../features/article_view/article_view.dart';
 import '../../features/bookmark/bookmark_page.dart';
 import '../../features/notification/notification.dart';
 import '../../features/search_articles/search_page.dart';
-import '../../features/trending_page/trending_page.dart';
+import '../../features/recomen & latest page/recomen&latest_page.dart';
 import '../../features/web_view/article_webview.dart';
 import '../../utils/componants/my_methods.dart';
 
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Map<String, dynamic>> _categories = categories;
   List<LiveChannelModel> liveChannelModel = [];
-  List<Article> trendingNewsModel = [];
+  List<Article> LatestNewsModel = [];
   List<Article> recommendedNewsModel = [];
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
       HomepageLoadChannelsEvent(),
     );
     homepageBloc.add(
-      HomepageLoadTrendingEvent(),
+      HomepageLoadLatestEvent(),
     );
     homepageBloc.add(
       HomepageLoadRecommendedEvent(),
@@ -113,36 +113,36 @@ class _HomePageState extends State<HomePage> {
                           // return Text("$state");
                         }
                       })),
-              // sizedBoxH10(context),
+              sizedBoxH5(context),
               titleheading(
-                  "Trending",
+                  " Latest Updates",
                   "See All",
-                  () => TrendingPage(
-                        previousWidget: 'Recommended',
-                        model: recommendedNewsModel,
+                  () => RecomenLatestPage(
+                        previousWidget: 'Latest',
+                        model: LatestNewsModel,
                       )),
               sizedBoxH10(context),
               SizedBox(
                   child: BlocBuilder<HomepageBloc, HomepageState>(
                 bloc: _homepageBloc,
                 buildWhen: (previous, current) =>
-                    current is HomepageTrendingNewsLoading ||
-                    current is HomepageTrendingNewsSuccess ||
-                    current is HomepageTrendingNewsError,
-                builder: (context, trendingState) {
-                  if (trendingState is HomepageTrendingNewsSuccess) {
-                    trendingNewsModel = trendingState.articles;
-                    return trendingPosts(
+                    current is HomepageLatestNewsLoading ||
+                    current is HomepageLatestNewsSuccess ||
+                    current is HomepageLatestNewsError,
+                builder: (context, latestState) {
+                  if (latestState is HomepageLatestNewsSuccess) {
+                    LatestNewsModel = latestState.articles;
+                    return latestPosts(
                       context,
-                      artical: trendingState.articles,
+                      artical: latestState.articles,
                     );
                   } else {
-                    return trendingPosts(context,
+                    return latestPosts(context,
                         isErrorState: true, artical: []);
                   }
                 },
               )),
-              sizedBoxH10(context),
+              sizedBoxH20(context),
               //Category Card Static only
               categoryCardItem(categories),
               //Category card end
@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
               titleheading(
                   "Recomanded",
                   "See All",
-                  () => TrendingPage(
+                  () => RecomenLatestPage(
                         previousWidget: 'Recommended',
                         model: recommendedNewsModel,
                       )),
@@ -381,7 +381,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget trendingPosts(BuildContext context,
+  Widget latestPosts(BuildContext context,
       {bool isErrorState = false, List<Article>? artical}) {
     if (isErrorState == true || artical!.isEmpty) {
       return SizedBox(
@@ -409,7 +409,7 @@ class _HomePageState extends State<HomePage> {
           scrollDirection: Axis.horizontal,
           itemCount: min(artical.length, 10),
           itemBuilder: (context, index) {
-            // String trendingPostedDate = getTimeAgo(artical[index].pubDate);
+            // String LatestPostedDate = getTimeAgo(artical[index].pubDate);
             return GestureDetector(
               onTap: () => Navigator.push(
                   context,

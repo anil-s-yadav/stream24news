@@ -43,8 +43,8 @@ class _NewspageState extends State<Newspage> {
       tColor = Colors.blue;
       rColor = Colors.white60;
       cColor = Colors.white60;
-      //to call trending news
-      BlocProvider.of<NewspageBloc>(context).add(NewspageTrending());
+      //to call Latest news
+      BlocProvider.of<NewspageBloc>(context).add(NewspageLatest());
     } else if (comeFrom == "R") {
       fColor = Colors.white60;
       tColor = Colors.white60;
@@ -134,7 +134,7 @@ class _NewspageState extends State<Newspage> {
                           });
                           _setColor();
                         },
-                        child: Text("Trending",
+                        child: Text("Latest",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: tColor,

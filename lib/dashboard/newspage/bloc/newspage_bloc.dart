@@ -16,7 +16,7 @@ class NewspageBloc extends Bloc<NewspageEvent, NewspageState> {
       SharedPrefService().getLanguage() ?? ["English", "en"]; //["name", "code"]
   NewspageBloc() : super(NewspageInitial()) {
     on<NewspageLoadEvent>(_loadNewspage);
-    on<NewspageTrending>(_loadTrending);
+    on<NewspageLatest>(_loadLatest);
     on<NewspageRecomanded>(_loadRecommended);
     on<NewspageSelectCategory>(_loadCategory);
   }
@@ -39,8 +39,7 @@ class NewspageBloc extends Bloc<NewspageEvent, NewspageState> {
     }
   }
 
-  void _loadTrending(
-      NewspageTrending event, Emitter<NewspageState> emit) async {
+  void _loadLatest(NewspageLatest event, Emitter<NewspageState> emit) async {
     emit(NewspageLoading());
     try {
       if (articles.isEmpty) {
