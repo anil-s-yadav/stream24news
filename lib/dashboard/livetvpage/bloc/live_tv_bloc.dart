@@ -15,6 +15,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
   LiveTvBloc() : super(LiveTvInitialState()) {
     on<LiveTvDataLoadEvent>(_loadAllChennels);
     on<LiveChannelSaveEvent>(_saveChannel);
+    on<LiveChannelReportEvent>(_reportChannel);
     on<LoadRelatedChannelEvent>(_loadRelatedChannels);
     on<LiveChannelFilter>(_filterChannels);
     on<LiveChannelFilterLang>(_filterLang);
@@ -168,8 +169,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
     }
   }
 
-  void _saveChannel(
-      LiveChannelSaveEvent event, Emitter<LiveTvState> emit) async {
+  void _saveChannel(LiveChannelSaveEvent event, _) async {
     String userId;
     try {
       if (AuthService().isUserLoggedIn()) {
@@ -187,6 +187,34 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
           .doc(event.channelID)
           .set({}); // You can store additional data if needed, like timestamp
       EasyLoading.showSuccess('Channel saved successfully!');
+    } catch (e) {
+      EasyLoading.showError('Failed to save channel!');
+      throw Exception(e);
+    }
+  }
+
+  void _reportChannel(LiveChannelReportEvent event, _) async {
+    String userId;
+    try {
+      if (AuthService().isUserLoggedIn()) {
+        userId = AuthService().getUser()!.uid;
+      } else {
+        EasyLoading.showInfo("Please login to save!");
+        return;
+      }
+      EasyLoading.show(status: 'Saving channel...');
+
+      await FirebaseFirestore.instance
+          .collection('live_chennels')
+          .doc("6Kc57CnXtYzg85cD0FXS")
+          .collection('reported_channels')
+          .doc(event.channelID)
+          .set({
+        "channels_id": event.channelID,
+        "reported_by": userId,
+        "comment": event.comment
+      });
+      EasyLoading.showSuccess("Channel reported!");
     } catch (e) {
       EasyLoading.showError('Failed to save channel!');
       throw Exception(e);

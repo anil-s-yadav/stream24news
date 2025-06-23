@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,6 +27,7 @@ class VideoPlayScreen extends StatefulWidget {
 
 class _VideoPlayScreenState extends State<VideoPlayScreen> {
   late VideoPlayerController _videoController;
+  final commentsComtroller = TextEditingController();
   ChewieController? _chewieController;
   bool isSelected = false;
 
@@ -129,12 +131,11 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                               child: Text(widget.channel.name)),
                           IconButton(
                             onPressed: () {
-                              setState(() {
-                                context.read<LiveTvBloc>().add(
-                                    LiveChannelSaveEvent(
-                                        channelID:
-                                            widget.channel.channelDocId));
-                              });
+                              // setState(() {
+                              context.read<LiveTvBloc>().add(
+                                  LiveChannelSaveEvent(
+                                      channelID: widget.channel.channelDocId));
+                              // );
                             },
                             icon: Icon(
                               MyTabIcons.bookmark,
@@ -148,7 +149,9 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                                   context: context,
                                   builder: (context) => AlertDialog(
                                         title: Text("What's wrong?"),
-                                        content: TextFormField(),
+                                        content: TextFormField(
+                                          controller: commentsComtroller,
+                                        ),
                                         actions: [
                                           TextButton(
                                               onPressed: () =>
@@ -156,8 +159,19 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                                               child: Text("Cancel")),
                                           TextButton(
                                               onPressed: () {
-                                                EasyLoading.showSuccess(
-                                                    "Channel reported!");
+                                                log(widget
+                                                    .channel.channelDocId);
+                                                context.read<LiveTvBloc>().add(
+                                                    LiveChannelReportEvent(
+                                                        channelID: widget
+                                                            .channel
+                                                            .channelDocId,
+                                                        comment:
+                                                            commentsComtroller
+                                                                .text
+                                                                .toString()));
+                                                log(widget
+                                                    .channel.channelDocId);
                                                 Navigator.pop(context);
                                               },
                                               child: Text("Report"))

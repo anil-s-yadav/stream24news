@@ -24,6 +24,7 @@ class BookmarkPage extends StatefulWidget {
 class _BookmarkPageState extends State<BookmarkPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  // late BookmarkBloc bloc;
 
   @override
   void initState() {
@@ -35,6 +36,7 @@ class _BookmarkPageState extends State<BookmarkPage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<BookmarkBloc>().add(LoadSavedArticlesEvent());
+      context.read<BookmarkBloc>().add(LoadSavedChannelsEvent());
     });
   }
 
@@ -391,7 +393,9 @@ class _BookmarkPageState extends State<BookmarkPage>
                           context.read<BookmarkBloc>().add(
                               DeleteSavedChannelEvent(
                                   channelId: liveChannel.channelDocId));
-                          BookmarkBloc().add(LoadSavedChannelsEvent());
+                          context
+                              .read<BookmarkBloc>()
+                              .add(LoadSavedChannelsEvent());
                         }
                       },
                     ),
