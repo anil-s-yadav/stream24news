@@ -184,7 +184,7 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
             onTap: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => DonationPage())),
             child: Container(
-                height: MediaQuery.of(context).size.height * 0.08,
+                height: MediaQuery.of(context).size.height * 0.07,
                 width: double.infinity,
                 // color: Theme.of(context).hintColor,
                 color: Colors.amberAccent,

@@ -38,11 +38,26 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .limit(20)
           .get();
 
-      List<LiveChannelModel> allChannels = snapshot.docs
+      List<LiveChannelModel> regionChannels = snapshot.docs
           .map((doc) => LiveChannelModel.fromFirestore(doc))
           .toList();
 
-      emit(HomepageLiveChannelSuccess(liveChannelModel: allChannels));
+      if (regionChannels.isEmpty) {
+        final snapshot = await FirebaseFirestore.instance
+            .collection('live_chennels')
+            .doc('6Kc57CnXtYzg85cD0FXS')
+            .collection('all_channels')
+            .orderBy("viewCount", descending: true)
+            .limit(20)
+            .get();
+
+        List<LiveChannelModel> allChannels = snapshot.docs
+            .map((doc) => LiveChannelModel.fromFirestore(doc))
+            .toList();
+        emit(HomepageLiveChannelSuccess(liveChannelModel: allChannels));
+      } else {
+        emit(HomepageLiveChannelSuccess(liveChannelModel: regionChannels));
+      }
     } catch (e) {
       emit(HomepageLiveChannelError());
       throw Exception(e);

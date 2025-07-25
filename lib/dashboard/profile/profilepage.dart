@@ -117,15 +117,30 @@ class _ProfilepageState extends State<Profilepage> {
                   ),
                 ),
                 sizedBoxW20(context),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user?.displayName ?? "User",
-                      style: theme.textTheme.headlineMedium,
-                    ),
-                    Text(user?.email ?? ""),
-                  ],
+                // WRAP THIS IN EXPANDED TO AVOID OVERFLOW
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user?.displayName ?? "User",
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 18,
+                        ),
+                        maxLines: 2,
+                        softWrap: false,
+                      ),
+                      Text(
+                        user?.email ?? "",
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        maxLines: 2,
+                        softWrap: false,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

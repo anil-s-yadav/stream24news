@@ -45,12 +45,19 @@ class _BottomNavbarState extends State<BottomNavbar>
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
-        if (await _onWillPop()) {
-          if (Platform.isAndroid) {
-            SystemNavigator.pop();
-          } else {
-            exit(0);
+        if (selectedIndex == 0) {
+          final shouldExit = await _onWillPop();
+          if (shouldExit) {
+            if (Platform.isAndroid) {
+              SystemNavigator.pop();
+            } else {
+              exit(0);
+            }
           }
+        } else {
+          setState(() {
+            selectedIndex = 0;
+          });
         }
       },
       child: Scaffold(
