@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage> {
   List<LiveChannelModel> liveChannelModel = [];
   List<Article> LatestNewsModel = [];
   List<Article> recommendedNewsModel = [];
+  bool showNoData = false;
   @override
   void initState() {
     super.initState();
@@ -113,7 +114,38 @@ class _HomePageState extends State<HomePage> {
                           // return Text("$state");
                         }
                       })),
-              sizedBoxH5(context),
+
+              BlocListener<HomepageBloc, HomepageState>(
+                listener: (context, state) {
+                  if (state is HomepageLatestNewsSuccess) {
+                    setState(() => showNoData = state.noData);
+                  }
+                },
+                child: Visibility(
+                  visible: showNoData,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.12,
+                    width: double.infinity,
+                    margin: EdgeInsets.only(
+                        top: 10, right: 10, left: 10, bottom: 20),
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        color: Colors.red.shade100,
+                        boxShadow: [
+                          BoxShadow(
+                              offset: Offset(2, 5),
+                              spreadRadius: 5,
+                              blurRadius: 10,
+                              color: Colors.black12)
+                        ],
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Center(
+                        child: Text(
+                            "No news available for your country or language\n •Try to change your country.\n• Try to change your language.\nWe are showing result for India, English")),
+                  ),
+                ),
+              ),
+
               titleheading(
                   " Latest Updates",
                   "See All",

@@ -33,7 +33,43 @@ class NewspageBloc extends Bloc<NewspageEvent, NewspageState> {
 
       articles =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
-      emit(NewspageSuccess(articles: articles));
+
+      if (articles.isNotEmpty) {
+        emit(NewspageSuccess(articles: articles));
+      } else {
+        final snapshot = await FirebaseFirestore.instance
+            .collection('news')
+            .where('country', arrayContains: region[1].toLowerCase())
+            .get();
+
+        articles =
+            snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+        if (articles.isNotEmpty) {
+          emit(NewspageSuccess(articles: articles));
+        } else {
+          final snapshot = await FirebaseFirestore.instance
+              .collection('news')
+              .where('language', isEqualTo: lang[0].toLowerCase())
+              .get();
+
+          articles =
+              snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+          if (articles.isNotEmpty) {
+            emit(NewspageSuccess(articles: articles));
+          } else {
+            final snapshot = await FirebaseFirestore.instance
+                .collection('news')
+                .where('country', arrayContains: 'india')
+                .where('language', isEqualTo: 'english')
+                .get();
+
+            articles = snapshot.docs
+                .map((doc) => Article.fromMap(doc.data()))
+                .toList();
+            emit(NewspageSuccess(articles: articles));
+          }
+        }
+      }
     } catch (e) {
       emit(NewspageError());
     }

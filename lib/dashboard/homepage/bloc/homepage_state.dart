@@ -35,7 +35,8 @@ final class HomepageLatestNewsLoading extends HomepageState {
 
 final class HomepageLatestNewsSuccess extends HomepageState {
   final List<Article> articles;
-  HomepageLatestNewsSuccess(this.articles);
+  final bool noData;
+  HomepageLatestNewsSuccess(this.articles, {this.noData = false});
   @override
   List<Object?> get props => [articles];
 }

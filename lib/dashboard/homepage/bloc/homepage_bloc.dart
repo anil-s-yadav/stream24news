@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -68,7 +70,8 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       HomepageLoadLatestEvent event, Emitter<HomepageState> emit) async {
     try {
       emit(HomepageLatestNewsLoading());
-      final country = region[1];
+      List<Article> latestNews;
+      final country = region[1].toLowerCase();
       final language = lang[0].toLowerCase();
 
       final snapshot = await FirebaseFirestore.instance
@@ -79,9 +82,52 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           // .limit(20)
           .get();
 
-      final latestNews =
+      latestNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
-      emit(HomepageLatestNewsSuccess(latestNews));
+
+      if (latestNews.isNotEmpty) {
+        emit(HomepageLatestNewsSuccess(latestNews));
+      } else {
+        final snapshot = await FirebaseFirestore.instance
+            .collection('news')
+            .where('country', arrayContains: country)
+            .orderBy('pubDate', descending: true)
+            .get();
+
+        latestNews =
+            snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+        if (latestNews.isNotEmpty) {
+          emit(HomepageLatestNewsSuccess(latestNews));
+        } else {
+          final snapshot = await FirebaseFirestore.instance
+              .collection('news')
+              .where('language', isEqualTo: language)
+              .orderBy('pubDate', descending: true)
+              // .limit(20)
+              .get();
+
+          latestNews =
+              snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+
+          if (latestNews.isNotEmpty) {
+            emit(HomepageLatestNewsSuccess(latestNews));
+          } else {
+            final snapshot = await FirebaseFirestore.instance
+                .collection('news')
+                .where('country', arrayContains: 'india')
+                .where('language', isEqualTo: 'english')
+                .orderBy('pubDate', descending: true)
+                // .limit(20)
+                .get();
+
+            latestNews = snapshot.docs
+                .map((doc) => Article.fromMap(doc.data()))
+                .toList();
+            emit(HomepageLatestNewsSuccess(latestNews, noData: true));
+          }
+        }
+      }
+      log(latestNews.length.toString());
     } catch (e) {
       emit(HomepageLatestNewsError());
       throw Exception(e);
@@ -92,8 +138,8 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       HomepageLoadRecommendedEvent event, Emitter<HomepageState> emit) async {
     try {
       emit(HomepageRecommendedNewsLoading());
-
-      String country = region[1];
+      List<Article> recommendedNews;
+      String country = region[1].toLowerCase();
       String language = lang[0].toLowerCase();
       final snapshot = await FirebaseFirestore.instance
           .collection('news')
@@ -103,10 +149,52 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .limit(20)
           .get();
 
-      List<Article> recommendedNews =
+      recommendedNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
 
-      emit(HomepageRecommendedNewsSuccess(recommendedNews));
+      if (recommendedNews.isNotEmpty) {
+        emit(HomepageRecommendedNewsSuccess(recommendedNews));
+      } else {
+        final snapshot = await FirebaseFirestore.instance
+            .collection('news')
+            .where('country', arrayContains: country)
+            .orderBy("views", descending: true)
+            .limit(20)
+            .get();
+
+        recommendedNews =
+            snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+        if (recommendedNews.isNotEmpty) {
+          emit(HomepageRecommendedNewsSuccess(recommendedNews));
+        } else {
+          final snapshot = await FirebaseFirestore.instance
+              .collection('news')
+              .where('language', isEqualTo: 'english')
+              .orderBy("views", descending: true)
+              .limit(20)
+              .get();
+
+          recommendedNews =
+              snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+          emit(HomepageRecommendedNewsSuccess(recommendedNews));
+          if (recommendedNews.isNotEmpty) {
+            emit(HomepageRecommendedNewsSuccess(recommendedNews));
+          } else {
+            final snapshot = await FirebaseFirestore.instance
+                .collection('news')
+                .where('country', arrayContains: 'india')
+                .where('language', isEqualTo: 'english')
+                .orderBy("views", descending: true)
+                .limit(20)
+                .get();
+
+            recommendedNews = snapshot.docs
+                .map((doc) => Article.fromMap(doc.data()))
+                .toList();
+            emit(HomepageRecommendedNewsSuccess(recommendedNews));
+          }
+        }
+      }
     } catch (e) {
       emit(HomepageRecommendedNewsError());
       throw Exception(e);
