@@ -42,7 +42,7 @@ class AboutusPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Version: 1.0.7 (7)",
+                      "Version: 1.0.8 (8)",
                       style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.textTheme.bodyMedium?.color
                               ?.withAlpha(153)),
