@@ -122,7 +122,7 @@ class _SelectCuntoryState extends State<SelectCuntory> {
                                       barrierDismissible: false,
                                       context: context,
                                       builder: (context) => AlertDialog(
-                                            title: Text("Restart App!"),
+                                            title: Text("Restart required!"),
                                             content: Text(
                                                 "For reflect changes restart the App!"),
                                             actions: [

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream24news/features/bookmark/bloc/bookmark_bloc.dart';
 import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
+import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 
 import '../../dashboard/homepage/bloc/homepage_bloc.dart';
 import '../../dashboard/livetvpage/video_play_screen.dart';
@@ -71,6 +72,19 @@ class _BookmarkPageState extends State<BookmarkPage>
         child: Scaffold(
           appBar: AppBar(
             title: const Text("Bookmark"),
+            actions: [
+              IconButton(
+                  onPressed: () => showAboutDialog(
+                          context: context,
+                          applicationName: "About bookmark",
+                          children: [
+                            Text(
+                                "These bookmark content are saved in your phone storage.\nClearing app data or unistalling this app may delete you saved data and bookmark news and channels.")
+                          ]),
+                  // showDialog(
+                  //     context: context, builder: (context) => AboutDialog()),
+                  icon: Icon(Icons.help_outline_rounded))
+            ],
             bottom: TabBar(
               labelPadding: const EdgeInsets.all(15),
               indicatorSize: TabBarIndicatorSize.tab,

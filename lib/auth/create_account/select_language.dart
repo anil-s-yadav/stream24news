@@ -124,7 +124,7 @@ class _SelectLanguage extends State<SelectLanguage> {
                                       barrierDismissible: false,
                                       context: context,
                                       builder: (context) => AlertDialog(
-                                            title: Text("Restart App!"),
+                                            title: Text("Restart required!"),
                                             content: Text(
                                                 "For reflect changes restart the App!"),
                                             actions: [

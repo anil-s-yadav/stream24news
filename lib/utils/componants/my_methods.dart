@@ -121,7 +121,7 @@ Widget newsMenuOptions(BuildContext context, Article article) {
             children: [
               Icon(
                 Icons.flag_outlined,
-                color: Colors.green,
+                color: Colors.red,
                 size: 22,
                 weight: 14,
               ),
