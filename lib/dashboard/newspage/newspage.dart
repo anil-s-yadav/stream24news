@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/dashboard/newspage/artical_page_design.dart';
 import 'package:stream24news/dashboard/newspage/bloc/newspage_bloc.dart';
 
@@ -119,6 +120,8 @@ class _NewspageState extends State<Newspage> {
                             _pageController.jumpToPage(0);
                           });
                           _setColor();
+                          EasyLoading.showInfo(
+                              "Specialy for you - based on your interest!");
                         },
                         child: Text("For You",
                             style: TextStyle(
@@ -133,6 +136,7 @@ class _NewspageState extends State<Newspage> {
                             _pageController.jumpToPage(0);
                           });
                           _setColor();
+                          EasyLoading.showInfo("Letest updates!");
                         },
                         child: Text("Latest",
                             style: TextStyle(
@@ -147,6 +151,8 @@ class _NewspageState extends State<Newspage> {
                             _pageController.jumpToPage(0);
                           });
                           _setColor();
+                          EasyLoading.showSuccess(
+                              "Best updates - liked by many peaople!");
                         },
                         child: Text("Recomanded",
                             style: TextStyle(
