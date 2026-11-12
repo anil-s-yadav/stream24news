@@ -303,25 +303,21 @@ class _HomePageState extends State<HomePage> {
                           Theme.of(context).colorScheme.surfaceContainer,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100)),
-                          child: CachedNetworkImage(
-                            imageUrl: liveChannelModel[index].logo,
-                            fit: BoxFit.contain,
-                            placeholder: (context, url) => Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
-                                borderRadius: BorderRadius.circular(100),
-                              ),
+                        child: CachedNetworkImage(
+                          imageUrl: liveChannelModel[index].logo,
+                          fit: BoxFit.contain,
+                          placeholder: (context, url) => Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainer,
+                              borderRadius: BorderRadius.circular(100),
                             ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
                           ),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
                       ),
                     ),

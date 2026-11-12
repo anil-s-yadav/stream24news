@@ -8,6 +8,7 @@ import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import '../../features/web_view/article_webview.dart';
 import '../../utils/componants/my_methods.dart';
+import '../../utils/componants/my_widgets.dart';
 import 'animated_link_box.dart';
 
 class ArticlePageDesign extends StatefulWidget {
@@ -60,6 +61,11 @@ class _ArticlePageDesignState extends State<ArticlePageDesign> {
                   height: MediaQuery.of(context).size.height * 0.27,
                   width: double.infinity,
                   fit: BoxFit.fill,
+                  errorWidget: (context, url, error) => NoImagePlaceholder(
+                    height: MediaQuery.of(context).size.height * 0.27,
+                    width: double.infinity,
+                    borderRadius: 0,
+                  ),
                 ),
               ),
               Positioned(

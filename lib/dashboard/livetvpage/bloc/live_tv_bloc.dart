@@ -14,6 +14,13 @@ part 'live_tv_state.dart';
 class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
   List<LiveChannelModel> _allChannels = [];
   List<LiveChannelModel> finalList = [];
+  List<LiveChannelModel> displayedChannels = [];
+
+  void _emitSuccess(
+      Emitter<LiveTvState> emit, List<LiveChannelModel> channels) {
+    displayedChannels = channels;
+    emit(LiveTvSuccessState(liveChannelModel: channels));
+  }
   LiveTvBloc() : super(LiveTvInitialState()) {
     on<LiveTvDataLoadEvent>(_loadAllChennels);
     on<LiveChannelSaveEvent>(_saveChannel);
@@ -85,7 +92,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
         ...international,
       ];
 
-      emit(LiveTvSuccessState(liveChannelModel: finalList));
+      _emitSuccess(emit, finalList);
     } catch (e) {
       emit(LiveTvErrorState());
       throw Exception(e);
@@ -109,7 +116,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
         finalList.sort((a, b) => (a.viewCount).compareTo(b.viewCount));
       }
       EasyLoading.dismiss();
-      emit(LiveTvSuccessState(liveChannelModel: finalList));
+      _emitSuccess(emit, finalList);
     } catch (e) {
       EasyLoading.dismiss();
       emit(LiveTvErrorState());
@@ -130,7 +137,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
           .where((channel) => channel.language.toLowerCase() == langCode)
           .toList();
       EasyLoading.dismiss();
-      emit(LiveTvSuccessState(liveChannelModel: finalList));
+      _emitSuccess(emit, finalList);
     } catch (e) {
       EasyLoading.dismiss();
       emit(LiveTvErrorState());
@@ -152,7 +159,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
         return channel.name.toLowerCase().contains(query);
       }).toList();
 
-      emit(LiveTvSuccessState(liveChannelModel: filteredChannels));
+      _emitSuccess(emit, filteredChannels);
     } catch (e) {
       emit(LiveTvErrorState());
       throw Exception(e);

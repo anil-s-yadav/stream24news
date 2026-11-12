@@ -79,3 +79,45 @@ class MyLightContainer extends StatelessWidget {
     );
   }
 }
+
+/// Grey fallback placeholder shown when a network image URL is missing or fails to load.
+class NoImagePlaceholder extends StatelessWidget {
+  const NoImagePlaceholder({
+    super.key,
+    this.width,
+    this.height,
+    this.borderRadius = 8,
+  });
+
+  final double? width;
+  final double? height;
+  final double borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      width: width,
+      height: height,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            'No\nPreview',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

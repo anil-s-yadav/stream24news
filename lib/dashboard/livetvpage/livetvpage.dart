@@ -22,6 +22,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
   Timer? _debounce;
 
   bool isAllSelected = false;
+  bool _hasLanguageFilter = false;
   String _selectedLanguage = 'Hindi';
 
   @override
@@ -49,6 +50,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
                 loadData();
                 setState(() {
                   isAllSelected = selected;
+                  _hasLanguageFilter = false;
                   context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
                 });
               },
@@ -56,6 +58,7 @@ class _LiveTvPageState extends State<LiveTvPage> {
                 setState(() {
                   _selectedLanguage = lang;
                   isAllSelected = false;
+                  _hasLanguageFilter = true;
                 });
                 context
                     .read<LiveTvBloc>()
@@ -85,8 +88,13 @@ class _LiveTvPageState extends State<LiveTvPage> {
             setState(() {
               isSeachVisible = !isSeachVisible;
               if (!isSeachVisible) {
-                // Reset to show all channels again
-                context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
+                if (_hasLanguageFilter) {
+                  context
+                      .read<LiveTvBloc>()
+                      .add(LiveChannelFilterLang(lang: _selectedLanguage));
+                } else {
+                  context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
+                }
               }
             });
           },
@@ -143,13 +151,25 @@ class _LiveTvPageState extends State<LiveTvPage> {
 
   Widget _buildChannelList() {
     return BlocBuilder<LiveTvBloc, LiveTvState>(
+      buildWhen: (previous, current) =>
+          current is LiveTvInitialState ||
+          current is LiveTvLoadingState ||
+          current is LiveTvSuccessState ||
+          current is LiveTvErrorState,
       builder: (context, state) {
         if (state is LiveTvInitialState || state is LiveTvLoadingState) {
           return channelsLoading();
-        } else if (state is LiveTvSuccessState) {
-          final channels = state.liveChannelModel;
+        } else if (state is LiveTvErrorState) {
+          return noDataWidget(context);
+        } else {
+          final channels = state is LiveTvSuccessState
+              ? state.liveChannelModel
+              : context.read<LiveTvBloc>().displayedChannels;
           if (channels.isEmpty) {
-            return noDataWidget(context);
+            if (state is LiveTvSuccessState) {
+              return noDataWidget(context);
+            }
+            return channelsLoading();
           }
           return GridView.builder(
             padding: const EdgeInsets.all(10),
@@ -163,15 +183,15 @@ class _LiveTvPageState extends State<LiveTvPage> {
             itemBuilder: (context, index) {
               final channel = channels[index];
               final language = languages.entries
-                  .firstWhere((e) => e.value == channel.language)
+                  .firstWhere(
+                    (e) => e.value == channel.language,
+                    orElse: () =>
+                        MapEntry(channel.language.toUpperCase(), channel.language),
+                  )
                   .key;
               return _buildChannelItem(channel, language);
             },
           );
-        } else if (state is LiveTvErrorState) {
-          return noDataWidget(context);
-        } else {
-          return channelsLoading();
         }
       },
     );
@@ -187,17 +207,20 @@ class _LiveTvPageState extends State<LiveTvPage> {
       child: Container(
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerLow,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
           children: [
             Expanded(
-                child: Image.network(
-              channel.logo,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) => Container(),
-            )),
+                child: channel.logo.trim().isEmpty
+                    ? const NoImagePlaceholder()
+                    : Image.network(
+                        channel.logo,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const NoImagePlaceholder(),
+                      )),
             Text(channel.name,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,

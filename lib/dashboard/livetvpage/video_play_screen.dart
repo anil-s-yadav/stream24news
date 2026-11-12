@@ -9,6 +9,7 @@ import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:stream24news/models/live_channel_model.dart';
 
+import '../../utils/componants/my_widgets.dart';
 import '../../utils/componants/sizedbox.dart';
 import '../../utils/theme/my_tab_icons_icons.dart';
 import 'bloc/live_tv_bloc.dart';
@@ -136,9 +137,6 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
             controller: _videoController,
             initFuture: _initFuture,
           );
-          if (widget.comingFrom == "LiveTvPage" && mounted) {
-            context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
-          }
           Navigator.of(context).pop();
         }
       },
@@ -170,11 +168,7 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          CachedNetworkImage(
-                            imageUrl: widget.channel.logo,
-                            width: 50,
-                            height: 50,
-                          ),
+                          _buildChannelLogo(widget.channel.logo),
                           sizedBoxW10(context),
                           SizedBox(
                               width: MediaQuery.of(context).size.width * 0.55,
@@ -317,17 +311,36 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CachedNetworkImage(
-                  imageUrl: channel.logo,
-                  height: 50,
-                  width: 50,
-                ),
+                _buildChannelLogo(channel.logo),
                 Text(channel.name, overflow: TextOverflow.ellipsis),
               ],
             ),
           ),
         );
       }).toList(),
+    );
+  }
+
+  Widget _buildChannelLogo(String logoUrl) {
+    const double size = 50;
+    if (logoUrl.trim().isEmpty) {
+      return const NoImagePlaceholder(width: size, height: size);
+    }
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: CachedNetworkImage(
+        imageUrl: logoUrl,
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        placeholder: (context, url) => Container(
+          width: size,
+          height: size,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        ),
+        errorWidget: (context, url, error) =>
+            const NoImagePlaceholder(width: size, height: size),
+      ),
     );
   }
 

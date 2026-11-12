@@ -7,6 +7,7 @@ import 'package:stream24news/models/new_model.dart';
 import 'package:stream24news/utils/componants/sizedbox.dart';
 import 'package:stream24news/utils/theme/my_tab_icons_icons.dart';
 import '../../utils/componants/my_methods.dart';
+import '../../utils/componants/my_widgets.dart';
 import '../../utils/services/shared_pref_service.dart';
 import '../search_articles/search_page.dart';
 import '../web_view/article_webview.dart';
@@ -187,7 +188,9 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
                       placeholder: (context, url) => Container(
                             color:
                                 Theme.of(context).colorScheme.surfaceContainer,
-                          ))),
+                          ),
+                      errorWidget: (context, url, error) =>
+                          const NoImagePlaceholder(borderRadius: 20))),
             ),
             sizedBoxW10(context),
             Expanded(
@@ -275,6 +278,12 @@ class _SelectedCategoryPageState extends State<SelectedCategoryPage> {
                                     color: Theme.of(context)
                                         .colorScheme
                                         .surfaceContainer,
+                                  ),
+                              errorWidget: (context, url, error) =>
+                                  const NoImagePlaceholder(
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 100,
                                   )),
                         ),
                         // Image.asset(

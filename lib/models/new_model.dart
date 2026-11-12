@@ -11,15 +11,57 @@ class Source {
     this.sourceUrl,
   });
 
-  factory Source.fromMap(Map<String, dynamic>? map) {
+  factory Source.fromMap(Map<String, dynamic>? map, {String? fallbackLink}) {
     if (map == null) return Source();
 
+    final rawIcon = map['source_icon'] as String?;
+    final rawSourceUrl = map['source_url'] as String?;
+
     return Source(
-      sourceIcon: map['source_icon'],
+      sourceIcon: _resolveSourceIcon(
+        rawIcon: rawIcon,
+        sourceUrl: rawSourceUrl,
+        fallbackLink: fallbackLink,
+      ),
       sourceId: map['source_id'],
       sourceName: map['source_name'],
-      sourceUrl: map['source_url'],
+      sourceUrl: rawSourceUrl,
     );
+  }
+
+  static String? _resolveSourceIcon({
+    required String? rawIcon,
+    required String? sourceUrl,
+    String? fallbackLink,
+  }) {
+    final trimmed = rawIcon?.trim();
+    final iconUri =
+        (trimmed != null && trimmed.isNotEmpty) ? Uri.tryParse(trimmed) : null;
+    final iconHost = iconUri?.host.toLowerCase() ?? '';
+    final isDeadOrMissing = trimmed == null ||
+        trimmed.isEmpty ||
+        iconHost == 'n.bytvi.com' ||
+        iconHost == 'bytvi.com' ||
+        iconHost.endsWith('.bytvi.com');
+
+    if (!isDeadOrMissing) {
+      return trimmed;
+    }
+
+    final publisherHost =
+        _extractHost(sourceUrl) ?? _extractHost(fallbackLink);
+    if (publisherHost == null || publisherHost.isEmpty) {
+      return null;
+    }
+    return 'https://www.google.com/s2/favicons?domain=${Uri.encodeQueryComponent(publisherHost)}&sz=64';
+  }
+
+  static String? _extractHost(String? url) {
+    if (url == null || url.trim().isEmpty) return null;
+    final uri = Uri.tryParse(url.trim());
+    final host = uri?.host.trim();
+    if (host == null || host.isEmpty) return null;
+    return host;
   }
 
   Map<String, dynamic> toMap() {
@@ -73,7 +115,12 @@ class Article {
       language: map['language'],
       link: map['link'],
       pubDate: map['pubDate'],
-      source: map['source'] != null ? Source.fromMap(map['source']) : null,
+      source: map['source'] != null
+          ? Source.fromMap(
+              map['source'],
+              fallbackLink: map['link'] as String?,
+            )
+          : null,
       title: map['title'],
       views: map['views'],
     );
