@@ -17,8 +17,15 @@ import 'floating_video_manager.dart';
 class VideoPlayScreen extends StatefulWidget {
   final LiveChannelModel channel;
   final String comingFrom;
-  const VideoPlayScreen(
-      {super.key, required this.channel, required this.comingFrom});
+  final VideoPlayerController? existingController;
+  final Future<void>? existingInitFuture;
+  const VideoPlayScreen({
+    super.key,
+    required this.channel,
+    required this.comingFrom,
+    this.existingController,
+    this.existingInitFuture,
+  });
 
   @override
   State<VideoPlayScreen> createState() => _VideoPlayScreenState();
@@ -29,18 +36,54 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
   final commentsComtroller = TextEditingController();
   ChewieController? _chewieController;
   bool isSelected = false;
+  bool _handedOffToPip = false;
+  bool _isPopping = false;
+  Future<void>? _initFuture;
+  Timer? _viewTimer;
 
   @override
   void initState() {
     super.initState();
-    _videoController =
-        VideoPlayerController.networkUrl(Uri.parse(widget.channel.url));
-    _initializePlayer();
+    if (widget.existingController != null) {
+      _videoController = widget.existingController!;
+      if (_videoController.value.isInitialized) {
+        _chewieController = ChewieController(
+          videoPlayerController: _videoController,
+          autoPlay: true,
+        );
+        if (!_videoController.value.isPlaying) {
+          _videoController.play();
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            context.read<LiveTvBloc>().add(
+                  LoadRelatedChannelEvent(language: widget.channel.language),
+                );
+          }
+        });
+      } else {
+        _initFuture = widget.existingInitFuture ?? _videoController.initialize();
+        _initializePlayer(alreadyInitializing: true);
+      }
+    } else {
+      FloatingVideoManager().hide();
+      _videoController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.channel.url));
+      _initializePlayer();
+    }
     increaseView(widget.channel.channelDocId);
   }
 
-  Future<void> _initializePlayer() async {
-    await _videoController.initialize();
+  Future<void> _initializePlayer({bool alreadyInitializing = false}) async {
+    if (!alreadyInitializing) {
+      _initFuture = _videoController.initialize();
+    }
+    try {
+      await _initFuture;
+    } catch (_) {
+      return;
+    }
+    if (!mounted || _handedOffToPip) return;
     _chewieController = ChewieController(
       videoPlayerController: _videoController,
       autoPlay: true,
@@ -55,8 +98,13 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
 
   @override
   void dispose() {
+    _viewTimer?.cancel();
+    commentsComtroller.dispose();
     _chewieController?.dispose();
-    _videoController.dispose();
+    if (!_handedOffToPip) {
+      _videoController.pause();
+      _videoController.dispose();
+    }
     super.dispose();
   }
 
@@ -79,12 +127,15 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) async {
-        if (!didPop) {
-          final rootContext = Navigator.of(context).context;
-          await Future.delayed(const Duration(milliseconds: 100));
-          FloatingVideoManager().show(rootContext, widget.channel.url);
-          FloatingVideoManager().getModel(widget.channel);
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && !_isPopping) {
+          _isPopping = true;
+          _handedOffToPip = true;
+          FloatingVideoManager().showWithController(
+            channelModel: widget.channel,
+            controller: _videoController,
+            initFuture: _initFuture,
+          );
           if (widget.comingFrom == "LiveTvPage" && mounted) {
             context.read<LiveTvBloc>().add(LiveTvDataLoadEvent());
           }
@@ -245,6 +296,7 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
       children: channels.map((channel) {
         return GestureDetector(
           onTap: () {
+            _videoController.pause();
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -280,7 +332,8 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
   }
 
   void increaseView(String docId) {
-    Timer(const Duration(seconds: 5), () async {
+    _viewTimer?.cancel();
+    _viewTimer = Timer(const Duration(seconds: 5), () async {
       final docRef = FirebaseFirestore.instance
           .collection('live_chennels') // Corrected spelling
           .doc("6Kc57CnXtYzg85cD0FXS")

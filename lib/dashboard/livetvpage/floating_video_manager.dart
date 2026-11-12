@@ -16,24 +16,99 @@ class FloatingVideoManager {
   ChewieController? chewieController;
   VideoPlayerController? videoController;
   LiveChannelModel? channel;
+  Future<void>? _initFuture;
+  int _sessionToken = 0;
+
   void getModel(LiveChannelModel channelModel) {
     channel = channelModel;
   }
 
+  /// Shows the PiP overlay immediately by reusing an existing [controller]
+  /// handed off from [VideoPlayScreen] so playback continues without reloading.
+  Future<void> showWithController({
+    required LiveChannelModel channelModel,
+    required VideoPlayerController controller,
+    Future<void>? initFuture,
+  }) async {
+    if (videoController == controller) {
+      videoController = null;
+    }
+    hide();
+    final token = ++_sessionToken;
+    channel = channelModel;
+    videoController = controller;
+    _initFuture = initFuture;
+
+    if (controller.value.isInitialized) {
+      _attachChewie(controller);
+    }
+
+    _insertOverlay();
+
+    if (!controller.value.isInitialized) {
+      final activeInit = _initFuture ??= controller.initialize();
+      try {
+        await activeInit;
+      } catch (_) {
+        if (token == _sessionToken) {
+          hide();
+        }
+        return;
+      }
+      if (token != _sessionToken || videoController != controller) {
+        return;
+      }
+      _attachChewie(controller);
+      _overlayEntry?.markNeedsBuild();
+    }
+  }
+
   void show(BuildContext context, String url) async {
-    if (_overlayEntry != null) return;
+    hide();
+    final token = ++_sessionToken;
+    final controller = VideoPlayerController.networkUrl(Uri.parse(url));
+    videoController = controller;
 
-    videoController = VideoPlayerController.networkUrl(Uri.parse(url));
-    await videoController!.initialize();
+    _insertOverlay();
 
+    final initFuture = controller.initialize();
+    _initFuture = initFuture;
+    try {
+      await initFuture;
+    } catch (_) {
+      if (token == _sessionToken) {
+        hide();
+      } else {
+        controller.dispose();
+      }
+      return;
+    }
+
+    if (token != _sessionToken || videoController != controller) {
+      controller.dispose();
+      return;
+    }
+
+    _attachChewie(controller);
+    _overlayEntry?.markNeedsBuild();
+  }
+
+  void _attachChewie(VideoPlayerController controller) {
+    final aspect = controller.value.aspectRatio;
+    chewieController?.dispose();
     chewieController = ChewieController(
-      videoPlayerController: videoController!,
-      aspectRatio: videoController!.value.aspectRatio,
+      videoPlayerController: controller,
+      aspectRatio: aspect > 0 ? aspect : 16 / 9,
       autoPlay: true,
       looping: true,
       showControls: false,
     );
+    if (!controller.value.isPlaying) {
+      controller.play();
+    }
+  }
 
+  void _insertOverlay() {
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         bottom: 80,
@@ -47,7 +122,10 @@ class FloatingVideoManager {
     );
 
     final overlay = navigatorKey.currentState?.overlay;
-    if (overlay == null) return;
+    if (overlay == null) {
+      _overlayEntry = null;
+      return;
+    }
 
     overlay.insert(_overlayEntry!);
   }
@@ -97,22 +175,46 @@ class FloatingVideoManager {
   }
 
   void hide() {
-    chewieController?.dispose();
-    videoController?.dispose();
+    _sessionToken++;
+    _initFuture = null;
     _overlayEntry?.remove();
     _overlayEntry = null;
+    chewieController?.dispose();
+    chewieController = null;
+    final vc = videoController;
+    videoController = null;
+    vc?.pause();
+    vc?.dispose();
   }
 
   void maximize() {
-    chewieController?.dispose();
-    videoController?.dispose();
+    final targetChannel = channel;
+    final context = navigatorKey.currentContext;
+    if (targetChannel == null || context == null) {
+      hide();
+      return;
+    }
+
+    _sessionToken++;
+    final transferredController = videoController;
+    final transferredInitFuture = _initFuture;
+    videoController = null;
+    _initFuture = null;
     _overlayEntry?.remove();
     _overlayEntry = null;
+    chewieController?.dispose();
+    chewieController = null;
+
     Navigator.push(
-      navigatorKey.currentContext!,
+      context,
       MaterialPageRoute(
-          builder: (context) =>
-              VideoPlayScreen(channel: channel!, comingFrom: "")),
+        builder: (context) => VideoPlayScreen(
+          channel: targetChannel,
+          comingFrom: "",
+          existingController: transferredController,
+          existingInitFuture: transferredInitFuture,
+        ),
+      ),
     );
   }
 }
