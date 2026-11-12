@@ -9,7 +9,9 @@ import 'package:stream24news/utils/componants/bottom_navbar.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 import 'package:stream24news/utils/theme/theme_provider.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'auth/auth_service.dart';
 import 'dashboard/newspage/bloc/newspage_bloc.dart';
 import 'features/all_categories/bloc/categories_bloc_bloc.dart';
@@ -25,6 +27,13 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  if (!kIsWeb) {
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
+      cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+    );
+  }
 
   await SharedPrefService.init();
   runApp(

@@ -76,6 +76,22 @@ class SharedPrefService {
   void clearLastNewsIndex() {
     _storage?.remove(LocalStorageKeys.lastNewReadIndex);
   }
+
+  int? getInt(String key) => _storage?.getInt(key);
+
+  Future<void> setInt(String key, int value) async {
+    await _storage?.setInt(key, value);
+  }
+
+  bool? getBool(String key) => _storage?.getBool(key);
+
+  Future<void> setBool(String key, bool value) async {
+    await _storage?.setBool(key, value);
+  }
+
+  Future<void> removeKey(String key) async {
+    await _storage?.remove(key);
+  }
 }
 
 class LocalStorageKeys {

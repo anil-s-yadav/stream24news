@@ -8,6 +8,7 @@ import 'package:stream24news/auth/auth_service.dart';
 
 import '../../../models/live_channel_model.dart';
 import '../../../models/new_model.dart';
+import '../../../utils/services/firestore_cache_service.dart';
 import '../../../utils/services/shared_pref_service.dart';
 
 part 'homepage_event.dart';
@@ -30,28 +31,31 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       HomepageLoadChannelsEvent event, Emitter<HomepageState> emit) async {
     try {
       emit(HomepageLiveChannelLoading());
-
-      final snapshot = await FirebaseFirestore.instance
+      final cache = FirestoreCacheService();
+      final channelsRef = FirebaseFirestore.instance
           .collection('live_chennels')
           .doc('6Kc57CnXtYzg85cD0FXS')
-          .collection('all_channels')
-          .where("region", isEqualTo: region[2])
-          .orderBy("viewCount", descending: true)
-          .limit(20)
-          .get();
+          .collection('all_channels');
+
+      final snapshot = await cache.getQueryWithCache(
+        query: channelsRef
+            .where("region", isEqualTo: region[2])
+            .orderBy("viewCount", descending: true)
+            .limit(20),
+        cacheKey: 'home_channels_${region[2]}',
+        ttl: FirestoreCacheService.channelsTtl,
+      );
 
       List<LiveChannelModel> regionChannels = snapshot.docs
           .map((doc) => LiveChannelModel.fromFirestore(doc))
           .toList();
 
       if (regionChannels.isEmpty) {
-        final snapshot = await FirebaseFirestore.instance
-            .collection('live_chennels')
-            .doc('6Kc57CnXtYzg85cD0FXS')
-            .collection('all_channels')
-            .orderBy("viewCount", descending: true)
-            .limit(20)
-            .get();
+        final snapshot = await cache.getQueryWithCache(
+          query: channelsRef.orderBy("viewCount", descending: true).limit(20),
+          cacheKey: 'home_channels_global',
+          ttl: FirestoreCacheService.channelsTtl,
+        );
 
         List<LiveChannelModel> allChannels = snapshot.docs
             .map((doc) => LiveChannelModel.fromFirestore(doc))
@@ -73,14 +77,17 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       List<Article> latestNews;
       final country = region[1].toLowerCase();
       final language = lang[0].toLowerCase();
+      final cache = FirestoreCacheService();
+      final newsRef = FirebaseFirestore.instance.collection('news');
 
-      final snapshot = await FirebaseFirestore.instance
-          .collection('news')
-          .where('country', arrayContains: country)
-          .where('language', isEqualTo: language)
-          .orderBy('pubDate', descending: true)
-          // .limit(20)
-          .get();
+      final snapshot = await cache.getQueryWithCache(
+        query: newsRef
+            .where('country', arrayContains: country)
+            .where('language', isEqualTo: language)
+            .orderBy('pubDate', descending: true),
+        cacheKey: 'home_latest_${country}_$language',
+        ttl: FirestoreCacheService.newsTtl,
+      );
 
       latestNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
@@ -88,23 +95,26 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       if (latestNews.isNotEmpty) {
         emit(HomepageLatestNewsSuccess(latestNews));
       } else {
-        final snapshot = await FirebaseFirestore.instance
-            .collection('news')
-            .where('country', arrayContains: country)
-            .orderBy('pubDate', descending: true)
-            .get();
+        final snapshot = await cache.getQueryWithCache(
+          query: newsRef
+              .where('country', arrayContains: country)
+              .orderBy('pubDate', descending: true),
+          cacheKey: 'home_latest_country_$country',
+          ttl: FirestoreCacheService.newsTtl,
+        );
 
         latestNews =
             snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
         if (latestNews.isNotEmpty) {
           emit(HomepageLatestNewsSuccess(latestNews));
         } else {
-          final snapshot = await FirebaseFirestore.instance
-              .collection('news')
-              .where('language', isEqualTo: language)
-              .orderBy('pubDate', descending: true)
-              // .limit(20)
-              .get();
+          final snapshot = await cache.getQueryWithCache(
+            query: newsRef
+                .where('language', isEqualTo: language)
+                .orderBy('pubDate', descending: true),
+            cacheKey: 'home_latest_lang_$language',
+            ttl: FirestoreCacheService.newsTtl,
+          );
 
           latestNews =
               snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
@@ -112,13 +122,14 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           if (latestNews.isNotEmpty) {
             emit(HomepageLatestNewsSuccess(latestNews));
           } else {
-            final snapshot = await FirebaseFirestore.instance
-                .collection('news')
-                .where('country', arrayContains: 'india')
-                .where('language', isEqualTo: 'english')
-                .orderBy('pubDate', descending: true)
-                // .limit(20)
-                .get();
+            final snapshot = await cache.getQueryWithCache(
+              query: newsRef
+                  .where('country', arrayContains: 'india')
+                  .where('language', isEqualTo: 'english')
+                  .orderBy('pubDate', descending: true),
+              cacheKey: 'home_latest_india_english',
+              ttl: FirestoreCacheService.newsTtl,
+            );
 
             latestNews = snapshot.docs
                 .map((doc) => Article.fromMap(doc.data()))
@@ -141,13 +152,18 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       List<Article> recommendedNews;
       String country = region[1].toLowerCase();
       String language = lang[0].toLowerCase();
-      final snapshot = await FirebaseFirestore.instance
-          .collection('news')
-          .where('country', arrayContains: country)
-          .where('language', isEqualTo: language)
-          .orderBy("views", descending: true)
-          .limit(20)
-          .get();
+      final cache = FirestoreCacheService();
+      final newsRef = FirebaseFirestore.instance.collection('news');
+
+      final snapshot = await cache.getQueryWithCache(
+        query: newsRef
+            .where('country', arrayContains: country)
+            .where('language', isEqualTo: language)
+            .orderBy("views", descending: true)
+            .limit(20),
+        cacheKey: 'home_rec_${country}_$language',
+        ttl: FirestoreCacheService.newsTtl,
+      );
 
       recommendedNews =
           snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
@@ -155,38 +171,43 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       if (recommendedNews.isNotEmpty) {
         emit(HomepageRecommendedNewsSuccess(recommendedNews));
       } else {
-        final snapshot = await FirebaseFirestore.instance
-            .collection('news')
-            .where('country', arrayContains: country)
-            .orderBy("views", descending: true)
-            .limit(20)
-            .get();
+        final snapshot = await cache.getQueryWithCache(
+          query: newsRef
+              .where('country', arrayContains: country)
+              .orderBy("views", descending: true)
+              .limit(20),
+          cacheKey: 'home_rec_country_$country',
+          ttl: FirestoreCacheService.newsTtl,
+        );
 
         recommendedNews =
             snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
         if (recommendedNews.isNotEmpty) {
           emit(HomepageRecommendedNewsSuccess(recommendedNews));
         } else {
-          final snapshot = await FirebaseFirestore.instance
-              .collection('news')
-              .where('language', isEqualTo: 'english')
-              .orderBy("views", descending: true)
-              .limit(20)
-              .get();
+          final snapshot = await cache.getQueryWithCache(
+            query: newsRef
+                .where('language', isEqualTo: 'english')
+                .orderBy("views", descending: true)
+                .limit(20),
+            cacheKey: 'home_rec_lang_english',
+            ttl: FirestoreCacheService.newsTtl,
+          );
 
           recommendedNews =
               snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
-          emit(HomepageRecommendedNewsSuccess(recommendedNews));
           if (recommendedNews.isNotEmpty) {
             emit(HomepageRecommendedNewsSuccess(recommendedNews));
           } else {
-            final snapshot = await FirebaseFirestore.instance
-                .collection('news')
-                .where('country', arrayContains: 'india')
-                .where('language', isEqualTo: 'english')
-                .orderBy("views", descending: true)
-                .limit(20)
-                .get();
+            final snapshot = await cache.getQueryWithCache(
+              query: newsRef
+                  .where('country', arrayContains: 'india')
+                  .where('language', isEqualTo: 'english')
+                  .orderBy("views", descending: true)
+                  .limit(20),
+              cacheKey: 'home_rec_india_english',
+              ttl: FirestoreCacheService.newsTtl,
+            );
 
             recommendedNews = snapshot.docs
                 .map((doc) => Article.fromMap(doc.data()))
@@ -215,27 +236,32 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       }
 
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final cache = FirestoreCacheService();
 
       // Step 1: Get all saved channel IDs for the user
-      final savedChannelsSnapshot = await firestore
-          .collection('user')
-          .doc(userId)
-          .collection('saved_channels')
-          .limit(10)
-          .get();
+      final savedChannelsSnapshot = await cache.getQueryWithCache(
+        query: firestore
+            .collection('user')
+            .doc(userId)
+            .collection('saved_channels')
+            .limit(10),
+        cacheKey: 'homepage_saved_channels_$userId',
+        ttl: FirestoreCacheService.savedListTtl,
+      );
 
       List<LiveChannelModel> savedChannels = [];
 
       for (var doc in savedChannelsSnapshot.docs) {
         final channelId = doc.id;
 
-        // Step 2: Fetch channel details from all_channels using the ID
-        final channelDoc = await firestore
-            .collection('live_chennels')
-            .doc('6Kc57CnXtYzg85cD0FXS')
-            .collection('all_channels')
-            .doc(channelId)
-            .get();
+        // Step 2: Fetch channel details from cache first, then server
+        final channelDoc = await cache.getDocumentWithCache(
+          firestore
+              .collection('live_chennels')
+              .doc('6Kc57CnXtYzg85cD0FXS')
+              .collection('all_channels')
+              .doc(channelId),
+        );
 
         if (channelDoc.exists) {
           savedChannels.add(LiveChannelModel.fromFirestore(channelDoc));
@@ -243,19 +269,23 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       }
 
       // Step 3: Get all saved article IDs for the user
-      final savedArticlesSnapshot = await firestore
-          .collection('user')
-          .doc(userId)
-          .collection('saved_articles')
-          .limit(10)
-          .get();
+      final savedArticlesSnapshot = await cache.getQueryWithCache(
+        query: firestore
+            .collection('user')
+            .doc(userId)
+            .collection('saved_articles')
+            .limit(10),
+        cacheKey: 'homepage_saved_articles_$userId',
+        ttl: FirestoreCacheService.savedListTtl,
+      );
       List<Article> savedArticles = [];
       for (var doc in savedArticlesSnapshot.docs) {
         final articleId = doc.id;
 
-        // Step 4: Fetch article details from news using the ID
-        final articleDoc =
-            await firestore.collection('news').doc(articleId).get();
+        // Step 4: Fetch article details from cache first, then server
+        final articleDoc = await cache.getDocumentWithCache(
+          firestore.collection('news').doc(articleId),
+        );
 
         if (articleDoc.exists) {
           savedArticles.add(Article.fromMap(articleDoc.data()!));
@@ -294,6 +324,9 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           .collection('saved_articles')
           .doc(article.articleId)
           .set(article.toMap());
+      await FirestoreCacheService().invalidate('saved_articles_$userId');
+      await FirestoreCacheService()
+          .invalidate('homepage_saved_articles_$userId');
 
       EasyLoading.showSuccess('Article saved successfully!');
 

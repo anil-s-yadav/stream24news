@@ -5,12 +5,14 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../auth/auth_service.dart';
 import '../../../auth/create_account/list_data/language_data.dart';
 import '../../../models/live_channel_model.dart';
+import '../../../utils/services/firestore_cache_service.dart';
 import '../../../utils/services/shared_pref_service.dart';
 
 part 'live_tv_event.dart';
 part 'live_tv_state.dart';
 
 class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
+  List<LiveChannelModel> _allChannels = [];
   List<LiveChannelModel> finalList = [];
   LiveTvBloc() : super(LiveTvInitialState()) {
     on<LiveTvDataLoadEvent>(_loadAllChennels);
@@ -22,6 +24,24 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
     on<LiveChannelSearch>(_searchChannel);
   }
 
+  Future<List<LiveChannelModel>> _getAllChannels() async {
+    if (_allChannels.isNotEmpty) {
+      return _allChannels;
+    }
+    final snapshot = await FirestoreCacheService().getQueryWithCache(
+      query: FirebaseFirestore.instance
+          .collection('live_chennels')
+          .doc('6Kc57CnXtYzg85cD0FXS')
+          .collection('all_channels'),
+      cacheKey: 'all_channels',
+      ttl: FirestoreCacheService.channelsTtl,
+    );
+    _allChannels = snapshot.docs
+        .map((doc) => LiveChannelModel.fromFirestore(doc))
+        .toList();
+    return _allChannels;
+  }
+
   void _loadAllChennels(
       LiveTvDataLoadEvent event, Emitter<LiveTvState> emit) async {
     emit(LiveTvLoadingState());
@@ -29,15 +49,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
     try {
       final region = SharedPrefService().getCounty()![2];
 
-      final snapshot = await FirebaseFirestore.instance
-          .collection('live_chennels')
-          .doc('6Kc57CnXtYzg85cD0FXS')
-          .collection('all_channels')
-          .get();
-
-      List<LiveChannelModel> allChannels = snapshot.docs
-          .map((doc) => LiveChannelModel.fromFirestore(doc))
-          .toList();
+      final allChannels = await _getAllChannels();
 
       String selectedRegion = region.toLowerCase(); // "in", "us", etc.
 
@@ -113,29 +125,15 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
     try {
       EasyLoading.show();
 
-      if (finalList.isEmpty) {
-        final snapshot = await FirebaseFirestore.instance
-            .collection('live_chennels')
-            .doc('6Kc57CnXtYzg85cD0FXS')
-            .collection('all_channels')
-            .where('language', isEqualTo: langCode)
-            .get();
-        List<LiveChannelModel> allChannels = snapshot.docs
-            .map((doc) => LiveChannelModel.fromFirestore(doc))
-            .toList();
-        EasyLoading.dismiss();
-        emit(LiveTvSuccessState(liveChannelModel: allChannels));
-      } else {
-        finalList = finalList
-            .where((channel) => channel.language.toLowerCase() == langCode)
-            .toList();
-        EasyLoading.dismiss();
-        emit(LiveTvSuccessState(liveChannelModel: finalList));
-      }
+      final allChannels = await _getAllChannels();
+      finalList = allChannels
+          .where((channel) => channel.language.toLowerCase() == langCode)
+          .toList();
+      EasyLoading.dismiss();
+      emit(LiveTvSuccessState(liveChannelModel: finalList));
     } catch (e) {
       EasyLoading.dismiss();
       emit(LiveTvErrorState());
-      EasyLoading.dismiss();
       throw Exception(e);
     }
   }
@@ -146,20 +144,12 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
 
     try {
       if (finalList.isEmpty) {
-        final snapshot = await FirebaseFirestore.instance
-            .collection('live_chennels')
-            .doc('6Kc57CnXtYzg85cD0FXS')
-            .collection('all_channels')
-            .get();
-
-        finalList = snapshot.docs
-            .map((doc) => LiveChannelModel.fromFirestore(doc))
-            .toList();
+        finalList = List<LiveChannelModel>.from(await _getAllChannels());
       }
 
-      String query = event.key.trim();
+      String query = event.key.trim().toLowerCase();
       List<LiveChannelModel> filteredChannels = finalList.where((channel) {
-        return channel.name.contains(query);
+        return channel.name.toLowerCase().contains(query);
       }).toList();
 
       emit(LiveTvSuccessState(liveChannelModel: filteredChannels));
@@ -186,6 +176,9 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
           .collection('saved_channels')
           .doc(event.channelID)
           .set({}); // You can store additional data if needed, like timestamp
+      await FirestoreCacheService().invalidate('saved_channels_$userId');
+      await FirestoreCacheService()
+          .invalidate('homepage_saved_channels_$userId');
       EasyLoading.showSuccess('Channel saved successfully!');
     } catch (e) {
       EasyLoading.showError('Failed to save channel!');
@@ -225,15 +218,7 @@ class LiveTvBloc extends Bloc<LiveTvEvent, LiveTvState> {
       LoadRelatedChannelEvent event, Emitter<LiveTvState> emit) async {
     emit(LoadRelatedChannelLoading());
     try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('live_chennels')
-          .doc('6Kc57CnXtYzg85cD0FXS')
-          .collection('all_channels')
-          .get();
-
-      List<LiveChannelModel> allChannels = snapshot.docs
-          .map((doc) => LiveChannelModel.fromFirestore(doc))
-          .toList();
+      final allChannels = await _getAllChannels();
 
       List<LiveChannelModel> languageChannels = [];
 

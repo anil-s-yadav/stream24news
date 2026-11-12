@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:stream24news/utils/services/firestore_cache_service.dart';
 import 'package:stream24news/utils/services/shared_pref_service.dart';
 
 import '../../../models/new_model.dart';
@@ -21,47 +22,62 @@ class NewspageBloc extends Bloc<NewspageEvent, NewspageState> {
     on<NewspageSelectCategory>(_loadCategory);
   }
 
+  Future<List<Article>> _fetchPrimaryArticles(
+      String country, String language) async {
+    final snapshot = await FirestoreCacheService().getQueryWithCache(
+      query: FirebaseFirestore.instance
+          .collection('news')
+          .where('country', arrayContains: country)
+          .where('language', isEqualTo: language),
+      cacheKey: 'newspage_${country}_$language',
+      ttl: FirestoreCacheService.newsTtl,
+    );
+    return snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+  }
+
   void _loadNewspage(
       NewspageLoadEvent event, Emitter<NewspageState> emit) async {
     emit(NewspageLoading());
     try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('news')
-          .where('country', arrayContains: region[1].toLowerCase())
-          .where('language', isEqualTo: lang[0].toLowerCase())
-          .get();
+      final country = region[1].toLowerCase();
+      final language = lang[0].toLowerCase();
+      final cache = FirestoreCacheService();
+      final newsRef = FirebaseFirestore.instance.collection('news');
 
-      articles =
-          snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+      articles = await _fetchPrimaryArticles(country, language);
 
       if (articles.isNotEmpty) {
         emit(NewspageSuccess(articles: articles));
       } else {
-        final snapshot = await FirebaseFirestore.instance
-            .collection('news')
-            .where('country', arrayContains: region[1].toLowerCase())
-            .get();
+        final snapshot = await cache.getQueryWithCache(
+          query: newsRef.where('country', arrayContains: country),
+          cacheKey: 'newspage_country_$country',
+          ttl: FirestoreCacheService.newsTtl,
+        );
 
         articles =
             snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
         if (articles.isNotEmpty) {
           emit(NewspageSuccess(articles: articles));
         } else {
-          final snapshot = await FirebaseFirestore.instance
-              .collection('news')
-              .where('language', isEqualTo: lang[0].toLowerCase())
-              .get();
+          final snapshot = await cache.getQueryWithCache(
+            query: newsRef.where('language', isEqualTo: language),
+            cacheKey: 'newspage_lang_$language',
+            ttl: FirestoreCacheService.newsTtl,
+          );
 
           articles =
               snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
           if (articles.isNotEmpty) {
             emit(NewspageSuccess(articles: articles));
           } else {
-            final snapshot = await FirebaseFirestore.instance
-                .collection('news')
-                .where('country', arrayContains: 'india')
-                .where('language', isEqualTo: 'english')
-                .get();
+            final snapshot = await cache.getQueryWithCache(
+              query: newsRef
+                  .where('country', arrayContains: 'india')
+                  .where('language', isEqualTo: 'english'),
+              cacheKey: 'newspage_india_english',
+              ttl: FirestoreCacheService.newsTtl,
+            );
 
             articles = snapshot.docs
                 .map((doc) => Article.fromMap(doc.data()))
@@ -79,13 +95,10 @@ class NewspageBloc extends Bloc<NewspageEvent, NewspageState> {
     emit(NewspageLoading());
     try {
       if (articles.isEmpty) {
-        final snapshot = await FirebaseFirestore.instance
-            .collection('news')
-            .where('country', arrayContains: region[1].toLowerCase())
-            .where('language', isEqualTo: lang[0].toLowerCase())
-            .get();
-        articles =
-            snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+        articles = await _fetchPrimaryArticles(
+          region[1].toLowerCase(),
+          lang[0].toLowerCase(),
+        );
       }
       articles.sort((a, b) => (a.views ?? 0).compareTo(b.views ?? 0));
 
@@ -100,13 +113,10 @@ class NewspageBloc extends Bloc<NewspageEvent, NewspageState> {
     emit(NewspageLoading());
     try {
       if (articles.isEmpty) {
-        final snapshot = await FirebaseFirestore.instance
-            .collection('news')
-            .where('country', arrayContains: region[1].toLowerCase())
-            .where('language', isEqualTo: lang[0].toLowerCase())
-            .get();
-        articles =
-            snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+        articles = await _fetchPrimaryArticles(
+          region[1].toLowerCase(),
+          lang[0].toLowerCase(),
+        );
       }
       articles.sort((a, b) => (a.pubDate ?? "").compareTo(b.pubDate ?? ""));
 
@@ -121,13 +131,10 @@ class NewspageBloc extends Bloc<NewspageEvent, NewspageState> {
     emit(NewspageLoading());
     try {
       if (articles.isEmpty) {
-        final snapshot = await FirebaseFirestore.instance
-            .collection('news')
-            .where('country', arrayContains: region[1].toLowerCase())
-            .where('language', isEqualTo: lang[0].toLowerCase())
-            .get();
-        articles =
-            snapshot.docs.map((doc) => Article.fromMap(doc.data())).toList();
+        articles = await _fetchPrimaryArticles(
+          region[1].toLowerCase(),
+          lang[0].toLowerCase(),
+        );
       }
 
       if (event.category == "All") {

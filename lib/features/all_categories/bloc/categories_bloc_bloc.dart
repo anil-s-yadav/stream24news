@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:stream24news/models/new_model.dart';
+import 'package:stream24news/utils/services/firestore_cache_service.dart';
 part 'categories_bloc_event.dart';
 part 'categories_bloc_state.dart';
 
@@ -19,12 +20,15 @@ class CategoriesBlocBloc
       CategoriesDataLoadEvent event, Emitter<CategoriesBlocState> emit) async {
     try {
       emit(CategoriesBlocLoading());
-      final snapshot = await FirebaseFirestore.instance
-          .collection('news')
-          .where('country', arrayContains: event.region)
-          .where('language', isEqualTo: event.lang)
-          .orderBy("views", descending: true)
-          .get();
+      final snapshot = await FirestoreCacheService().getQueryWithCache(
+        query: FirebaseFirestore.instance
+            .collection('news')
+            .where('country', arrayContains: event.region)
+            .where('language', isEqualTo: event.lang)
+            .orderBy("views", descending: true),
+        cacheKey: 'cat_news_${event.region}_${event.lang}',
+        ttl: FirestoreCacheService.newsTtl,
+      );
 
       categorywiseNews = snapshot.docs
           .map((doc) => Article.fromMap(doc.data()))

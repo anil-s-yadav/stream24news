@@ -6,6 +6,7 @@ import 'package:stream24news/models/live_channel_model.dart';
 import 'package:stream24news/models/new_model.dart';
 
 import '../../../auth/auth_service.dart';
+import '../../../utils/services/firestore_cache_service.dart';
 
 part 'bookmark_event.dart';
 part 'bookmark_state.dart';
@@ -32,20 +33,25 @@ void _loadSavedArticalsEvent(
     }
     // String testUserID = "w5PvxpVRTiWlUmb3GJ8SrYBFA9L2";
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final cache = FirestoreCacheService();
 
     // Get all saved article IDs for the user
-    final savedArticlesSnapshot = await firestore
-        .collection('user')
-        .doc(userId)
-        .collection('saved_articles')
-        .get();
+    final savedArticlesSnapshot = await cache.getQueryWithCache(
+      query: firestore
+          .collection('user')
+          .doc(userId)
+          .collection('saved_articles'),
+      cacheKey: 'saved_articles_$userId',
+      ttl: FirestoreCacheService.savedListTtl,
+    );
     List<Article> savedArticles = [];
     for (var doc in savedArticlesSnapshot.docs) {
       final articleId = doc.id;
 
-      // Fetch article details from news using the ID
-      final articleDoc =
-          await firestore.collection('news').doc(articleId).get();
+      // Fetch article details from cache first, then server
+      final articleDoc = await cache.getDocumentWithCache(
+        firestore.collection('news').doc(articleId),
+      );
 
       if (articleDoc.exists) {
         savedArticles.add(Article.fromMap(articleDoc.data()!));
@@ -69,25 +75,30 @@ void _loadSavedChannelsEvent(
       return;
     }
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final cache = FirestoreCacheService();
     // Get all saved channel IDs for the user
-    final savedChannelsSnapshot = await firestore
-        .collection('user')
-        .doc(userId)
-        .collection('saved_channels')
-        .get();
+    final savedChannelsSnapshot = await cache.getQueryWithCache(
+      query: firestore
+          .collection('user')
+          .doc(userId)
+          .collection('saved_channels'),
+      cacheKey: 'saved_channels_$userId',
+      ttl: FirestoreCacheService.savedListTtl,
+    );
 
     List<LiveChannelModel> savedChannels = [];
 
     for (var doc in savedChannelsSnapshot.docs) {
       final channelId = doc.id;
 
-      // Fetch channel details from all_channels using the ID
-      final channelDoc = await firestore
-          .collection('live_chennels')
-          .doc('6Kc57CnXtYzg85cD0FXS') //  hardcoded  document ID
-          .collection('all_channels')
-          .doc(channelId)
-          .get();
+      // Fetch channel details from cache first, then server
+      final channelDoc = await cache.getDocumentWithCache(
+        firestore
+            .collection('live_chennels')
+            .doc('6Kc57CnXtYzg85cD0FXS') //  hardcoded  document ID
+            .collection('all_channels')
+            .doc(channelId),
+      );
 
       if (channelDoc.exists) {
         savedChannels.add(LiveChannelModel.fromFirestore(channelDoc));
@@ -119,6 +130,8 @@ void _deleteSavedArticleEvent(
         .collection('saved_articles')
         .doc(event.articleId)
         .delete();
+    await FirestoreCacheService().invalidate('saved_articles_$userId');
+    await FirestoreCacheService().invalidate('homepage_saved_articles_$userId');
     EasyLoading.showSuccess('Article deleted successfully');
   } catch (e) {
     EasyLoading.showError('Failed to delete article');
@@ -145,6 +158,8 @@ void _deleteSavedChannelEvent(
         .collection('saved_channels')
         .doc(event.channelId)
         .delete();
+    await FirestoreCacheService().invalidate('saved_channels_$userId');
+    await FirestoreCacheService().invalidate('homepage_saved_channels_$userId');
     EasyLoading.showSuccess('Channel deleted successfully');
   } catch (e) {
     EasyLoading.showError('Failed to delete channel');
